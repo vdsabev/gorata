@@ -1,0 +1,88 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Гората</title>
+
+    <meta content="text/html; charset=utf-8" http-equiv="content-type">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1" name="viewport">
+    <meta content="True" name="HandheldFriendly">
+    <meta content="320" name="MobileOptimized">
+    <meta content="on" http-equiv="cleartype">
+
+    <base href="/">
+    <link rel="shortcut icon" href="logo.png">
+    <link rel="manifest" href="manifest.json">
+
+    <style>
+      <%
+        const primary = '#2ecc71';
+        const headerHeight = 75;
+        const animationDuration = '0.33s';
+        const animationEasing = 'cubic-bezier(0.33, -0.69, .25, 1)';
+      %>
+
+      body {
+        background: <%= primary %>;
+      }
+
+      #header {
+        position: fixed;
+        top: -<%= headerHeight %>px;
+        right: 0;
+        left: 0;
+        height: <%= headerHeight %>px;
+
+        opacity: 0;
+
+        transition:
+          top <%= animationDuration %> <%= animationEasing %>,
+          opacity <%= animationDuration %> <%= animationEasing %>
+        ;
+      }
+
+      #header.loaded {
+        top: 0;
+        opacity: 1;
+      }
+
+      #container {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        padding-top: <%= headerHeight %>px;
+      }
+
+      #map {
+        position: absolute;
+        top: 100%;
+        right: 0;
+        bottom: calc(<%= headerHeight %>px - 100%);
+        left: 0;
+
+        opacity: 0;
+        transition:
+          top <%= animationDuration %> <%= animationEasing %>,
+          bottom <%= animationDuration %> <%= animationEasing %>,
+          opacity <%= animationDuration %> <%= animationEasing %>
+        ;
+      }
+
+      #map.loaded {
+        top: <%= headerHeight %>px;
+        bottom: 0;
+        opacity: 1;
+      }
+    </style>
+
+    <link href="https://fonts.googleapis.com/css?family=Roboto|PT+Serif&amp;subset=cyrillic" rel="stylesheet">
+  </head>
+
+  <body>
+    <div id="map"></div>
+    <div id="container"></div>
+    <header id="header" class="flex-row justify-content-end align-items-center"></header>
+  </body>
+</html>

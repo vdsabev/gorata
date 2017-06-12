@@ -1,0 +1,106 @@
+@import 'variables';
+@import 'mixins';
+
+// Full-height content
+html,
+body {
+  height: 100%;
+  font-family: 'PT Serif', serif;
+}
+
+body {
+  line-height: 1.22;
+  color: $neutral-light;
+}
+
+// Define heading classes
+// sass-lint:disable single-line-per-selector
+h1, .h1,
+h2, .h2,
+h3, .h3 {
+  font-family: 'Oswald', sans-serif;
+}
+
+h1, .h1 { font-size: $h1-font-size; }
+h2, .h2 { font-size: $h2-font-size; }
+h3, .h3 { font-size: $h3-font-size; }
+h4, .h4 { font-size: $h4-font-size; }
+h5, .h5 { font-size: $h5-font-size; }
+h6, .h6 { font-size: $h6-font-size; }
+// sass-lint:enable single-line-per-selector
+
+a {
+  transition: color $animation-duration $animation-easing;
+  cursor: pointer;
+  color: $neutral-lighter;
+
+  &:hover {
+    color: $neutral-light;
+  }
+
+  &.underlined {
+    transition: border $animation-duration $animation-easing, color $animation-duration $animation-easing;
+    border-bottom: 0px solid transparent;
+
+    &:hover {
+      border-bottom: 4px solid $primary-light;
+    }
+  }
+}
+
+fieldset {
+  border: 0;
+}
+
+iframe {
+  border: 0;
+}
+
+textarea {
+  resize: vertical;
+}
+
+// Layout
+.container {
+  margin: 0 auto;
+  width: $sm-max;
+  max-width: 100%;
+}
+
+// Overflow
+.overflow-hidden {
+  @include overflow(hidden, hidden);
+}
+
+// Positioning
+.relative {
+  position: relative;
+}
+
+.absolute {
+  position: absolute;
+}
+
+.fixed {
+  position: fixed;
+}
+
+.stretch {
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+// Text
+.text-left {
+  text-align: left;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.text-right {
+  text-align: right;
+}

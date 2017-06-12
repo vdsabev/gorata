@@ -1,0 +1,16 @@
+{
+  "short_name": "Гората",
+  "name": "Гората",
+  "background_color": "#2ecc71",
+  "theme_color": "#2ecc71",
+  "icons": [
+    {
+      "src": "logo.png",
+      "sizes": "100x100",
+      "type": "image/png"
+    }
+  ],
+  "start_url": "/index.html",
+  "display": "standalone",
+  "orientation": "portrait"
+}

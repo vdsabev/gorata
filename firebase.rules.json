@@ -1,0 +1,43 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+
+    // Requests
+    "requests": {
+      ".read": true,
+
+      "$requestId": {
+        ".write": "(!data.exists() && auth != null) || data.child('createdBy').val() === auth.uid",
+        ".validate": "newData.hasChildren(['title', 'text', 'geo', 'created', 'createdBy'])",
+
+        "title": { ".validate": "newData.isString()" },
+        "text": { ".validate": "newData.isString()" },
+        "geo": {
+          ".validate": "newData.hasChildren(['lat', 'lng'])",
+
+          "lat": { ".validate": "-90 <= newData.val() && newData.val() <= 90" },
+          "lng": { ".validate": "-180 <= newData.val() && newData.val() <= 180" }
+        },
+        "created": { ".validate": "newData.val() === now" },
+        "createdBy": { ".validate": "newData.val() === auth.uid" },
+
+        "$other": { ".validate": false }
+      }
+    },
+
+    // Users
+    "users": {
+      "$userId": {
+        ".read": "auth.uid === $userId",
+        // TODO: Move user role to a different object if we want to allow the user to write to their data
+
+        "role": {
+          ".validate": "newData.isString()"
+        },
+
+        "$other": { ".validate": false }
+      }
+    }
+  }
+}

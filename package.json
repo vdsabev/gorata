@@ -1,0 +1,67 @@
+{
+  "private": true,
+  "name": "gorata",
+  "version": "1.0.0",
+  "license": "MIT",
+  "scripts": {
+    "build": "webpack -p --env.production --display-modules",
+    "profile:build": "webpack --profile --json > ./build/profile.json",
+    "profile:open": "webpack-bundle-analyzer ./build/profile.json",
+    "start": "webpack-dev-server --port 3000 --history-api-fallback",
+    "test": "jest",
+    "jest": "jest --watch",
+    "deploy": "npm test && npm run build && firebase deploy"
+  },
+  "dependencies": {
+    "@types/es6-promise": "0.0.32",
+    "@types/googlemaps": "3.26.13",
+    "@types/mithril": "1.1.4",
+    "@types/scriptjs": "0.0.2",
+    "compote": "0.21.0",
+    "firebase": "4.1.2",
+    "mithril": "1.1.1",
+    "redux": "3.6.0",
+    "scriptjs": "2.5.8"
+  },
+  "devDependencies": {
+    "@types/jest": "19.2.4",
+    "autoprefixer": "7.1.1",
+    "concurrently": "3.4.0",
+    "css-loader": "0.28.4",
+    "file-loader": "0.11.2",
+    "firebase-tools": "3.9.1",
+    "html-webpack-plugin": "2.28.0",
+    "jest": "20.0.4",
+    "node-sass": "4.5.3",
+    "postcss-loader": "1.3.3",
+    "sass-loader": "6.0.5",
+    "style-loader": "0.18.2",
+    "ts-jest": "20.0.6",
+    "ts-loader": "2.1.0",
+    "typescript": "2.3.4",
+    "var": "0.2.0",
+    "webpack": "2.6.1",
+    "webpack-dev-server": "2.4.5"
+  },
+  "jest": {
+    "collectCoverage": true,
+    "collectCoverageFrom": [
+      "src/**/*.{ts,tsx,js}",
+      "!src/**/*.test.{ts,tsx,js}",
+      "!src/**/*.d.ts",
+      "!node_modules/**"
+    ],
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js"
+    ],
+    "moduleNameMapper": {
+      "\\.(s?css|less)$": "<rootDir>/node_modules/compote/components/jest/style.js"
+    },
+    "testRegex": "(/__tests__/.*|\\.test)\\.(ts|tsx|js)$",
+    "transform": {
+      ".(ts|tsx)": "<rootDir>/node_modules/ts-jest/preprocessor.js"
+    }
+  }
+}

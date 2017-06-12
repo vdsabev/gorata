@@ -1,0 +1,20 @@
+@import '../style/variables';
+@import '../style/mixins';
+
+#header { // sass-lint:disable-line no-ids
+  background: $primary;
+  padding: 10px;
+}
+
+#logo {
+  color: $neutral-lighter;
+
+  > img {
+    // https://stackoverflow.com/questions/24224112/css-filter-make-color-image-with-transparency-white
+    @include filter(brightness(0) invert(1));
+
+    width: $headerHeight;
+    height: $headerHeight;
+    padding: 5px;
+  }
+}

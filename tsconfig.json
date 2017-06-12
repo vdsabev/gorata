@@ -1,0 +1,21 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "alwaysStrict": true,
+    "experimentalDecorators": true,
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "sourceMap": true,
+    "suppressImplicitAnyIndexErrors": false,
+
+    "baseUrl": "src",
+    "module": "commonjs",
+    "target": "es5"
+  },
+  "exclude": [
+    "node_modules"
+  ],
+  "include": [
+    "src"
+  ]
+}
