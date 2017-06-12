@@ -1,4 +1,4 @@
-# Gorata
+# Гората
 
 # License
 Copyright (c) 2017 Vladimir Sabev

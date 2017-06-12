@@ -53,6 +53,12 @@
         bottom: 0;
         left: 0;
         padding-top: <%= headerHeight %>px;
+
+        transition: background <%= animationDuration %> <%= animationEasing %>;
+      }
+
+      #container.loaded {
+        background: rgba(0, 0, 0, 0.5);
       }
 
       #map {

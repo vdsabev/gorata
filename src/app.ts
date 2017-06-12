@@ -45,4 +45,9 @@ function applicationLoaded() {
   // Map
   const map = document.querySelector('#map');
   map.classList.add('loaded');
+
+  // Container
+  // HACK: Magic number, `getAnimationDuration` returns `0s` here
+  const container = document.querySelector('#container');
+  setTimeout(() => container.classList.add('loaded'), 330);
 }

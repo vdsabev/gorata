@@ -22,7 +22,11 @@ export function initializeRouter() {
 
   const container = document.querySelector('#container');
   route(container, '/', {
-    '/': { render: () => [] },
-    '/login': { render: Login }
+    '/': { onmatch: toggleContainer(false), render: () => [] },
+    '/login': { onmatch: toggleContainer(true), render: Login }
   });
 }
+
+const toggleContainer = (visible: boolean) => () => {
+  document.querySelector('#container').classList.toggle('hidden', !visible);
+};
