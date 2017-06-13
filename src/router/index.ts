@@ -1,7 +1,7 @@
 import { route } from 'mithril';
 import { voidify } from 'compote/components/utils';
 
-import { Forbidden } from '../403-forbidden';
+import { Unauthorized } from '../401-unauthorized';
 import { Login } from '../login';
 import { RequestForm } from '../request-form';
 import { store } from '../store';
@@ -11,9 +11,9 @@ const toggleContainer = (visible: boolean) => () => {
   document.querySelector('#container').classList.toggle('hidden', !visible);
 };
 
-const requireAccess = (accessFn: Function, component: Function, ...args: any[]) => () => {
+const requireAccess = (accessFn: Function, success: Function, error: Function, ...args: any[]) => () => {
   const { currentUser } = store.getState();
-  return accessFn(currentUser) ? component(...args) : Forbidden();
+  return accessFn(currentUser) ? success(...args) : error(...args);
 };
 
 export function initializeRouter() {
@@ -22,9 +22,19 @@ export function initializeRouter() {
   const container = document.querySelector('#container');
   route(container, '/', {
     '/': { onmatch: toggleContainer(false), render: () => [] },
-    '/login': { onmatch: toggleContainer(true), render: Login },
+    '/login': { onmatch: toggleContainer(true), render: LoginPage },
     '/requests/new': { onmatch: toggleContainer(true), render: RequestCreatePage }
   });
 }
 
-export const RequestCreatePage = requireAccess(isLoggedIn, RequestForm);
+export const LoginPage = () => {
+  const { currentUser } = store.getState();
+  if (isLoggedIn(currentUser)) {
+    route.set('/');
+    return null;
+  }
+
+  return Login();
+};
+
+export const RequestCreatePage = requireAccess(isLoggedIn, RequestForm, Unauthorized);

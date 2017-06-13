@@ -46,7 +46,7 @@ const LoggedInHeader = (currentUser: User) => [
   ])
 ];
 
-export const logout = () => firebase.auth().signOut().catch(console.error).then(() => route.set('/'));
+export const logout = () => firebase.auth().signOut().catch(window.alert).then(() => route.set('/'));
 
 // Logged out
 const LoggedOutHeader = (currentUser: User) => [

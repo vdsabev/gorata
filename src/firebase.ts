@@ -25,7 +25,12 @@ export function initializeFirebaseApp() {
 
     if (!auth) return;
 
-    const userSnapshot: DataSnapshot<User> = await firebase.database().ref(`users/${auth.uid}`).once('value').catch(console.error);
-    store.dispatch({ type: Actions.USER_DETAILS_LOADED, user: userSnapshot.val() });
+    try {
+      const userSnapshot: DataSnapshot<User> = await firebase.database().ref(`users/${auth.uid}`).once('value');
+      store.dispatch({ type: Actions.USER_DETAILS_LOADED, user: userSnapshot.val() });
+    }
+    catch (error) {
+      window.alert(error);
+    }
   });
 }

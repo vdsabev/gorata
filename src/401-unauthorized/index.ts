@@ -1,13 +1,13 @@
 import { div, h2 } from 'compote/html';
 import { setAnimation } from 'compote/css';
 
-export const Forbidden = () => (
+export const Unauthorized = () => (
   div({
     className: 'container fade-in-animation',
     onbeforeremove: setAnimation('fade-out-animation')
   }, [
     div({ className: 'form' }, [
-      h2('Грешка 403 - акаунтът Ви няма достъп до тази страница')
+      h2('Грешка 401 - трябва да влезете с акаунта си, за да достъпите тази страница')
     ])
   ])
 );

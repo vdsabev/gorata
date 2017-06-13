@@ -22,23 +22,21 @@ const setText = withAttr('value', setRequestData('text'));
 
 const createRequest = async () => {
   try {
-    const { currentUser, map } = store.getState();
-
     data.loading = true;
+
+    const { currentUser, map } = store.getState();
     const newRequest: Partial<Request> = {
       ...data.request,
       geo: map.getCenter().toJSON(),
       created: firebase.database.ServerValue.TIMESTAMP,
       createdBy: currentUser.auth.uid
     };
-    const createdRequest = await firebase.database().ref('requests').push(newRequest);
+    await firebase.database().ref('requests').push(newRequest);
 
     route.set('/');
   }
   catch (error) {
     window.alert(error);
-  }
-  finally {
     data.loading = false;
     redraw();
   }
