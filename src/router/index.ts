@@ -3,18 +3,17 @@ import { voidify } from 'compote/components/utils';
 
 import { Forbidden } from '../403-forbidden';
 import { Login } from '../login';
+import { RequestForm } from '../request-form';
 import { store } from '../store';
-import { canModerate } from '../user';
+import { isLoggedIn } from '../user';
 
-export function setRouteIfNew(newRoute: string) {
-  if (newRoute !== route.get()) {
-    route.set(newRoute);
-  }
-}
+const toggleContainer = (visible: boolean) => () => {
+  document.querySelector('#container').classList.toggle('hidden', !visible);
+};
 
-export const requireModeratorAccess = (component: Function, ...args: any[]) => () => {
+const requireAccess = (accessFn: Function, component: Function, ...args: any[]) => () => {
   const { currentUser } = store.getState();
-  return canModerate(currentUser) ? component(...args) : Forbidden();
+  return accessFn(currentUser) ? component(...args) : Forbidden();
 };
 
 export function initializeRouter() {
@@ -23,10 +22,9 @@ export function initializeRouter() {
   const container = document.querySelector('#container');
   route(container, '/', {
     '/': { onmatch: toggleContainer(false), render: () => [] },
-    '/login': { onmatch: toggleContainer(true), render: Login }
+    '/login': { onmatch: toggleContainer(true), render: Login },
+    '/requests/new': { onmatch: toggleContainer(true), render: RequestCreatePage }
   });
 }
 
-const toggleContainer = (visible: boolean) => () => {
-  document.querySelector('#container').classList.toggle('hidden', !visible);
-};
+export const RequestCreatePage = requireAccess(isLoggedIn, RequestForm);

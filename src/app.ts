@@ -6,7 +6,7 @@ import { mount, redraw } from 'mithril';
 import { initializeFirebaseApp } from './firebase';
 import { Header } from './header';
 import { initializeMap } from './map';
-import { initializeRouter, setRouteIfNew } from './router';
+import { initializeRouter } from './router';
 import { store } from './store';
 
 initialize();

@@ -5,7 +5,7 @@
 html,
 body {
   height: 100%;
-  font-family: 'PT Serif', serif;
+  font-family: $font-family;
 }
 
 body {
@@ -15,12 +15,6 @@ body {
 
 // Define heading classes
 // sass-lint:disable single-line-per-selector
-h1, .h1,
-h2, .h2,
-h3, .h3 {
-  font-family: 'Roboto', sans-serif;
-}
-
 h1, .h1 { font-size: $h1-font-size; }
 h2, .h2 { font-size: $h2-font-size; }
 h3, .h3 { font-size: $h3-font-size; }

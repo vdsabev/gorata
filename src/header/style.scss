@@ -15,8 +15,8 @@
     // https://stackoverflow.com/questions/24224112/css-filter-make-color-image-with-transparency-white
     @include filter(brightness(0) invert(1));
 
-    width: $headerHeight;
-    height: $headerHeight;
+    width: $header-height;
+    height: $header-height;
     padding: 5px;
   }
 }

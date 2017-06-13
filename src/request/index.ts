@@ -3,10 +3,7 @@ export interface Request {
 
   title: string;
   text: string;
-  geo: {
-    lat: number,
-    lng: number
-  };
-  created: number;
+  geo: google.maps.LatLngLiteral;
+  created: number | Object;
   createdBy: string;
 }
