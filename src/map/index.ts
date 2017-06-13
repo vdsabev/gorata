@@ -1,5 +1,4 @@
 import * as firebase from 'firebase/app';
-import 'firebase/database';
 
 import { div, ComponentNode } from 'compote/html';
 import * as $script from 'scriptjs';

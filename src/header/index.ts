@@ -1,4 +1,5 @@
 import './style.scss';
+import '../assets/logo.png';
 
 import { div, a, br, img, h1 } from 'compote/html';
 import { flex } from 'compote/components/flex';

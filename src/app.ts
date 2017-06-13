@@ -1,4 +1,3 @@
-import './assets/logo.png';
 import './manifest.json';
 import './style.scss';
 
