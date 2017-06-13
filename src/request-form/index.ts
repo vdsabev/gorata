@@ -2,7 +2,7 @@ import { div, form, fieldset, input, br, textarea, button } from 'compote/html';
 import { flex } from 'compote/components/flex';
 import { constant } from 'compote/components/utils';
 import * as firebase from 'firebase/app';
-import { route, withAttr } from 'mithril';
+import { redraw, route, withAttr } from 'mithril';
 
 import { Request } from '../request';
 import { store } from '../store';
@@ -40,14 +40,14 @@ const createRequest = async () => {
   }
   finally {
     data.loading = false;
-    route.set(route.get()); // TODO: Find another way to re-render the current view
+    redraw();
   }
 };
 
 // TODO: Use form data
 // TODO: Add validation
 export const RequestForm = () => (
-  div({ className: 'flex-row justify-content-stretch align-items-stretch', oncreate: initializeData }, [
+  div({ className: 'flex-row justify-content-stretch align-items-stretch', oninit: initializeData }, [
     form({ className: 'form', style: flex(1), onsubmit: returnFalse },
       fieldset({ className: 'form-panel lg', disabled: data.loading }, [
         input({
