@@ -1,27 +1,28 @@
+<%
+  const primary = '#2ecc71';
+  const headerHeight = 75;
+  const animationDuration = '0.33s';
+  const animationEasing = 'cubic-bezier(0.33, -0.69, .25, 1)';
+%>
+
 <!doctype html>
-<html>
+<html lang="bg">
   <head>
     <meta charset="utf-8">
     <title>Гората</title>
 
     <meta content="text/html; charset=utf-8" http-equiv="content-type">
-    <meta content="width=device-width, initial-scale=1, maximum-scale=1" name="viewport">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=5" name="viewport">
     <meta content="True" name="HandheldFriendly">
     <meta content="320" name="MobileOptimized">
     <meta content="on" http-equiv="cleartype">
+    <meta name="theme-color" content="<%= primary %>">
 
     <base href="/">
-    <link rel="shortcut icon" href="logo.png">
+    <link rel="shortcut icon" href="favicon.png">
     <link rel="manifest" href="manifest.json">
 
     <style>
-      <%
-        const primary = '#2ecc71';
-        const headerHeight = 75;
-        const animationDuration = '0.33s';
-        const animationEasing = 'cubic-bezier(0.33, -0.69, .25, 1)';
-      %>
-
       body {
         background: <%= primary %>;
       }
@@ -82,13 +83,15 @@
         opacity: 1;
       }
     </style>
-
-    <link href="https://fonts.googleapis.com/css?family=Roboto&amp;subset=cyrillic" rel="stylesheet">
   </head>
 
   <body>
     <div id="map"></div>
     <div id="container"></div>
     <header id="header" class="flex-row justify-content-end align-items-center"></header>
+
+    <noscript><h2>JavaScript не е наличен в браузъра Ви. За да използвате това приложение, моля разрешете JavaScript или използвайте браузър, който го поддържа.</h2></noscript>
+
+    <link href="https://fonts.googleapis.com/css?family=Roboto&amp;subset=cyrillic" rel="stylesheet">
   </body>
 </html>

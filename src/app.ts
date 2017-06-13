@@ -1,3 +1,6 @@
+import './assets/favicon.png';
+import './assets/logo_192x192.png';
+import './assets/logo_512x512.png';
 import './manifest.json';
 import './style.scss';
 

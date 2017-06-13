@@ -40,17 +40,17 @@ export const LoginForm = () => (
     fieldset({ className: 'form-panel', disabled: data.loading }, [
       input({
         className: 'form-input',
-        type: 'email', name: 'email', placeholder: 'Email',
+        type: 'email', name: 'email', placeholder: 'Имейл',
         onkeyup: loginOnEnter, oninput: setEmail
       }),
       br(),
       input({
         className: 'form-input',
-        type: 'password', name: 'password', placeholder: 'Password',
+        type: 'password', name: 'password', placeholder: 'Парола',
         onkeyup: loginOnEnter, oninput: setPassword
       }),
       br(),
-      button({ className: 'form-button', type: 'submit', onclick: login }, 'Login')
+      button({ className: 'form-button', type: 'submit', onclick: login }, 'Вход')
     ])
   )
 );

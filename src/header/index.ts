@@ -24,7 +24,7 @@ export const Header = () => {
 // Logo
 const Logo = () => (
   a({ oncreate: route.link, href: '/', id: 'logo', className: 'flex-row align-items-center' }, [
-    img({ src: 'logo.png' }),
+    img({ src: 'logo.png', alt: 'Лого' }),
     h1('Гората')
   ])
 );
@@ -35,14 +35,14 @@ const LoggedInHeader = (currentUser: User) => [
     a({ oncreate: route.link, href: '/requests/new' }, '+ Нова Заявка'),
     br(),
     canAdmin(currentUser) ?
-      a({ target: '_blank', href: `https://console.firebase.google.com/project/${process.env.FIREBASE_PROJECT_ID}/database/data` }, '+ База Данни')
+      a({ target: '_blank', rel: 'noopener', href: `https://console.firebase.google.com/project/${process.env.FIREBASE_PROJECT_ID}/database/data` }, '+ База Данни')
       :
       null
   ]) : null,
   div({ style: flex(1) }),
   div({ className: 'text-right' }, [
     div(currentUser.auth.email),
-    a({ onclick: logout }, 'Logout')
+    a({ onclick: logout }, 'Изход')
   ])
 ];
 
@@ -51,5 +51,5 @@ export const logout = () => firebase.auth().signOut().catch(window.alert).then((
 // Logged out
 const LoggedOutHeader = (currentUser: User) => [
   div({ style: flex(1) }),
-  a({ oncreate: route.link, href: '/login' }, 'Login')
+  a({ oncreate: route.link, href: '/login' }, 'Вход')
 ];
