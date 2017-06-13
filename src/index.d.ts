@@ -4,7 +4,6 @@ interface Process {
 }
 
 type Action<ActionType> = {
-  [key: string]: any
   type?: ActionType
 };
 

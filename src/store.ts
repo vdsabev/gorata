@@ -1,3 +1,5 @@
+import * as firebase from 'firebase/app';
+
 import { logger } from 'compote/components/logger';
 import { createStore, combineReducers, applyMiddleware } from 'redux';
 
@@ -8,6 +10,7 @@ interface State {
   /** Current user */
   currentUser: User;
   markers: Record<string, google.maps.Marker>;
+  requestPopup: RequestPopupState;
   requests: Request[];
 }
 
@@ -18,15 +21,20 @@ export enum Actions {
 
   RESET_REQUESTS = <any>'RESET_REQUESTS',
   REQUEST_ADDED = <any>'REQUEST_ADDED',
-  REQUEST_REMOVED = <any>'REQUEST_REMOVED'
+  REQUEST_REMOVED = <any>'REQUEST_REMOVED',
+  REQUEST_MARKER_CLICKED = <any>'REQUEST_MARKER_CLICKED'
 }
 
+
 export const store = createStore(
-  combineReducers<State>({ currentUser, markers, requests }),
+  combineReducers<State>({ currentUser, markers, requestPopup, requests }),
   process.env.NODE_ENV === 'production' ? undefined : applyMiddleware(logger)
 );
 
-export function currentUser(state: User = {}, action: Action<Actions> = {}): User {
+// Current User
+type CurrentUserAction = Action<Actions> & { auth?: firebase.User, user?: User };
+
+export function currentUser(state: User = {}, action: CurrentUserAction = {}): User {
   switch (action.type) {
   case Actions.USER_DETAILS_LOADED:
     return { ...state, ...action.user };
@@ -39,7 +47,10 @@ export function currentUser(state: User = {}, action: Action<Actions> = {}): Use
   }
 }
 
-export function markers(state: Record<string, google.maps.Marker> = {}, action: Action<Actions> = {}): Record<string, google.maps.Marker> {
+// Markers
+type MarkerAction = RequestAction & { map?: google.maps.Map };
+
+export function markers(state: Record<string, google.maps.Marker> = {}, action: MarkerAction = {}): Record<string, google.maps.Marker> {
   switch (action.type) {
   case Actions.RESET_REQUESTS:
     Object.keys(state).map((requestId) => state[requestId].setMap(null));
@@ -49,14 +60,14 @@ export function markers(state: Record<string, google.maps.Marker> = {}, action: 
       state[action.request.id].setMap(null);
     }
 
-    return {
-      ...state,
-      [action.request.id]: new google.maps.Marker({
-        map: action.map,
-        position: action.request.geo,
-        title: action.request.title
-      })
-    };
+    const marker = new google.maps.Marker({
+      map: action.map,
+      position: action.request.geo,
+      title: action.request.title
+    });
+    marker.addListener('click', () => store.dispatch({ type: Actions.REQUEST_MARKER_CLICKED, marker, request: action.request }));
+
+    return { ...state, [action.request.id]: marker };
   case Actions.REQUEST_REMOVED:
     const result: Record<string, google.maps.Marker> = {};
     Object.keys(state)
@@ -76,7 +87,46 @@ export function markers(state: Record<string, google.maps.Marker> = {}, action: 
   }
 }
 
-export function requests(state: Request[] = [], action: Action<Actions> = {}): Request[] {
+// RequestPopup
+type RequestPopupAction = RequestAction & { marker?: google.maps.Marker };
+
+interface RequestPopupState {
+  request?: Request;
+  popup?: google.maps.InfoWindow;
+}
+
+export function requestPopup(state: RequestPopupState = {}, action: RequestPopupAction = {}): RequestPopupState {
+  switch (action.type) {
+  case Actions.REQUEST_MARKER_CLICKED:
+    safelyClosePopup(state.popup);
+
+    const popup = new google.maps.InfoWindow({ content: `<h4>${action.request.title}</h4>${action.request.text}` });
+    popup.open(action.marker.getMap(), action.marker);
+
+    return { request: action.request, popup };
+  case Actions.RESET_REQUESTS:
+    safelyClosePopup(state.popup);
+    return {};
+  case Actions.REQUEST_REMOVED:
+    if (state.request && state.request.id === action.request.id) {
+      safelyClosePopup(state.popup);
+    }
+    return {};
+  default:
+    return state;
+  }
+}
+
+const safelyClosePopup = (popup: google.maps.InfoWindow) => {
+  if (popup) {
+    popup.close();
+  }
+};
+
+// Requests
+type RequestAction = Action<Actions> & { request?: Request };
+
+export function requests(state: Request[] = [], action: RequestAction = {}): Request[] {
   switch (action.type) {
   case Actions.RESET_REQUESTS:
     return [];
