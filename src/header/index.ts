@@ -25,7 +25,7 @@ export const Header = () => {
 const Logo = () => (
   a({ oncreate: route.link, href: '/', id: 'logo', className: 'flex-row align-items-center' }, [
     img({ src: 'logo.png', alt: 'Лого' }),
-    h1('Гората')
+    h1({ className: 'hidden-xxs hidden-xs' }, 'Гората')
   ])
 );
 
