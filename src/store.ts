@@ -9,6 +9,7 @@ import { User } from './user';
 interface State {
   /** Current user */
   currentUser: User;
+  map: google.maps.Map;
   markers: Record<string, google.maps.Marker>;
   requestPopup: RequestPopupState;
   requests: Request[];
@@ -19,15 +20,15 @@ export enum Actions {
   USER_LOGGED_IN = <any>'USER_LOGGED_IN',
   USER_LOGGED_OUT = <any>'USER_LOGGED_OUT',
 
-  RESET_REQUESTS = <any>'RESET_REQUESTS',
+  MAP_INITIALIZED = <any>'MAP_INITIALIZED',
+
   REQUEST_ADDED = <any>'REQUEST_ADDED',
   REQUEST_REMOVED = <any>'REQUEST_REMOVED',
   REQUEST_MARKER_CLICKED = <any>'REQUEST_MARKER_CLICKED'
 }
 
-
 export const store = createStore(
-  combineReducers<State>({ currentUser, markers, requestPopup, requests }),
+  combineReducers<State>({ currentUser, map, markers, requestPopup, requests }),
   process.env.NODE_ENV === 'production' ? undefined : applyMiddleware(logger)
 );
 
@@ -47,12 +48,33 @@ export function currentUser(state: User = {}, action: CurrentUserAction = {}): U
   }
 }
 
+// Map
+type MapAction = Action<Actions> & { element?: Element };
+
+export function map(state: google.maps.Map = null, action: MapAction = {}): google.maps.Map {
+  switch (action.type) {
+  case Actions.MAP_INITIALIZED:
+    const bounds = new google.maps.LatLngBounds();
+    bounds.extend({ lat: 43.541944, lng: 28.609722 }); // East
+    bounds.extend({ lat: 43.80948, lng: 22.357125 }); // West
+    bounds.extend({ lat: 44.2125, lng: 22.665833 }); // North
+    bounds.extend({ lat: 41.234722, lng: 25.288333 }); // South
+
+    const map = new google.maps.Map(action.element, { center: bounds.getCenter() });
+    map.fitBounds(bounds);
+
+    return map;
+  default:
+    return state;
+  }
+}
+
 // Markers
 type MarkerAction = RequestAction & { map?: google.maps.Map };
 
 export function markers(state: Record<string, google.maps.Marker> = {}, action: MarkerAction = {}): Record<string, google.maps.Marker> {
   switch (action.type) {
-  case Actions.RESET_REQUESTS:
+  case Actions.MAP_INITIALIZED:
     Object.keys(state).map((requestId) => state[requestId].setMap(null));
     return {};
   case Actions.REQUEST_ADDED:
@@ -104,7 +126,7 @@ export function requestPopup(state: RequestPopupState = {}, action: RequestPopup
     popup.open(action.marker.getMap(), action.marker);
 
     return { request: action.request, popup };
-  case Actions.RESET_REQUESTS:
+  case Actions.MAP_INITIALIZED:
     safelyClosePopup(state.popup);
     return {};
   case Actions.REQUEST_REMOVED:
@@ -128,7 +150,7 @@ type RequestAction = Action<Actions> & { request?: Request };
 
 export function requests(state: Request[] = [], action: RequestAction = {}): Request[] {
   switch (action.type) {
-  case Actions.RESET_REQUESTS:
+  case Actions.MAP_INITIALIZED:
     return [];
   case Actions.REQUEST_ADDED:
     return [action.request, ...state];
