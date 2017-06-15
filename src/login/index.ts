@@ -46,6 +46,7 @@ const login = async () => {
   try {
     data.loading = true;
     await firebase.auth().signInWithEmailAndPassword(data.email, data.password);
+    data.loading = false;
     route.set('/');
   }
   catch (error) {

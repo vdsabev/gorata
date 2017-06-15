@@ -116,6 +116,7 @@ const createRequest = async () => {
     };
     await firebase.database().ref('requests').push(newRequest);
 
+    data.loading = false;
     route.set('/');
   }
   catch (error) {
