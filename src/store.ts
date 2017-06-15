@@ -72,6 +72,7 @@ export function map(state: google.maps.Map = null, action: MapAction = {}): goog
 // Markers
 type MarkerAction = RequestAction & { map?: google.maps.Map };
 
+// TODO: Use custom SVG icon - https://stackoverflow.com/questions/24413766/how-to-use-svg-markers-in-google-maps-api-v3
 export function markers(state: Record<string, google.maps.Marker> = {}, action: MarkerAction = {}): Record<string, google.maps.Marker> {
   switch (action.type) {
   case Actions.MAP_INITIALIZED:
