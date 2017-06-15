@@ -1,24 +1,27 @@
 import * as firebase from 'firebase/app';
 
 import { div, ComponentNode } from 'compote/html';
-import * as $script from 'scriptjs';
 
 import { DataSnapshot } from '../firebase';
 import { Request } from '../request';
 import { store, Actions } from '../store';
+import { loadScript } from '../utils';
 
-export const initializeMap = () => {
-  $script(`https://maps.googleapis.com/maps/api/js?key=${process.env.GOOGLE_API_KEY}`, () => {
-    store.dispatch({ type: Actions.MAP_INITIALIZED, element: document.querySelector('#map') });
+export const initializeMap = async () => {
+  await loadScript(`https://maps.googleapis.com/maps/api/js?key=${process.env.GOOGLE_API_KEY}`);
 
-    const requestsRef = firebase.database().ref('requests');
+  const map = document.querySelector('#map');
+  map.classList.add('loaded');
 
-    requestsRef.off('child_added', requestAdded);
-    requestsRef.on('child_added', requestAdded);
+  store.dispatch({ type: Actions.MAP_INITIALIZED, element: map });
 
-    requestsRef.off('child_removed', requestRemoved);
-    requestsRef.on('child_removed', requestRemoved);
-  });
+  const requestsRef = firebase.database().ref('requests');
+
+  requestsRef.off('child_added', requestAdded);
+  requestsRef.on('child_added', requestAdded);
+
+  requestsRef.off('child_removed', requestRemoved);
+  requestsRef.on('child_removed', requestRemoved);
 };
 
 const requestAdded = (requestChildSnapshot: DataSnapshot<Request>) => {

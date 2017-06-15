@@ -2,12 +2,18 @@
 @import '../style/mixins';
 
 #header { // sass-lint:disable-line no-ids
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  height: $header-height;
+
   background: $primary;
   padding: 10px;
   color: $neutral-lighter;
 }
 
-#logo {
+#logo { // sass-lint:disable-line no-ids
   margin-right: 10px;
   color: $neutral-lighter;
 

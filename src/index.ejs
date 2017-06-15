@@ -1,6 +1,7 @@
 <%
   const primary = '#2ecc71';
   const headerHeight = 75;
+  const xsMin = 375;
   const animationDuration = '0.33s';
   const animationEasing = 'cubic-bezier(0.33, -0.69, .25, 1)';
 %>
@@ -27,59 +28,19 @@
         background: <%= primary %>;
       }
 
-      #header {
-        position: fixed;
-        top: -<%= headerHeight %>px;
-        right: 0;
-        left: 0;
-        height: <%= headerHeight %>px;
-
-        opacity: 0;
-
-        transition:
-          top <%= animationDuration %> <%= animationEasing %>,
-          opacity <%= animationDuration %> <%= animationEasing %>
-        ;
-      }
-
-      #header.loaded {
-        top: 0;
-        opacity: 1;
-      }
-
-      #container {
-        position: absolute;
-        top: 0;
-        right: 0;
-        bottom: 0;
-        left: 0;
-        padding-top: <%= headerHeight %>px;
-
-        transition: background <%= animationDuration %> <%= animationEasing %>;
-      }
-
-      #container.loaded {
-        background: rgba(0, 0, 0, 0.5);
-      }
-
+      /* Necessary for correct animation and sizing */
       #map {
         position: absolute;
-        top: 100%;
+        top: <%= headerHeight %>px;
         right: 0;
-        bottom: calc(<%= headerHeight %>px - 100%);
-        left: 0;
+        bottom: 0;
+        left: <%= xsMin %>px;
 
         opacity: 0;
-        transition:
-          top <%= animationDuration %> <%= animationEasing %>,
-          bottom <%= animationDuration %> <%= animationEasing %>,
-          opacity <%= animationDuration %> <%= animationEasing %>
-        ;
+        transition: opacity <%= animationDuration %> <%= animationEasing %>;
       }
 
       #map.loaded {
-        top: <%= headerHeight %>px;
-        bottom: 0;
         opacity: 1;
       }
     </style>

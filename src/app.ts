@@ -2,7 +2,9 @@ import './assets/favicon.png';
 import './assets/logo_192x192.png';
 import './assets/logo_512x512.png';
 import './manifest.json';
+
 import './style.scss';
+import './container/style.scss';
 
 import { mount, redraw } from 'mithril';
 
@@ -32,24 +34,12 @@ function subscribeToStore() {
   store.subscribe(redraw);
 
   const unsubscribeContainers = store.subscribe(() => {
-    applicationLoaded();
+    mount(document.querySelector('#header'), {
+      view() {
+        const { currentUser } = store.getState();
+        return Header(currentUser);
+      }
+    });
     unsubscribeContainers();
   });
-}
-
-function applicationLoaded() {
-  // Header
-  const header = document.querySelector('#header');
-  header.classList.add('loaded');
-
-  mount(header, { view: Header });
-
-  // Map
-  const map = document.querySelector('#map');
-  map.classList.add('loaded');
-
-  // Container
-  // HACK: Magic number, `getAnimationDuration` returns `0s` here
-  const container = document.querySelector('#container');
-  setTimeout(() => container.classList.add('loaded'), 330);
 }

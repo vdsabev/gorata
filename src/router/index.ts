@@ -4,12 +4,9 @@ import { voidify } from 'compote/components/utils';
 import { Unauthorized } from '../401-unauthorized';
 import { Login } from '../login';
 import { RequestForm } from '../request-form';
+import { RequestList } from '../request-list';
 import { store } from '../store';
 import { isLoggedIn } from '../user';
-
-const toggleContainer = (visible: boolean) => () => {
-  document.querySelector('#container').classList.toggle('hidden', !visible);
-};
 
 const requireAccess = (accessFn: Function, success: Function, error: Function, ...args: any[]) => () => {
   const { currentUser } = store.getState();
@@ -21,11 +18,16 @@ export function initializeRouter() {
 
   const container = document.querySelector('#container');
   route(container, '/', {
-    '/': { onmatch: toggleContainer(false), render: () => [] },
-    '/login': { onmatch: toggleContainer(true), render: LoginPage },
-    '/requests/new': { onmatch: toggleContainer(true), render: RequestCreatePage }
+    '/': { render: RequestListPage },
+    '/login': { render: LoginPage },
+    '/requests/new': { render: RequestCreatePage }
   });
 }
+
+export const RequestListPage = () => {
+  const { requests } = store.getState();
+  return RequestList(requests);
+};
 
 export const LoginPage = () => {
   const { currentUser } = store.getState();

@@ -1,0 +1,12 @@
+@import '../style/variables';
+@import '../style/mixins';
+
+#container {
+  position: absolute;
+  top: $header-height;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  max-width: $xs-min;
+  background: $neutral-lighter;
+}

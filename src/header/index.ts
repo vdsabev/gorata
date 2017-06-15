@@ -6,20 +6,16 @@ import { flex } from 'compote/components/flex';
 import * as firebase from 'firebase/app';
 import { route } from 'mithril';
 
-import { store } from '../store';
 import { User, isLoggedIn, canModerate, canAdmin } from '../user';
 
 // Header
-export const Header = () => {
-  const { currentUser } = store.getState();
-  return [
-    Logo(),
-    isLoggedIn(currentUser) ?
-      LoggedInHeader(currentUser)
-      :
-      LoggedOutHeader(currentUser)
-  ];
-};
+export const Header = (currentUser: User) => [
+  Logo(),
+  isLoggedIn(currentUser) ?
+    LoggedInHeader(currentUser)
+    :
+    LoggedOutHeader(currentUser)
+];
 
 // Logo
 const Logo = () => (

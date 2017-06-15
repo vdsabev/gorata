@@ -62,7 +62,7 @@ export const RequestForm = () => (
         }),
         br(),
         br(),
-        button({ className: 'form-button', type: 'submit', onclick: createRequest }, 'Create')
+        button({ className: 'form-button', type: 'submit', onclick: createRequest }, 'Създаване')
       ])
     )
   ])
