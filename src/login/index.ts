@@ -20,13 +20,13 @@ export const LoginForm = (props?: CustomProperties) => (
       fieldset({ className: 'form-panel', disabled: data.loading }, [
         input({
           className: 'form-input',
-          type: 'email', name: 'email', placeholder: 'Имейл',
+          type: 'email', name: 'email', placeholder: 'Имейл', autofocus: true, required: true,
           onkeyup: loginOnEnter, oninput: setEmail
         }),
         br(),
         input({
           className: 'form-input',
-          type: 'password', name: 'password', placeholder: 'Парола',
+          type: 'password', name: 'password', placeholder: 'Парола', required: true,
           onkeyup: loginOnEnter, oninput: setPassword
         }),
         br(),

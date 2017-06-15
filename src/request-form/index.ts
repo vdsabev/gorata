@@ -26,7 +26,7 @@ export const RequestForm = (props?: CustomProperties) => (
       fieldset({ className: 'form-panel lg', disabled: data.loading }, [
         input({
           className: 'form-input',
-          type: 'text', name: 'title', placeholder: 'Къде искате да озелените?', required: true,
+          type: 'text', name: 'title', placeholder: 'Къде искате да озелените?', autofocus: true, required: true,
           value: data.request.title, oninput: setTitle,
           oncreate: createSearchBox,
           onremove: destroySearchBox
