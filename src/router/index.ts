@@ -16,8 +16,8 @@ const requireAccess = (accessFn: Function, success: Function, error: Function, .
 export function initializeRouter() {
   route.prefix('');
 
-  const container = document.querySelector('#container');
-  route(container, '/', {
+  const content = document.querySelector('#content');
+  route(content, '/', {
     '/': { render: RequestListPage },
     '/login': { render: LoginPage },
     '/requests/new': { render: RequestCreatePage }

@@ -4,7 +4,7 @@ import './assets/logo_512x512.png';
 import './manifest.json';
 
 import './style.scss';
-import './container/style.scss';
+import './content/style.scss';
 
 import { mount, redraw } from 'mithril';
 
@@ -33,13 +33,13 @@ function registerServiceWorker() {
 function subscribeToStore() {
   store.subscribe(redraw);
 
-  const unsubscribeContainers = store.subscribe(() => {
+  const unsubscribe = store.subscribe(() => {
     mount(document.querySelector('#header'), {
       view() {
         const { currentUser } = store.getState();
         return Header(currentUser);
       }
     });
-    unsubscribeContainers();
+    unsubscribe();
   });
 }

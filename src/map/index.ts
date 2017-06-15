@@ -8,12 +8,7 @@ import { store, Actions } from '../store';
 import { loadScript } from '../utils';
 
 export const initializeMap = async () => {
-  await loadScript(`https://maps.googleapis.com/maps/api/js?key=${process.env.GOOGLE_API_KEY}`);
-
-  const map = document.querySelector('#map');
-  map.classList.add('loaded');
-
-  store.dispatch({ type: Actions.MAP_INITIALIZED, element: map });
+  await mapLoaded;
 
   const requestsRef = firebase.database().ref('requests');
 
@@ -23,6 +18,21 @@ export const initializeMap = async () => {
   requestsRef.off('child_removed', requestRemoved);
   requestsRef.on('child_removed', requestRemoved);
 };
+
+export const mapLoaded = new Promise<void>(async (resolve, reject) => {
+  try {
+    await loadScript(`https://maps.googleapis.com/maps/api/js?key=${process.env.GOOGLE_API_KEY}&libraries=places`);
+
+    const map = document.querySelector('#map');
+    map.classList.add('loaded');
+    store.dispatch({ type: Actions.MAP_INITIALIZED, element: map });
+
+    resolve();
+  }
+  catch (error) {
+    reject(error);
+  }
+});
 
 const requestAdded = (requestChildSnapshot: DataSnapshot<Request>) => {
   const { map } = store.getState(); // TODO: Handle case where `map` is null
