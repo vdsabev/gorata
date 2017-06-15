@@ -1,4 +1,4 @@
-import { div, form, fieldset, input, br, textarea, button } from 'compote/html';
+import { div, form, fieldset, input, br, textarea, button, CustomProperties } from 'compote/html';
 import { flex } from 'compote/components/flex';
 import { constant } from 'compote/components/utils';
 import * as firebase from 'firebase/app';
@@ -10,7 +10,6 @@ import { store } from '../store';
 import { loadScript } from '../utils';
 
 const initializeData = (): Data => data = { request: {}, mapEventListeners: [] };
-
 let data: Data = initializeData();
 interface Data {
   request?: Partial<Request>;
@@ -21,8 +20,8 @@ interface Data {
 
 // TODO: Use form data
 // TODO: Add validation
-export const RequestForm = () => (
-  div({ className: 'flex-row justify-content-stretch align-items-stretch', oninit: initializeData }, [
+export const RequestForm = (props?: CustomProperties) => (
+  div({ className: 'flex-row justify-content-stretch align-items-stretch container', oninit: initializeData, ...props }, [
     form({ className: 'form', style: flex(1), onsubmit: returnFalse },
       fieldset({ className: 'form-panel lg', disabled: data.loading }, [
         input({

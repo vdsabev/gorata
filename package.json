@@ -17,7 +17,7 @@
     "@types/googlemaps": "3.26.13",
     "@types/mithril": "1.1.4",
     "@types/scriptjs": "0.0.2",
-    "compote": "1.0.1",
+    "compote": "1.2.1",
     "firebase": "4.1.2",
     "mithril": "1.1.1",
     "redux": "3.6.0",

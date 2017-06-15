@@ -1,11 +1,7 @@
-import { div, h2 } from 'compote/html';
-import { setAnimation } from 'compote/css';
+import { div, h2, CustomProperties } from 'compote/html';
 
-export const Forbidden = () => (
-  div({
-    className: 'container fade-in-animation',
-    onbeforeremove: setAnimation('fade-out-animation')
-  }, [
+export const Forbidden = (props?: CustomProperties) => (
+  div({ className: 'container', ...props }, [
     div({ className: 'form' }, [
       h2('Грешка 403 - акаунтът Ви няма достъп до тази страница')
     ])

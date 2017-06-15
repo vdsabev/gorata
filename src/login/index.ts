@@ -1,17 +1,41 @@
-import { div, form, fieldset, input, br, button } from 'compote/html';
-import { getAnimationDuration, setAnimation } from 'compote/css';
+import { div, form, fieldset, input, br, button, CustomProperties } from 'compote/html';
 import { Keyboard } from 'compote/components/keyboard';
 import { constant, get, when, equal } from 'compote/components/utils';
 import * as firebase from 'firebase/app';
 import { redraw, route, withAttr } from 'mithril';
 
-let data: {
-  email?: string
-  password?: string
-  loading?: boolean
-} = {};
+const initializeData = (): Data => data = {};
+let data: Data = initializeData();
+interface Data {
+  email?: string;
+  password?: string;
+  loading?: boolean;
+}
 
-const initializeData = () => data = {};
+// TODO: Use form data
+// TODO: Add validation
+export const LoginForm = (props?: CustomProperties) => (
+  div({ className: 'container', oninit: initializeData, ...props }, [
+    form({ className: 'form', onsubmit: returnFalse },
+      fieldset({ className: 'form-panel', disabled: data.loading }, [
+        input({
+          className: 'form-input',
+          type: 'email', name: 'email', placeholder: 'Имейл',
+          onkeyup: loginOnEnter, oninput: setEmail
+        }),
+        br(),
+        input({
+          className: 'form-input',
+          type: 'password', name: 'password', placeholder: 'Парола',
+          onkeyup: loginOnEnter, oninput: setPassword
+        }),
+        br(),
+        button({ className: 'form-button', type: 'submit', onclick: login }, 'Вход')
+      ])
+    )
+  ])
+);
+
 const returnFalse = constant(false);
 
 const setData = (propertyName: keyof typeof data) => (value: any) => data[propertyName] = value;
@@ -32,32 +56,3 @@ const login = async () => {
 };
 
 const loginOnEnter = when(equal(get<KeyboardEvent>('keyCode'), Keyboard.ENTER), login);
-
-// TODO: Use form data
-// TODO: Add validation
-export const LoginForm = () => (
-  form({ className: 'form', oninit: initializeData, onsubmit: returnFalse },
-    fieldset({ className: 'form-panel', disabled: data.loading }, [
-      input({
-        className: 'form-input',
-        type: 'email', name: 'email', placeholder: 'Имейл',
-        onkeyup: loginOnEnter, oninput: setEmail
-      }),
-      br(),
-      input({
-        className: 'form-input',
-        type: 'password', name: 'password', placeholder: 'Парола',
-        onkeyup: loginOnEnter, oninput: setPassword
-      }),
-      br(),
-      button({ className: 'form-button', type: 'submit', onclick: login }, 'Вход')
-    ])
-  )
-);
-
-export const Login = () => (
-  div({
-    className: 'container fade-in-animation',
-    onbeforeremove: setAnimation('fade-out-animation')
-  }, LoginForm())
-);

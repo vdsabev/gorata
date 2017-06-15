@@ -1,17 +1,12 @@
 import { route } from 'mithril';
 import { voidify } from 'compote/components/utils';
 
-import { Unauthorized } from '../401-unauthorized';
-import { Login } from '../login';
-import { RequestForm } from '../request-form';
-import { RequestList } from '../request-list';
-import { store } from '../store';
-import { isLoggedIn } from '../user';
-
-const requireAccess = (accessFn: Function, success: Function, error: Function, ...args: any[]) => () => {
-  const { currentUser } = store.getState();
-  return accessFn(currentUser) ? success(...args) : error(...args);
-};
+import { Unauthorized } from './401-unauthorized';
+import { LoginForm } from './login';
+import { RequestForm } from './request-form';
+import { RequestList } from './request-list';
+import { store } from './store';
+import { isLoggedIn } from './user';
 
 export function initializeRouter() {
   route.prefix('');
@@ -24,9 +19,14 @@ export function initializeRouter() {
   });
 }
 
+const requireAccess = (accessFn: Function, success: Function, error: Function, ...args: any[]) => () => {
+  const { currentUser } = store.getState();
+  return accessFn(currentUser) ? success(...args) : error(...args);
+};
+
 export const RequestListPage = () => {
   const { requests } = store.getState();
-  return RequestList(requests);
+  return RequestList({}, requests);
 };
 
 export const LoginPage = () => {
@@ -36,7 +36,7 @@ export const LoginPage = () => {
     return null;
   }
 
-  return Login();
+  return LoginForm();
 };
 
 export const RequestCreatePage = requireAccess(isLoggedIn, RequestForm, Unauthorized);
