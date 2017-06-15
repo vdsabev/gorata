@@ -1,4 +1,4 @@
-import { redraw, route } from 'mithril';
+import { redraw, route, Vnode } from 'mithril';
 
 import { Unauthorized } from './401-unauthorized';
 import { NotFound } from './404-not-found';
@@ -9,8 +9,9 @@ import { RequestList } from './request-list';
 import { store } from './store';
 import { isLoggedIn } from './user';
 
+// HACK: We need a more solid solution for re-initializing components on route change
 let key = Date.now();
-const setKey = () => {
+const updateKey = () => {
   key = Date.now();
   redraw();
 };
@@ -20,12 +21,14 @@ export function initializeRouter() {
 
   const content = document.querySelector('#content');
   route(content, '/', {
-    '/': { onmatch: setKey, render: RequestListPage },
-    '/login': { onmatch: setKey, render: LoginPage },
-    '/requests/new': { onmatch: setKey, render: RequestCreatePage },
-    '/:url': { onmatch: setKey, render: NotFound }
+    '/': render(RequestListPage),
+    '/login': render(LoginPage),
+    '/requests/new': render(RequestCreatePage),
+    '/:url': render(NotFound)
   });
 }
+
+const render = (component: () => Vnode<any, any>) => ({ onmatch: updateKey, render: component });
 
 const requireAccess = (accessFn: Function, success: Function, error: Function, ...args: any[]) => () => {
   const { currentUser } = store.getState();
