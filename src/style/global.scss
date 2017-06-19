@@ -54,6 +54,24 @@ textarea {
   resize: vertical;
 }
 
+// Colors
+@include bg-variant('.bg-foreground', $foreground);
+@include bg-variant('.bg-neutral', $neutral);
+@include bg-variant('.bg-primary', $primary);
+@include bg-variant('.bg-success', $success);
+@include bg-variant('.bg-info', $info);
+@include bg-variant('.bg-warning', $warning);
+@include bg-variant('.bg-danger', $danger);
+
+@include text-emphasis-variant('.color-foreground', $foreground);
+@include text-emphasis-variant('.color-neutral', $neutral);
+@include text-emphasis-variant('.color-neutral-lighter', $neutral-lighter);
+@include text-emphasis-variant('.color-primary', $primary);
+@include text-emphasis-variant('.color-success', $success);
+@include text-emphasis-variant('.color-info', $info);
+@include text-emphasis-variant('.color-warning', $warning);
+@include text-emphasis-variant('.color-danger', $danger);
+
 // Layout
 .container {
   margin: 0 auto;

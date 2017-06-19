@@ -21,6 +21,7 @@
         },
         "created": { ".validate": "newData.val() === now" },
         "createdBy": { ".validate": "newData.val() === auth.uid" },
+        "status": { ".validate": "(!data.exists() && newData.val() === 'new') || (data.exists() && (newData.val() === 'approved' || newData.val() === 'declined'))" },
 
         "$other": { ".validate": false }
       }

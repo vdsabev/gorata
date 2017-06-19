@@ -35,7 +35,7 @@ export const store = createStore(
 // Current User
 type CurrentUserAction = Action<Actions> & { auth?: firebase.User, user?: User };
 
-export function currentUser(state: User = {}, action: CurrentUserAction = {}): User {
+export function currentUser(state: Partial<User> = {}, action: CurrentUserAction = {}): Partial<User> {
   switch (action.type) {
   case Actions.USER_DETAILS_LOADED:
     return { ...state, ...action.user };
@@ -121,18 +121,18 @@ interface RequestPopupState {
 export function requestPopup(state: RequestPopupState = {}, action: RequestPopupAction = {}): RequestPopupState {
   switch (action.type) {
   case Actions.REQUEST_MARKER_CLICKED:
-    safelyClosePopup(state.popup);
+    closePopup(state.popup);
 
     const popup = new google.maps.InfoWindow({ content: `<h4>${action.request.title}</h4>${action.request.text}` });
     popup.open(action.marker.getMap(), action.marker);
 
     return { request: action.request, popup };
   case Actions.MAP_INITIALIZED:
-    safelyClosePopup(state.popup);
+    closePopup(state.popup);
     return {};
   case Actions.REQUEST_REMOVED:
     if (state.request && state.request.id === action.request.id) {
-      safelyClosePopup(state.popup);
+      closePopup(state.popup);
     }
     return {};
   default:
@@ -140,7 +140,7 @@ export function requestPopup(state: RequestPopupState = {}, action: RequestPopup
   }
 }
 
-const safelyClosePopup = (popup: google.maps.InfoWindow) => {
+const closePopup = (popup: google.maps.InfoWindow) => {
   if (popup) {
     popup.close();
   }

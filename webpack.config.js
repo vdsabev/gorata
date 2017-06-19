@@ -5,10 +5,8 @@ const env = require('var');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
-const packageJson = require('./package.json');
-
-module.exports = (options) => ({
-  devtool: options && options.production ? false : 'inline-source-map',
+module.exports = (options = {}) => ({
+  devtool: options.production ? false : 'inline-source-map',
   context: process.cwd(),
   entry: {
     app: './src/app.ts',
@@ -48,7 +46,7 @@ module.exports = (options) => ({
   },
   plugins: [
     new webpack.DefinePlugin({
-      'process.VERSION': JSON.stringify(packageJson.version),
+      'process.VERSION': options.production ? Date.now() : 'Date.now()',
       'process.env': JSON.stringify(env)
     }),
     new webpack.LoaderOptionsPlugin({

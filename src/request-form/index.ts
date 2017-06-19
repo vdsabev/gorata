@@ -89,15 +89,15 @@ const destroySearchBox = () => {
     data.mapEventListeners.map((listener) => listener.remove());
   }
 
-  safelyDestroyMarker(data.requestMarker);
+  destroyMarker(data.requestMarker);
 };
 
 const createRequestMarker = (map: google.maps.Map, position: google.maps.LatLng) => {
-  safelyDestroyMarker(data.requestMarker);
+  destroyMarker(data.requestMarker);
   data.requestMarker = new google.maps.Marker({ map, position });
 };
 
-const safelyDestroyMarker = (marker: google.maps.Marker) => {
+const destroyMarker = (marker: google.maps.Marker) => {
   if (marker) {
     marker.setMap(null);
   }
@@ -112,7 +112,8 @@ const createRequest = async () => {
       ...data.request,
       geo: map.getCenter().toJSON(),
       created: firebase.database.ServerValue.TIMESTAMP,
-      createdBy: currentUser.auth.uid
+      createdBy: currentUser.auth.uid,
+      status: 'new'
     };
     await firebase.database().ref('requests').push(newRequest);
 
