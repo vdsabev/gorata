@@ -9,8 +9,7 @@ import { Request } from '../request';
 import { store } from '../store';
 import { loadScript } from '../utils';
 
-const initializeData = (): Data => data = { request: {}, mapEventListeners: [] };
-let data: Data = initializeData();
+let data: Data;
 interface Data {
   request?: Partial<Request>;
   mapEventListeners?: google.maps.MapsEventListener[];
@@ -20,31 +19,42 @@ interface Data {
 
 // TODO: Use form data
 // TODO: Add validation
-export const RequestForm = (props?: CustomProperties) => (
-  div({ className: 'flex-row justify-content-stretch align-items-stretch container', oninit: initializeData, ...props }, [
-    form({ className: 'form', style: flex(1), onsubmit: returnFalse },
-      fieldset({ className: 'form-panel lg', disabled: data.loading }, [
-        input({
-          className: 'form-input',
-          type: 'text', name: 'title', placeholder: 'Къде искате да озелените?', autofocus: true, required: true,
-          value: data.request.title, oninput: setTitle,
-          oncreate: createSearchBox,
-          onremove: destroySearchBox
-        }),
-        br(),
-        br(),
-        textarea({
-          className: 'form-input',
-          name: 'text', placeholder: 'От какво имате нужда?', rows: 15,
-          value: data.request.text, oninput: setText
-        }),
-        br(),
-        br(),
-        button({ className: 'form-button', type: 'submit', onclick: createRequest }, 'Създаване')
-      ])
-    )
-  ])
-);
+export const RequestFormView = {
+  oninit() {
+    data = { request: {}, mapEventListeners: [] };
+  },
+  onremove() {
+    if (data.mapEventListeners) {
+      data.mapEventListeners.map((listener) => listener.remove());
+    }
+
+    destroyMarker(data.requestMarker);
+  },
+  view: () => (
+    div({ className: 'flex-row justify-content-stretch align-items-stretch container' }, [
+      form({ className: 'form', style: flex(1), onsubmit: returnFalse },
+        fieldset({ className: 'form-panel lg', disabled: data.loading }, [
+          input({
+            className: 'form-input',
+            type: 'text', name: 'title', placeholder: 'Къде искате да озелените?', autofocus: true, required: true,
+            value: data.request.title, oninput: setTitle,
+            oncreate: createSearchBox
+          }),
+          br(),
+          br(),
+          textarea({
+            className: 'form-input',
+            name: 'text', placeholder: 'От какво имате нужда?', rows: 15,
+            value: data.request.text, oninput: setText
+          }),
+          br(),
+          br(),
+          button({ className: 'form-button', type: 'submit', onclick: createRequest }, 'Създаване')
+        ])
+      )
+    ])
+  )
+};
 
 const returnFalse = constant(false);
 
@@ -57,6 +67,7 @@ const createSearchBox = async ({ dom }: { dom: HTMLElement }) => {
 
   const { map } = store.getState();
   const searchBox = new google.maps.places.SearchBox(<HTMLInputElement>dom);
+
   data.mapEventListeners.push(
     map.addListener('bounds_changed', () => searchBox.setBounds(map.getBounds()))
   );
@@ -84,14 +95,6 @@ const createSearchBox = async ({ dom }: { dom: HTMLElement }) => {
   );
 };
 
-const destroySearchBox = () => {
-  if (data.mapEventListeners) {
-    data.mapEventListeners.map((listener) => listener.remove());
-  }
-
-  destroyMarker(data.requestMarker);
-};
-
 const createRequestMarker = (map: google.maps.Map, position: google.maps.LatLng) => {
   destroyMarker(data.requestMarker);
   data.requestMarker = new google.maps.Marker({ map, position });
@@ -117,7 +120,6 @@ const createRequest = async () => {
     };
     await firebase.database().ref('requests').push(newRequest);
 
-    data.loading = false;
     route.set('/');
   }
   catch (error) {

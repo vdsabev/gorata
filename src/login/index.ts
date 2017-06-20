@@ -4,8 +4,7 @@ import { constant, get, when, equal } from 'compote/components/utils';
 import * as firebase from 'firebase/app';
 import { redraw, route, withAttr } from 'mithril';
 
-const initializeData = (): Data => data = {};
-let data: Data = initializeData();
+let data: Data;
 interface Data {
   email?: string;
   password?: string;
@@ -14,27 +13,32 @@ interface Data {
 
 // TODO: Use form data
 // TODO: Add validation
-export const LoginForm = (props?: CustomProperties) => (
-  div({ className: 'container', oninit: initializeData, ...props }, [
-    form({ className: 'form', onsubmit: returnFalse },
-      fieldset({ className: 'form-panel', disabled: data.loading }, [
-        input({
-          className: 'form-input',
-          type: 'email', name: 'email', placeholder: 'Имейл', autofocus: true, required: true,
-          onkeyup: loginOnEnter, oninput: setEmail
-        }),
-        br(),
-        input({
-          className: 'form-input',
-          type: 'password', name: 'password', placeholder: 'Парола', required: true,
-          onkeyup: loginOnEnter, oninput: setPassword
-        }),
-        br(),
-        button({ className: 'form-button', type: 'submit', onclick: login }, 'Вход')
-      ])
-    )
-  ])
-);
+export const LoginView = {
+  oninit() {
+    data = {};
+  },
+  view: () => (
+    div({ className: 'container' }, [
+      form({ className: 'form', onsubmit: returnFalse },
+        fieldset({ className: 'form-panel', disabled: data.loading }, [
+          input({
+            className: 'form-input',
+            type: 'email', name: 'email', placeholder: 'Имейл', autofocus: true, required: true,
+            onkeyup: loginOnEnter, oninput: setEmail
+          }),
+          br(),
+          input({
+            className: 'form-input',
+            type: 'password', name: 'password', placeholder: 'Парола', required: true,
+            onkeyup: loginOnEnter, oninput: setPassword
+          }),
+          br(),
+          button({ className: 'form-button', type: 'submit', onclick: login }, 'Вход')
+        ])
+      )
+    ])
+  )
+};
 
 const returnFalse = constant(false);
 
@@ -46,7 +50,6 @@ const login = async () => {
   try {
     data.loading = true;
     await firebase.auth().signInWithEmailAndPassword(data.email, data.password);
-    data.loading = false;
     route.set('/');
   }
   catch (error) {

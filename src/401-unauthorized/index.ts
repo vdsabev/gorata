@@ -1,7 +1,9 @@
 import { div, h2, CustomProperties } from 'compote/html';
 
-export const Unauthorized = (props?: CustomProperties) => (
-  div({ className: 'container', ...props }, [
-    h2('Грешка 401 - трябва да влезете с акаунта си, за да достъпите тази страница')
-  ])
-);
+export const UnauthorizedView = {
+  view: () => (
+    div({ className: 'container' }, [
+      h2('Грешка 401 - трябва да влезете с акаунта си, за да достъпите тази страница')
+    ])
+  )
+};

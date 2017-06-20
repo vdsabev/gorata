@@ -6,10 +6,19 @@ import { flex } from 'compote/components/flex';
 import * as firebase from 'firebase/app';
 import { route } from 'mithril';
 
+import { store } from '../store';
 import { User, isLoggedIn, canModerate, canAdmin } from '../user';
 
+// Header view
+export const HeaderView = {
+  view() {
+    const { currentUser } = store.getState();
+    return Header(currentUser);
+  }
+};
+
 // Header
-export const Header = (currentUser: User) => [
+const Header = (currentUser: User) => [
   Logo(),
   isLoggedIn(currentUser) ?
     LoggedInHeader(currentUser)
@@ -42,7 +51,7 @@ const LoggedInHeader = (currentUser: User) => [
   ])
 ];
 
-export const logout = () => firebase.auth().signOut().catch(window.alert).then(() => route.set('/'));
+const logout = () => firebase.auth().signOut().catch(window.alert).then(() => route.set('/'));
 
 // Logged out
 const LoggedOutHeader = (currentUser: User) => [

@@ -1,53 +1,34 @@
-import { redraw, route, Vnode } from 'mithril';
+import * as m from 'mithril';
 
-import { Unauthorized } from './401-unauthorized';
-import { NotFound } from './404-not-found';
-import { LoginForm } from './login';
-import { RequestForm } from './request-form';
-import { RequestList } from './request-list';
+import { UnauthorizedView } from './401-unauthorized';
+import { NotFoundView } from './404-not-found';
+import { LoginView } from './login';
+import { RequestFormView } from './request-form';
+import { RequestListView } from './request-list';
 
 import { store } from './store';
 import { isLoggedIn } from './user';
 
-// HACK: We need a more solid solution for re-initializing components on route change
-let key = Date.now();
-const updateKey = () => {
-  key = Date.now();
-  redraw();
-};
-
 export function initializeRouter() {
-  route.prefix('');
+  m.route.prefix('');
 
   const content = document.querySelector('#content');
-  route(content, '/', {
-    '/': render(RequestListPage),
-    '/login': render(LoginPage),
-    '/requests/new': render(RequestCreatePage),
-    '/:url': render(NotFound)
+  m.route(content, '/', {
+    '/': RequestListView,
+    '/login': { render: requireAccess(isLoggedIn, redirect('/'), render(LoginView)) },
+    '/requests/new': { render: requireAccess(isLoggedIn, render(RequestFormView), render(UnauthorizedView)) },
+    '/:url': NotFoundView
   });
 }
 
-const render = (component: () => Vnode<any, any>) => ({ onmatch: updateKey, render: component });
-
-const requireAccess = (accessFn: Function, success: Function, error: Function, ...args: any[]) => () => {
+const requireAccess = (accessFn: Function, whenTruthy: Function, whenFalsy: Function) => () => {
   const { currentUser } = store.getState();
-  return accessFn(currentUser) ? success(...args) : error(...args);
+  return accessFn(currentUser) ? whenTruthy() : whenFalsy();
 };
 
-export const RequestListPage = () => {
-  const { requests } = store.getState();
-  return RequestList({ key }, requests);
+const redirect = (url: string) => (): null => {
+  m.route.set(url);
+  return null;
 };
 
-export const LoginPage = () => {
-  const { currentUser } = store.getState();
-  if (isLoggedIn(currentUser)) {
-    route.set('/');
-    return null;
-  }
-
-  return LoginForm({ key });
-};
-
-export const RequestCreatePage = requireAccess(isLoggedIn, () => RequestForm({ key }), () => Unauthorized({ key }));
+const render = (view: m.Component<any, any>) => () => m(view);

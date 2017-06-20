@@ -9,7 +9,7 @@ import './content/style.scss';
 import { mount, redraw } from 'mithril';
 
 import { initializeFirebaseApp } from './firebase';
-import { Header } from './header';
+import { HeaderView } from './header';
 import { initializeMap } from './map';
 import { initializeRouter } from './router';
 import { store } from './store';
@@ -34,12 +34,7 @@ function subscribeToStore() {
   store.subscribe(redraw);
 
   const unsubscribe = store.subscribe(() => {
-    mount(document.querySelector('#header'), {
-      view() {
-        const { currentUser } = store.getState();
-        return Header(currentUser);
-      }
-    });
+    mount(document.querySelector('#header'), HeaderView);
     unsubscribe();
   });
 }

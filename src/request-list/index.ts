@@ -4,8 +4,14 @@ import { div, h4, CustomProperties } from 'compote/html';
 import { flex } from 'compote/components/flex';
 
 import { Request, getStatusClass, getStatusText } from '../request';
+import { store } from '../store';
 
-export const RequestList = (props: CustomProperties, requests: Request[]) => div(props, requests.map(RequestListItem));
+export const RequestListView = {
+  view() {
+    const { requests } = store.getState();
+    return requests.map(RequestListItem);
+  }
+};
 
 const RequestListItem = (request: Request) => (
   div({ className: 'request-list-item flex-row justify-content-center align-items-center fade-in-animation', key: request.id }, [
