@@ -107,7 +107,7 @@ textarea {
 
 // Responsive
 @media (max-width: $xxs-max) {
-  @include responsive-invisibility('.hidden-xs');
+  @include responsive-invisibility('.hidden-xxs');
 }
 
 @media (min-width: $xs-min) and (max-width: $xs-max) {

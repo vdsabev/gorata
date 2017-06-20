@@ -1,6 +1,8 @@
 <%
   const primary = '#2ecc71';
   const headerHeight = 75;
+  const smMin = 768;
+  const xsMax = smMin - 1;
   const xsMin = 375;
   const animationDuration = '0.33s';
   const animationEasing = 'cubic-bezier(0.33, -0.69, .25, 1)';
@@ -23,12 +25,22 @@
     <link rel="shortcut icon" href="favicon.png">
     <link rel="manifest" href="manifest.json">
 
+    <!-- Necessary for correct animation and sizing -->
     <style>
       body {
         background: <%= primary %>;
       }
 
-      /* Necessary for correct animation and sizing */
+      #content {
+        position: absolute;
+        top: <%= headerHeight %>px;
+        bottom: 0;
+        left: 0;
+
+        width: <%= xsMin %>px;
+        transition: width <%= animationDuration %> <%= animationEasing %>;
+      }
+
       #map {
         position: absolute;
         top: <%= headerHeight %>px;
@@ -42,6 +54,16 @@
 
       #map.loaded {
         opacity: 1;
+      }
+
+      @media (max-width: <%= xsMax %>px) {
+        #content {
+          width: 100%;
+        }
+
+        #map {
+          left: 0;
+        }
       }
     </style>
   </head>

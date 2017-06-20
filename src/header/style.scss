@@ -9,17 +9,45 @@
   height: $header-height;
 
   background: $primary;
-  padding: 10px;
+  padding: $spacing;
   color: $neutral-lighter;
 }
 
 #logo { // sass-lint:disable-line no-ids
-  margin-right: 10px;
+  margin-right: $spacing;
   color: $neutral-lighter;
 
   > img {
     width: $header-height;
     height: $header-height;
-    padding: 5px;
+    padding: $spacing / 2;
+  }
+}
+
+.menu-icon {
+  cursor: pointer;
+  margin-right: $spacing;
+  width: $header-height - 2 * $spacing;
+  height: $header-height - 2 * $spacing;
+  border-radius: $border-radius;
+  padding: $spacing;
+  fill: $neutral-lighter;
+
+  transition: background $animation-duration $animation-easing, fill $animation-duration $animation-easing;
+
+  &:hover {
+    background: $neutral-lighter;
+    fill: $foreground-darker;
+  }
+}
+
+.menu-link {
+  padding: $spacing;
+  border-radius: $border-radius;
+  transition: background $animation-duration $animation-easing, color $animation-duration $animation-easing;
+
+  &:hover {
+    background: $neutral-lighter;
+    color: $foreground-darker;
   }
 }

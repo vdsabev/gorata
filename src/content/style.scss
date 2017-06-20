@@ -2,13 +2,14 @@
 @import '../style/mixins';
 
 #content {
-  position: absolute;
-  top: $header-height;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  max-width: $xs-min;
   background: $neutral-lighter;
-
   @include overflow(hidden, auto);
+
+  transition: left $animation-duration $animation-easing;
+
+  @media (max-width: $xs-max) {
+    &.collapsed {
+      left: -100%;
+    }
+  }
 }
