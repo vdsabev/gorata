@@ -45,6 +45,7 @@ module.exports = (options = {}) => ({
     ]
   },
   plugins: [
+    new webpack.optimize.ModuleConcatenationPlugin(),
     new webpack.DefinePlugin({
       'process.VERSION': options.production ? Date.now() : 'Date.now()',
       'process.env': JSON.stringify(env)
