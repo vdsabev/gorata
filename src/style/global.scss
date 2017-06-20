@@ -6,6 +6,7 @@ html,
 body {
   height: 100%;
   font-family: $font-family;
+  font-size: $font-size;
 }
 
 body {
@@ -24,12 +25,13 @@ h6, .h6 { font-size: $h6-font-size; }
 // sass-lint:enable single-line-per-selector
 
 a {
-  transition: color $animation-duration $animation-easing;
   cursor: pointer;
-  color: $neutral-lighter;
+
+  color: $primary-dark;
+  transition: color $animation-duration $animation-easing;
 
   &:hover {
-    color: $neutral-light;
+    color: $primary-darker;
   }
 
   &.underlined {

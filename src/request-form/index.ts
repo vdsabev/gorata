@@ -1,4 +1,4 @@
-import { div, form, fieldset, input, br, textarea, button, CustomProperties } from 'compote/html';
+import { div, form, fieldset, input, a, small, br, textarea, button, CustomProperties } from 'compote/html';
 import { flex } from 'compote/components/flex';
 import { constant } from 'compote/components/utils';
 import * as firebase from 'firebase/app';
@@ -14,6 +14,7 @@ interface Data {
   request?: Partial<Request>;
   mapEventListeners?: google.maps.MapsEventListener[];
   requestMarker?: google.maps.Marker;
+  addressSuggestion?: string;
   loading?: boolean;
 }
 
@@ -40,6 +41,7 @@ export const RequestFormView = {
             value: data.request.title, oninput: setTitle,
             oncreate: createSearchBox
           }),
+          data.addressSuggestion ? a({ onclick: setAddress }, small(`Може би имахте предвид ${data.addressSuggestion}?`)) : null,
           br(),
           br(),
           textarea({
@@ -61,6 +63,10 @@ const returnFalse = constant(false);
 const setRequestData = (propertyName: keyof typeof data.request) => (value: any) => data.request[propertyName] = value;
 const setTitle = withAttr('value', setRequestData('title'));
 const setText = withAttr('value', setRequestData('text'));
+const setAddress = () => {
+  data.request.title = data.addressSuggestion;
+  data.addressSuggestion = null;
+};
 
 const createSearchBox = async ({ dom }: { dom: HTMLElement }) => {
   await mapLoaded;
@@ -87,7 +93,9 @@ const createSearchBox = async ({ dom }: { dom: HTMLElement }) => {
       map.setZoom(minZoom);
     }
 
-    createRequestMarker(map, location);
+    // NOTE: Because this is not a Mithril event, we have to set the input's value manually
+    data.request.title = (<HTMLInputElement>dom).value;
+    createRequestMarker(map, location, place.formatted_address);
   });
 
   data.mapEventListeners.push(
@@ -95,10 +103,37 @@ const createSearchBox = async ({ dom }: { dom: HTMLElement }) => {
   );
 };
 
-const createRequestMarker = (map: google.maps.Map, position: google.maps.LatLng) => {
+const createRequestMarker = async (map: google.maps.Map, position: google.maps.LatLng, address?: string) => {
   destroyMarker(data.requestMarker);
   data.requestMarker = new google.maps.Marker({ map, position });
+
+  if (!address) {
+    try {
+      address = await getAddressByLocation(position);
+    }
+    catch (error) {
+      return;
+    }
+  }
+
+  if (address !== data.request.title) {
+    data.addressSuggestion = address;
+    redraw();
+  }
 };
+
+const getAddressByLocation = (location: google.maps.LatLng) => new Promise<string>((resolve, reject) => {
+  const service = new google.maps.Geocoder();
+  service.geocode({ location }, (results, status) => {
+    const [result] = results;
+    if (!result || (status !== google.maps.GeocoderStatus.OK && status !== google.maps.GeocoderStatus.ZERO_RESULTS)) {
+      reject('Няма резултати!');
+      return;
+    }
+
+    resolve(result.formatted_address);
+  });
+});
 
 const destroyMarker = (marker: google.maps.Marker) => {
   if (marker) {

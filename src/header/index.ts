@@ -65,9 +65,9 @@ const ModeratorMenuLinks = (currentUser: User) => (
 
 const UserMenu = (currentUser: User) => [
   div({ className: 'hidden-xxs' }, currentUser.auth.email),
-  a({ onclick: logout }, 'Изход')
+  a({ className: 'color-neutral-lighter', onclick: logout }, 'Изход')
 ];
 
 const logout = () => firebase.auth().signOut().catch(window.alert).then(() => route.set('/'));
 
-const LoginLink = () => a({ oncreate: route.link, href: '/login' }, 'Вход');
+const LoginLink = () => a({ className: 'color-neutral-lighter', oncreate: route.link, href: '/login' }, 'Вход');

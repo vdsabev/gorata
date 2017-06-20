@@ -42,8 +42,11 @@
 }
 
 .menu-link {
+  font-size: 1.2em;
   padding: $spacing;
   border-radius: $border-radius;
+
+  color: $neutral-lighter;
   transition: background $animation-duration $animation-easing, color $animation-duration $animation-easing;
 
   &:hover {
