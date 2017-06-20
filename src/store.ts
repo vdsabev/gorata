@@ -35,7 +35,7 @@ export const store = createStore(
 // Current User
 type CurrentUserAction = Action<Actions> & { auth?: firebase.User, user?: User };
 
-export function currentUser(state: Partial<User> = {}, action: CurrentUserAction = {}): Partial<User> {
+export function currentUser(state: Partial<User> = null, action: CurrentUserAction = {}): Partial<User> {
   switch (action.type) {
   case Actions.USER_DETAILS_LOADED:
     return { ...state, ...action.user };

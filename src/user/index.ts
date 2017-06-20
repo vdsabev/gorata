@@ -6,7 +6,7 @@ export interface User {
   auth: FirebaseUser;
 }
 
-export const isLoggedIn = (user: User) => user.auth != null;
+export const isLoggedIn = (user: User) => user != null && user.auth != null;
 
 export const canAdmin = (user: User) => isLoggedIn(user) && user.role === 'admin';
 
