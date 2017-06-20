@@ -24,7 +24,7 @@ export function initializeRouter() {
 const requireAccess = (accessFn: Function, whenTruthy: Function, whenFalsy: Function) => () => {
   const { currentUser } = store.getState();
 
-  // Don't show the falsy state until the user is known to be either logged in or logged out
+  // Don't show the logged out state until the user is known to be either logged in or logged out
   if (!currentUser) return null;
 
   return accessFn(currentUser) ? whenTruthy() : whenFalsy();

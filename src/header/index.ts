@@ -16,17 +16,16 @@ export const HeaderView = {
   }
 };
 
+// Don't show the logged out state until the user is known to be either logged in or logged out
 const Header = (currentUser: User) => [
   div({ className: 'flex-row align-items-center', style: flex(1) }, [
     MenuIcon(),
     Logo(),
-    isLoggedIn(currentUser) ? MenuLinks(currentUser) : null
+    a({ className: 'menu-link', oncreate: route.link, href: '/' }, 'Всички Заявки'),
+    currentUser && (isLoggedIn(currentUser) ? ModeratorMenuLinks(currentUser) : null)
   ]),
-  div({ className: 'text-right' },
-    isLoggedIn(currentUser) ?
-      UserMenu(currentUser)
-      :
-      LoginLink()
+  currentUser && div({ className: 'text-right' },
+    isLoggedIn(currentUser) ? UserMenu(currentUser) : LoginLink()
   )
 ];
 
@@ -54,9 +53,8 @@ const Logo = () => (
   ])
 );
 
-const MenuLinks = (currentUser: User) => (
+const ModeratorMenuLinks = (currentUser: User) => (
   canModerate(currentUser) ? [
-    a({ className: 'menu-link', oncreate: route.link, href: '/' }, 'Всички Заявки'),
     a({ className: 'menu-link', oncreate: route.link, href: '/requests/new' }, 'Нова Заявка'),
     canAdmin(currentUser) ?
       a({ className: 'menu-link hidden-xxs hidden-xs', target: '_blank', rel: 'noopener', href: `https://console.firebase.google.com/project/${process.env.FIREBASE_PROJECT_ID}/database/data` }, 'База Данни')
