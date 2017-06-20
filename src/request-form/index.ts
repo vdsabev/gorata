@@ -110,10 +110,12 @@ const createRequest = async () => {
   try {
     data.loading = true;
 
+    if (!data.requestMarker) throw 'Моля, маркирайте мястото върху картата!';
+
     const { currentUser, map } = store.getState();
     const newRequest: Partial<Request> = {
       ...data.request,
-      geo: map.getCenter().toJSON(),
+      geo: data.requestMarker.getPosition().toJSON(),
       created: firebase.database.ServerValue.TIMESTAMP,
       createdBy: currentUser.auth.uid,
       status: 'new'
