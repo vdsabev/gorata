@@ -125,7 +125,15 @@ export function requestPopup(state: RequestPopupState = {}, action: RequestPopup
   case Actions.REQUEST_MARKER_CLICKED:
     closePopup(state.popup);
 
-    const popup = new google.maps.InfoWindow({ content: `<h4>${action.request.title}</h4>${action.request.text}` });
+    const popup = new google.maps.InfoWindow({
+      content: `
+        ${action.request.imageUrls.map((imageUrl) => `
+          <img src="${imageUrl}">
+          <br>
+        `)}
+        <h4>${action.request.title}</h4>${action.request.text}
+      `
+    });
     popup.open(action.marker.getMap(), action.marker);
 
     return { request: action.request, popup };

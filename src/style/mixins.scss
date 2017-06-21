@@ -1,1 +1,55 @@
 @import '~compote/style/mixins';
+
+@mixin spacer($property, $side, $value: $spacer-size) {
+  @if ($side == top) or ($side == right) or ($side == bottom) or ($side == left) {
+    #{$property}-#{$side}: $value;
+  }
+  @else if ($side == vertical) {
+    #{$property}-top: $value;
+    #{$property}-bottom: $value;
+  }
+  @else if ($side == horizontal) {
+    #{$property}-right: $value;
+    #{$property}-left: $value;
+  }
+  @else if ($side == all) {
+    #{$property}: $value;
+  }
+  @else {
+    @error 'Invalid spacer side argument: #{$side}';
+  }
+}
+
+@mixin generate-spacer($prefix, $property, $side, $value) {
+  #{$prefix}-0 {
+    @include spacer($property, $side, 0);
+  }
+
+  #{$prefix}-xxs {
+    @include spacer($property, $side, $value * 0.125);
+  }
+
+  #{$prefix}-xs {
+    @include spacer($property, $side, $value * 0.25);
+  }
+
+  #{$prefix}-sm {
+    @include spacer($property, $side, $value * 0.5);
+  }
+
+  #{$prefix}-md {
+    @include spacer($property, $side, $value);
+  }
+
+  #{$prefix}-lg {
+    @include spacer($property, $side, $value * 2);
+  }
+
+  #{$prefix}-xl {
+    @include spacer($property, $side, $value * 3);
+  }
+
+  #{$prefix}-xxl {
+    @include spacer($property, $side, $value * 5);
+  }
+}

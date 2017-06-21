@@ -11,6 +11,11 @@
         ".write": "(!data.exists() && auth != null) || data.child('createdBy').val() === auth.uid",
         ".validate": "newData.hasChildren(['title', 'text', 'geo', 'created', 'createdBy'])",
 
+        "imageUrls": {
+          "$imageUrl": {
+            ".validate": "newData.isString()"
+          }
+        },
         "title": { ".validate": "newData.isString()" },
         "text": { ".validate": "newData.isString()" },
         "geo": {

@@ -1,6 +1,7 @@
 export interface Request {
   id: string;
 
+  imageUrls: string[];
   title: string;
   text: string;
   geo: google.maps.LatLngLiteral;

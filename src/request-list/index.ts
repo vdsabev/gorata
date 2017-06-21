@@ -14,11 +14,11 @@ export const RequestListView = {
 };
 
 const RequestListItem = (request: Request) => (
-  div({ className: 'request-list-item flex-row justify-content-center align-items-center fade-in-animation', key: request.id }, [
+  div({ className: 'request-list-item pv-md ph-sm flex-row justify-content-center align-items-center fade-in-animation', key: request.id }, [
     div({ style: flex(1) }, [
       h4(request.title),
       request.text
     ]),
-    div({ className: `request-list-item-status ${getStatusClass(request.status)}` }, getStatusText(request.status))
+    div({ className: `pa-sm border-radius ${getStatusClass(request.status)}` }, getStatusText(request.status))
   ])
 );

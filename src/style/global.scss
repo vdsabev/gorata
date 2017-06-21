@@ -59,6 +59,8 @@ textarea {
 // Colors
 @include bg-variant('.bg-foreground', $foreground);
 @include bg-variant('.bg-neutral', $neutral);
+@include bg-variant('.bg-neutral-light', $neutral-light);
+@include bg-variant('.bg-neutral-lighter', $neutral-lighter);
 @include bg-variant('.bg-primary', $primary);
 @include bg-variant('.bg-success', $success);
 @include bg-variant('.bg-info', $info);
@@ -67,6 +69,7 @@ textarea {
 
 @include text-emphasis-variant('.color-foreground', $foreground);
 @include text-emphasis-variant('.color-neutral', $neutral);
+@include text-emphasis-variant('.color-neutral-light', $neutral-light);
 @include text-emphasis-variant('.color-neutral-lighter', $neutral-lighter);
 @include text-emphasis-variant('.color-primary', $primary);
 @include text-emphasis-variant('.color-success', $success);
@@ -79,7 +82,7 @@ textarea {
   margin: 0 auto;
   width: $sm-max;
   max-width: 100%;
-  padding: 20px;
+  padding: 2 * $spacing;
 }
 
 // Overflow
@@ -136,6 +139,44 @@ textarea {
   @include responsive-invisibility('.hidden-xxl');
 }
 
+// Spacing classes, inspired by
+// http://v4-alpha.getbootstrap.com/components/utilities/#spacing
+// Margin
+// Positive
+@include generate-spacer('.mt', margin, top, $spacing);
+@include generate-spacer('.mr', margin, right, $spacing);
+@include generate-spacer('.mb', margin, bottom, $spacing);
+@include generate-spacer('.ml', margin, left, $spacing);
+@include generate-spacer('.mv', margin, vertical, $spacing);
+@include generate-spacer('.mh', margin, horizontal, $spacing);
+@include generate-spacer('.ma', margin, all, $spacing);
+
+// Negative
+@include generate-spacer('.mt-n', margin, top, -$spacing);
+@include generate-spacer('.mr-n', margin, right, -$spacing);
+@include generate-spacer('.mb-n', margin, bottom, -$spacing);
+@include generate-spacer('.ml-n', margin, left, -$spacing);
+@include generate-spacer('.mv-n', margin, vertical, -$spacing);
+@include generate-spacer('.mh-n', margin, horizontal, -$spacing);
+@include generate-spacer('.ma-n', margin, all, -$spacing);
+
+.ma-auto {
+  margin: auto;
+}
+
+// Padding
+@include generate-spacer('.pt', padding, top, $spacing);
+@include generate-spacer('.pr', padding, right, $spacing);
+@include generate-spacer('.pb', padding, bottom, $spacing);
+@include generate-spacer('.pl', padding, left, $spacing);
+@include generate-spacer('.pv', padding, vertical, $spacing);
+@include generate-spacer('.ph', padding, horizontal, $spacing);
+@include generate-spacer('.pa', padding, all, $spacing);
+
+.pa-auto {
+  padding: auto;
+}
+
 // Text
 .text-left {
   text-align: left;
@@ -151,4 +192,9 @@ textarea {
 
 .hidden {
   display: none;
+}
+
+// Misc
+.border-radius {
+  border-radius: $border-radius;
 }

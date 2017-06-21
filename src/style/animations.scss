@@ -1,5 +1,6 @@
 @import 'variables';
 
+// Fade
 .fade-in-animation {
   animation: fadeIn $animation-duration $animation-easing;
 }
@@ -16,4 +17,23 @@
 @keyframes fadeOut {
   from { opacity: 1; }
   to { opacity: 0; }
+}
+
+// Spin
+@keyframes spinRight {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.spin-right-animation {
+  animation: spinRight (2 * $animation-duration) linear infinite;
+}
+
+@keyframes spinLeft {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(-360deg); }
+}
+
+.spin-left-animation {
+  animation: spinLeft (2 * $animation-duration) linear infinite;
 }

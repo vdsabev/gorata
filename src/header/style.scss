@@ -9,28 +9,23 @@
   height: $header-height;
 
   background: $primary;
-  padding: $spacing;
   color: $neutral-lighter;
 }
 
 #logo { // sass-lint:disable-line no-ids
-  margin-right: $spacing;
   color: $neutral-lighter;
 
   > img {
     width: $header-height;
     height: $header-height;
-    padding: $spacing / 2;
   }
 }
 
 .menu-icon {
   cursor: pointer;
-  margin-right: $spacing;
   width: $header-height - 2 * $spacing;
   height: $header-height - 2 * $spacing;
   border-radius: $border-radius;
-  padding: $spacing;
   fill: $neutral-lighter;
 
   transition: background $animation-duration $animation-easing, fill $animation-duration $animation-easing;
@@ -43,7 +38,6 @@
 
 .menu-link {
   font-size: 1.2em;
-  padding: $spacing;
   border-radius: $border-radius;
 
   color: $neutral-lighter;
