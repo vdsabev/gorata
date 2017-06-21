@@ -34,7 +34,7 @@ export const RequestFormView = {
     destroyMarker(data.requestMarker);
   },
   view: () => (
-    div({ className: 'flex-row justify-content-stretch align-items-stretch container' }, [
+    div({ className: 'flex-row justify-content-stretch align-items-stretch container fade-in-animation' }, [
       form({ className: 'form', style: flex(1), onsubmit: returnFalse },
         fieldset({ className: 'form-panel lg', disabled: data.loading }, [
           input({

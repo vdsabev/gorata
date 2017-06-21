@@ -18,7 +18,7 @@ export const LoginView = {
     data = {};
   },
   view: () => (
-    div({ className: 'container' }, [
+    div({ className: 'container fade-in-animation' }, [
       form({ className: 'form', onsubmit: returnFalse },
         fieldset({ className: 'form-panel', disabled: data.loading }, [
           input({
