@@ -1,3 +1,5 @@
+import '../assets/map_marker_new.svg';
+
 import { div, form, fieldset, input, a, small, br, textarea, button, CustomProperties } from 'compote/html';
 import { flex } from 'compote/components/flex';
 import { constant } from 'compote/components/utils';
@@ -105,7 +107,7 @@ const createSearchBox = async ({ dom }: { dom: HTMLElement }) => {
 
 const createRequestMarker = async (map: google.maps.Map, position: google.maps.LatLng, address?: string) => {
   destroyMarker(data.requestMarker);
-  data.requestMarker = new google.maps.Marker({ map, position });
+  data.requestMarker = new google.maps.Marker({ map, position, icon: 'map_marker_new.svg' });
 
   if (!address) {
     try {

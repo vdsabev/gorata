@@ -1,3 +1,5 @@
+import './assets/map_marker.svg';
+
 import * as firebase from 'firebase/app';
 
 import { logger } from 'compote/components/logger';
@@ -72,7 +74,6 @@ export function map(state: google.maps.Map = null, action: MapAction = {}): goog
 // Markers
 type MarkerAction = RequestAction & { map?: google.maps.Map };
 
-// TODO: Use custom SVG icon - https://stackoverflow.com/questions/24413766/how-to-use-svg-markers-in-google-maps-api-v3
 export function markers(state: Record<string, google.maps.Marker> = {}, action: MarkerAction = {}): Record<string, google.maps.Marker> {
   switch (action.type) {
   case Actions.MAP_INITIALIZED:
@@ -86,7 +87,8 @@ export function markers(state: Record<string, google.maps.Marker> = {}, action: 
     const marker = new google.maps.Marker({
       map: action.map,
       position: action.request.geo,
-      title: action.request.title
+      title: action.request.title,
+      icon: 'map_marker.svg'
     });
     marker.addListener('click', () => store.dispatch({ type: Actions.REQUEST_MARKER_CLICKED, marker, request: action.request }));
 
