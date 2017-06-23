@@ -6,7 +6,7 @@ import { AspectRatioContainer } from 'compote/components/aspect-ratio-container'
 import { flex } from 'compote/components/flex';
 import { constant } from 'compote/components/utils';
 import * as firebase from 'firebase/app';
-import { redraw, route, withAttr } from 'mithril';
+import { redraw, route, withAttr, Children } from 'mithril';
 
 import { mapLoaded } from '../map';
 import { Request } from '../request';
@@ -17,7 +17,6 @@ let data: Data;
 interface Data {
   request?: Partial<Request>;
   mapEventListeners?: google.maps.MapsEventListener[];
-  imageUrl?: string;
   requestMarker?: google.maps.Marker;
   addressSuggestion?: string;
   uploading?: boolean;
@@ -28,7 +27,7 @@ interface Data {
 // TODO: Add validation
 export const RequestFormView = {
   oninit() {
-    data = { request: {}, mapEventListeners: [] };
+    data = { request: { imageUrls: [] }, mapEventListeners: [] };
   },
   onremove() {
     if (data.mapEventListeners) {
@@ -41,7 +40,7 @@ export const RequestFormView = {
     div({ className: 'flex-row justify-content-stretch align-items-stretch container fade-in-animation' }, [
       form({ className: 'form', style: flex(1), onsubmit: returnFalse },
         fieldset({ className: 'form-panel lg', disabled: data.loading }, [
-          ImageUploadInput(),
+          Images(),
           AddressInput(),
           br(), br(),
           TextInput(),
@@ -57,17 +56,25 @@ const returnFalse = constant(false);
 
 const setRequestData = (propertyName: keyof typeof data.request) => (value: any) => data.request[propertyName] = value;
 
-const ImageUploadInput = () => (
-  AspectRatioContainer({ className: 'mb-md bg-neutral-light border-radius', aspectRatio: { x: 4, y: 3 } }, [
-    data.imageUrl ?
-      img({ className: 'absolute stretch', src: data.imageUrl })
-      :
+const Images = () => (
+  div({ className: 'request-form-images-container' }, [
+    data.request.imageUrls.map((imageUrl) => (
+      ImageContainer(img({ className: 'absolute stretch', src: imageUrl }))
+    )),
+    ImageContainer([
       div({ className: 'absolute stretch flex-row justify-content-center align-items-center' }, [
         data.uploading ? div({ className: 'request-image-uploading spin-right-animation' }) : 'Качете снимка'
-      ])
-    ,
-    input({ className: 'request-image-upload-input absolute stretch', type: 'file', accept: 'image/*', onchange: uploadImage })
+      ]),
+      input({ className: 'request-image-upload-input absolute stretch pointer', type: 'file', accept: 'image/*', onchange: uploadImage })
+    ])
   ])
+);
+
+const ImageContainer = (content: Children) => (
+  AspectRatioContainer({
+    className: 'request-form-image-container mb-md bg-neutral-light border-radius fade-animation',
+    aspectRatio: { x: 4, y: 3 }
+  }, content)
 );
 
 const uploadImage = async (e: Event) => {
@@ -75,7 +82,6 @@ const uploadImage = async (e: Event) => {
   if (!file) return;
 
   // TODO: Try with async / await
-  data.imageUrl = null;
   data.uploading = true;
   redraw();
 
@@ -86,7 +92,7 @@ const uploadImage = async (e: Event) => {
     const image = document.createElement('img');
     image.src = uploadTaskSnapshot.downloadURL;
     image.onload = () => {
-      data.imageUrl = uploadTaskSnapshot.downloadURL;
+      data.request.imageUrls.push(uploadTaskSnapshot.downloadURL);
       data.uploading = false;
       redraw();
     };
@@ -208,12 +214,11 @@ const createRequest = async () => {
     data.loading = true;
 
     if (!data.requestMarker) throw 'Моля, маркирайте мястото върху картата!';
-    if (!data.imageUrl) throw 'Моля, качете поне една снимка!';
+    if (data.request.imageUrls.length === 0) throw 'Моля, качете поне една снимка!';
 
     const { currentUser, map } = store.getState();
     const newRequest: Partial<Request> = {
       ...data.request,
-      imageUrls: [data.imageUrl], // TODO: Support multiple image URLs
       geo: data.requestMarker.getPosition().toJSON(),
       created: firebase.database.ServerValue.TIMESTAMP,
       createdBy: currentUser.auth.uid,

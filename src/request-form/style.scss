@@ -1,6 +1,17 @@
 @import '../style/variables';
 @import '../style/mixins';
 
+.request-form-images-container {
+  margin: 0 -5px -10px -5px;
+}
+
+.request-form-image-container {
+  display: inline-block;
+  margin-right: 5px;
+  margin-left: 5px;
+  width: calc(50% - 10px);
+}
+
 // https://stackoverflow.com/questions/210643/in-javascript-can-i-make-a-click-event-fire-programmatically-for-a-file-input
 .request-image-upload-input {
   opacity: 0;
