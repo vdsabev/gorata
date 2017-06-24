@@ -11,7 +11,7 @@ import { redraw, route, withAttr, Children } from 'mithril';
 import { mapLoaded } from '../map';
 import { Request } from '../request';
 import { store } from '../store';
-import { loadScript, guid } from '../utils';
+import { loadScript, guid, toArray } from '../utils';
 
 let data: Data;
 interface Data {
@@ -58,13 +58,8 @@ const setRequestData = (propertyName: keyof typeof data.request) => (value: any)
 
 const Images = () => (
   div({ className: 'request-form-images-container' }, [
-    data.request.imageUrls.map((imageUrl) => (
-      ImageContainer(img({ className: 'absolute stretch', src: imageUrl }))
-    )),
-    ImageContainer([
-      ImageUploading(),
-      ImageInput()
-    ])
+    data.request.imageUrls.map(UploadedImage),
+    UploadNewImage()
   ])
 );
 
@@ -75,31 +70,65 @@ const ImageContainer = (content: Children) => (
   }, content)
 );
 
-const ImageUploading = () => (
-  div({ className: 'absolute stretch flex-row justify-content-center align-items-center' }, [
-    data.uploading ?
-      div({ className: 'request-image-uploading spin-right-animation' })
-      :
-      h1({ className: 'color-neutral-lighter' }, '+')
+const UploadedImage = (imageUrl: string) => (
+  ImageContainer([
+    img({ className: 'absolute stretch', src: imageUrl }),
+    div({ className: 'request-form-remove pointer', onclick: removeImage(imageUrl) }, '✖')
   ])
 );
 
-const ImageInput = () => (
-  input({
-    className: 'request-image-upload-input absolute stretch pointer',
-    type: 'file', accept: 'image/*', onchange: uploadImage,
-    title: 'Качете снимка'
-  })
+const removeImage = (imageUrl: string) => async (e: MouseEvent) => {
+  const indexOfImageUrl = data.request.imageUrls.indexOf(imageUrl);
+  if (indexOfImageUrl === -1) return;
+
+  data.request.imageUrls.splice(indexOfImageUrl, 1);
+
+  try {
+    const removeTaskSnapshot = await firebase.storage().refFromURL(imageUrl).delete();
+  }
+  catch (error) {
+    data.request.imageUrls.splice(indexOfImageUrl, 0, imageUrl);
+    redraw();
+    window.alert(error.message);
+  }
+};
+
+const UploadNewImage = () => (
+  ImageContainer([
+    div({ className: 'absolute stretch flex-row justify-content-center align-items-center fade-in-animation' }, [
+      data.uploading ?
+        div({ className: 'request-form-uploading spin-right-animation' })
+        :
+        h1({ className: 'request-form-upload-text color-neutral-lighter' }, '+')
+    ]),
+    input({
+      className: 'request-form-upload-input absolute stretch pointer',
+      type: 'file', name: 'imageUrls[]', accept: 'image/*', onchange: uploadImages,
+      multiple: true,
+      title: 'Качете снимка'
+    })
+  ])
 );
 
-const uploadImage = async (e: Event) => {
-  const file = (<HTMLInputElement>e.currentTarget).files[0];
-  if (!file) return;
+const uploadImages = async (e: Event) => {
+  const files = toArray<File>((<HTMLInputElement>e.currentTarget).files);
+  if (!files.length) return;
 
-  // TODO: Try with async / await
   data.uploading = true;
-  redraw();
 
+  try {
+    await Promise.all(files.map(uploadImage));
+    data.uploading = false;
+    redraw();
+  }
+  catch (error) {
+    data.uploading = false;
+    redraw();
+    window.alert(error.message);
+  }
+};
+
+const uploadImage = (file: File) => new Promise<void>(async (resolve, reject) => {
   try {
     const uploadTaskSnapshot = await firebase.storage().ref().child(`tmp/${guid()}`).put(file);
 
@@ -108,16 +137,14 @@ const uploadImage = async (e: Event) => {
     image.src = uploadTaskSnapshot.downloadURL;
     image.onload = () => {
       data.request.imageUrls.push(uploadTaskSnapshot.downloadURL);
-      data.uploading = false;
       redraw();
+      resolve();
     };
   }
   catch (error) {
-    data.uploading = false;
-    redraw();
-    window.alert(error.message);
+    reject(error);
   }
-};
+});
 
 // Address
 const AddressInput = () => [
@@ -244,8 +271,8 @@ const createRequest = async () => {
     route.set('/');
   }
   catch (error) {
-    window.alert(error);
     data.loading = false;
     redraw();
+    window.alert(error.message);
   }
 };

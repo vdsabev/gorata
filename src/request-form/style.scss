@@ -10,19 +10,48 @@
   margin-right: 5px;
   margin-left: 5px;
   width: calc(50% - 10px);
+
+  &:hover {
+    .request-form-upload-text {
+      transform: scale(1.25);
+    }
+  }
 }
 
-// https://stackoverflow.com/questions/210643/in-javascript-can-i-make-a-click-event-fire-programmatically-for-a-file-input
-.request-image-upload-input {
-  opacity: 0;
-  width: 100%;
+.request-form-remove {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  border: 2px solid $neutral-lighter;
+  border-radius: 50%;
+  width: 24px;
+  line-height: 20px;
+  background: $neutral;
+  color: $neutral-lighter;
+  text-align: center;
+
+  transition: all $animation-duration $animation-easing;
+
+  &:hover {
+    transform: scale(1.25);
+  }
 }
 
 // https://codepen.io/alanshortis/pen/eJLVXr
-.request-image-uploading {
+.request-form-uploading {
   border-radius: 50%;
   width: 30px;
   height: 30px;
   border: 0.25rem solid $neutral;
   border-top-color: $neutral-lighter;
+}
+
+.request-form-upload-text {
+  transition: all $animation-duration $animation-easing;
+}
+
+// https://stackoverflow.com/questions/210643/in-javascript-can-i-make-a-click-event-fire-programmatically-for-a-file-input
+.request-form-upload-input {
+  opacity: 0;
+  width: 100%;
 }
