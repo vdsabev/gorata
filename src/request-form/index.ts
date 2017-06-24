@@ -1,7 +1,7 @@
 import '../assets/map_marker_new.svg';
 import './style.scss';
 
-import { div, form, fieldset, img, input, a, small, br, textarea, button, CustomProperties } from 'compote/html';
+import { div, form, fieldset, img, h1, input, a, small, br, textarea, button, CustomProperties } from 'compote/html';
 import { AspectRatioContainer } from 'compote/components/aspect-ratio-container';
 import { flex } from 'compote/components/flex';
 import { constant } from 'compote/components/utils';
@@ -62,10 +62,8 @@ const Images = () => (
       ImageContainer(img({ className: 'absolute stretch', src: imageUrl }))
     )),
     ImageContainer([
-      div({ className: 'absolute stretch flex-row justify-content-center align-items-center' }, [
-        data.uploading ? div({ className: 'request-image-uploading spin-right-animation' }) : 'Качете снимка'
-      ]),
-      input({ className: 'request-image-upload-input absolute stretch pointer', type: 'file', accept: 'image/*', onchange: uploadImage })
+      ImageUploading(),
+      ImageInput()
     ])
   ])
 );
@@ -75,6 +73,23 @@ const ImageContainer = (content: Children) => (
     className: 'request-form-image-container mb-md bg-neutral-light border-radius fade-animation',
     aspectRatio: { x: 4, y: 3 }
   }, content)
+);
+
+const ImageUploading = () => (
+  div({ className: 'absolute stretch flex-row justify-content-center align-items-center' }, [
+    data.uploading ?
+      div({ className: 'request-image-uploading spin-right-animation' })
+      :
+      h1({ className: 'color-neutral-lighter' }, '+')
+  ])
+);
+
+const ImageInput = () => (
+  input({
+    className: 'request-image-upload-input absolute stretch pointer',
+    type: 'file', accept: 'image/*', onchange: uploadImage,
+    title: 'Качете снимка'
+  })
 );
 
 const uploadImage = async (e: Event) => {
