@@ -1,6 +1,7 @@
+import '../assets/default.png';
 import './style.scss';
 
-import { div, h4, CustomProperties } from 'compote/html';
+import { div, img, h4, CustomProperties } from 'compote/html';
 import { flex } from 'compote/components/flex';
 
 import { Request, getStatusClass, getStatusText } from '../request';
@@ -15,6 +16,7 @@ export const RequestListView = {
 
 const RequestListItem = (request: Request) => (
   div({ className: 'request-list-item pv-md ph-sm flex-row justify-content-center align-items-center fade-in-animation', key: request.id }, [
+    img({ className: 'request-list-item-image border-radius mr-sm', src: request.imageUrls && request.imageUrls[0] || 'default.png' }),
     div({ style: flex(1) }, [
       h4(request.title),
       request.text
