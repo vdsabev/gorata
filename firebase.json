@@ -2,10 +2,16 @@
   "database": {
     "rules": "firebase.rules.json"
   },
+  "functions": {
+    "source": "functions"
+  },
   "hosting": {
     "public": "build",
     "rewrites": [
-      { "source": "**", "destination": "/index.html" }
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
     ]
   },
   "storage": {

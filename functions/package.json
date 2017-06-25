@@ -1,0 +1,12 @@
+{
+  "private": true,
+  "name": "gorata-functions",
+  "description": "Cloud Functions for Firebase",
+  "dependencies": {
+    "@google-cloud/storage": "1.1.1",
+    "firebase-admin": "4.2.1",
+    "firebase-functions": "0.5.7",
+    "uuid": "3.1.0",
+    "var": "0.2.0"
+  }
+}
