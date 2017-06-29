@@ -118,12 +118,13 @@ type RequestPopupAction = RequestAction & { marker?: google.maps.Marker };
 interface RequestPopupState {
   request?: Request;
   popup?: google.maps.InfoWindow;
+  removeMapClickListener?: google.maps.MapsEventListener;
 }
 
 export function requestPopup(state: RequestPopupState = {}, action: RequestPopupAction = {}): RequestPopupState {
   switch (action.type) {
   case Actions.REQUEST_MARKER_CLICKED:
-    closePopup(state.popup);
+    closePopup(state.popup, state.removeMapClickListener);
 
     const popup = new google.maps.InfoWindow({
       content: `
@@ -133,25 +134,34 @@ export function requestPopup(state: RequestPopupState = {}, action: RequestPopup
         <h4>${action.request.title}</h4>${action.request.text}
       `
     });
-    popup.open(action.marker.getMap(), action.marker);
 
-    return { request: action.request, popup };
+    const map = <google.maps.Map>action.marker.getMap();
+    const removeMapClickListener = map.addListener('click', (e: google.maps.MouseEvent) => closePopup(popup, removeMapClickListener));
+    popup.addListener('closeclick', () => removeMapClickListener.remove());
+    popup.open(map, action.marker);
+
+    return { request: action.request, popup, removeMapClickListener };
   case Actions.MAP_INITIALIZED:
-    closePopup(state.popup);
+    closePopup(state.popup, state.removeMapClickListener);
     return {};
   case Actions.REQUEST_REMOVED:
     if (state.request && state.request.id === action.request.id) {
-      closePopup(state.popup);
+      closePopup(state.popup, state.removeMapClickListener);
+      return {};
     }
-    return {};
+    /* falls through */
   default:
     return state;
   }
 }
 
-const closePopup = (popup: google.maps.InfoWindow) => {
+const closePopup = (popup: google.maps.InfoWindow, removeMapClickListener: google.maps.MapsEventListener) => {
   if (popup) {
     popup.close();
+  }
+
+  if (removeMapClickListener) {
+    removeMapClickListener.remove();
   }
 };
 
