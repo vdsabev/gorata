@@ -18,15 +18,15 @@ interface State {
 }
 
 export enum Actions {
-  USER_DETAILS_LOADED = <any>'USER_DETAILS_LOADED',
-  USER_LOGGED_IN = <any>'USER_LOGGED_IN',
-  USER_LOGGED_OUT = <any>'USER_LOGGED_OUT',
+  USER_DETAILS_LOADED = 'USER_DETAILS_LOADED',
+  USER_LOGGED_IN = 'USER_LOGGED_IN',
+  USER_LOGGED_OUT = 'USER_LOGGED_OUT',
 
-  MAP_INITIALIZED = <any>'MAP_INITIALIZED',
+  MAP_INITIALIZED = 'MAP_INITIALIZED',
 
-  REQUEST_ADDED = <any>'REQUEST_ADDED',
-  REQUEST_REMOVED = <any>'REQUEST_REMOVED',
-  REQUEST_MARKER_CLICKED = <any>'REQUEST_MARKER_CLICKED'
+  REQUEST_ADDED = 'REQUEST_ADDED',
+  REQUEST_REMOVED = 'REQUEST_REMOVED',
+  REQUEST_MARKER_CLICKED = 'REQUEST_MARKER_CLICKED'
 }
 
 export const store = createStore(
@@ -128,9 +128,8 @@ export function requestPopup(state: RequestPopupState = {}, action: RequestPopup
     const popup = new google.maps.InfoWindow({
       content: `
         ${action.request.imageUrls ? action.request.imageUrls.map((imageUrl) => `
-          <img src="${imageUrl}">
-          <br>
-        `) : ''}
+          <img class="width-xl mr-sm" src="${imageUrl}" />
+        `).join('') : ''}
         <h4>${action.request.title}</h4>${action.request.text}
       `
     });

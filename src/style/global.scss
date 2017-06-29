@@ -25,10 +25,9 @@ h6, .h6 { font-size: $h6-font-size; }
 // sass-lint:enable single-line-per-selector
 
 a {
-  cursor: pointer;
-
-  color: $primary-dark;
   transition: color $animation-duration $animation-easing;
+  cursor: pointer;
+  color: $primary-dark;
 
   &:hover {
     color: $primary-darker;
@@ -77,12 +76,21 @@ textarea {
 @include text-emphasis-variant('.color-warning', $warning);
 @include text-emphasis-variant('.color-danger', $danger);
 
+// Images
+.width-xxs { width: 20px; };
+.width-xs { width: 32px; };
+.width-sm { width: 48px; };
+.width-md { width: 64px; };
+.width-lg { width: 96px; };
+.width-xl { width: 128px; };
+.width-xxl { width: 160px; };
+
 // Layout
 .container {
   margin: 0 auto;
+  padding: 2 * $spacing;
   width: $sm-max;
   max-width: 100%;
-  padding: 2 * $spacing;
 }
 
 // Overflow

@@ -18,19 +18,23 @@ export const HeaderView = {
 
 // Don't show the logged out state until the user is known to be either logged in or logged out
 const Header = (currentUser: User) => [
-  div({ className: 'flex-row align-items-center', style: flex(1) }, [
+  div({ class: 'flex-row align-items-center', style: flex(1) }, [
     MenuIcon(),
     Logo(),
-    a({ className: 'menu-link pa-md', oncreate: route.link, href: '/' }, 'Всички Заявки'),
+    a({ class: 'menu-link pa-md', oncreate: route.link, href: '/' }, 'Всички Заявки'),
     currentUser && (isLoggedIn(currentUser) ? ModeratorMenuLinks(currentUser) : null)
   ]),
-  currentUser && div({ className: 'text-right' },
+  currentUser && div({ class: 'text-right' },
     isLoggedIn(currentUser) ? UserMenu(currentUser) : LoginLink()
   )
 ];
 
 const MenuIcon = () => (
-  svg({ className: 'menu-icon mr-md pa-md hidden-sm hidden-md hidden-lg hidden-xl hidden-xxl', viewBox: '0 0 32 32', onclick: toggleContent }, [
+  svg({
+    class: 'menu-icon mr-md pa-md hidden-sm hidden-md hidden-lg hidden-xl hidden-xxl',
+    viewBox: { baseVal: { x: 0, y: 0, width: 32, height: 32 } },
+    onclick: toggleContent
+  }, [
     path(<any>{ // TODO: Type
       d: `
         M4,10h24c1.104,0,2-0.896,2-2s-0.896-2-2-2H4C2.896,6,2,6.896,2,8S2.896,10,4,10z M28,14H4c-1.104,0-2,0.896-2,2
@@ -47,27 +51,27 @@ const toggleContent = (e: MouseEvent) => {
 };
 
 const Logo = () => (
-  div({ id: 'logo', className: 'mr-md hidden-xxs hidden-xs flex-row align-items-center' }, [
-    img({ className: 'pa-sm', src: 'logo.png', alt: 'Лого' }),
-    h1({ className: 'hidden-sm' }, 'Гората')
+  div({ id: 'logo', class: 'mr-md hidden-xxs hidden-xs flex-row align-items-center' }, [
+    img({ class: 'pa-sm', src: 'logo.png', alt: 'Лого' }),
+    h1({ class: 'hidden-sm' }, 'Гората')
   ])
 );
 
 const ModeratorMenuLinks = (currentUser: User) => (
   canModerate(currentUser) ? [
-    a({ className: 'menu-link pa-md', oncreate: route.link, href: '/requests/new' }, 'Нова Заявка'),
+    a({ class: 'menu-link pa-md', oncreate: route.link, href: '/requests/new' }, 'Нова Заявка'),
     canAdmin(currentUser) ?
-      a({ className: 'menu-link pa-md hidden-xxs hidden-xs', target: '_blank', rel: 'noopener', href: `https://console.firebase.google.com/project/${process.env.FIREBASE_PROJECT_ID}/database/data` }, 'База Данни')
+      a({ class: 'menu-link pa-md hidden-xxs hidden-xs', target: '_blank', rel: 'noopener', href: `https://console.firebase.google.com/project/${process.env.FIREBASE_PROJECT_ID}/database/data` }, 'База Данни')
       :
       null
   ] : null
 );
 
 const UserMenu = (currentUser: User) => [
-  div({ className: 'hidden-xxs' }, currentUser.auth.email),
-  a({ className: 'color-neutral-lighter', onclick: logout }, 'Изход')
+  div({ class: 'hidden-xxs' }, currentUser.auth.email),
+  a({ class: 'color-neutral-lighter', onclick: logout }, 'Изход')
 ];
 
 const logout = () => firebase.auth().signOut().catch(window.alert).then(() => route.set('/'));
 
-const LoginLink = () => a({ className: 'color-neutral-lighter', oncreate: route.link, href: '/login' }, 'Вход');
+const LoginLink = () => a({ class: 'color-neutral-lighter', oncreate: route.link, href: '/login' }, 'Вход');

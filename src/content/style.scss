@@ -1,11 +1,11 @@
 @import '../style/variables';
 @import '../style/mixins';
 
-#content {
-  background: $neutral-lighter;
+#content { // sass-lint:disable-line no-ids
   @include overflow(hidden, auto);
 
   transition: left $animation-duration $animation-easing;
+  background: $neutral-lighter;
 
   @media (max-width: $xs-max) {
     &.collapsed {

@@ -18,22 +18,22 @@ export const LoginView = {
     data = {};
   },
   view: () => (
-    div({ className: 'container fade-in-animation' }, [
-      form({ className: 'form', onsubmit: returnFalse },
-        fieldset({ className: 'form-panel', disabled: data.loading }, [
+    div({ class: 'container fade-in-animation' }, [
+      form({ class: 'form', onsubmit: returnFalse },
+        fieldset({ class: 'form-panel', disabled: data.loading }, [
           input({
-            className: 'form-input',
+            class: 'form-input',
             type: 'email', name: 'email', placeholder: 'Имейл', autofocus: true, required: true,
             onkeyup: loginOnEnter, oninput: setEmail
           }),
           br(),
           input({
-            className: 'form-input',
+            class: 'form-input',
             type: 'password', name: 'password', placeholder: 'Парола', required: true,
             onkeyup: loginOnEnter, oninput: setPassword
           }),
           br(),
-          button({ className: 'form-button', type: 'submit', onclick: login }, 'Вход')
+          button({ class: 'form-button', type: 'submit', onclick: login }, 'Вход')
         ])
       )
     ])

@@ -19,7 +19,7 @@ export const initializeMap = async () => {
   requestsRef.on('child_removed', requestRemoved);
 };
 
-export const mapLoaded = new Promise<void>(async (resolve, reject) => {
+export const mapLoaded = new Promise(async (resolve, reject) => {
   try {
     await loadScript(`https://maps.googleapis.com/maps/api/js?key=${process.env.GOOGLE_API_KEY}&language=bg&region=BG&libraries=places`);
 

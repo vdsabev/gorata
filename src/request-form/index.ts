@@ -37,9 +37,9 @@ export const RequestFormView = {
     destroyMarker(data.requestMarker);
   },
   view: () => (
-    div({ className: 'flex-row justify-content-stretch align-items-stretch container fade-in-animation' }, [
-      form({ className: 'form', style: flex(1), onsubmit: returnFalse },
-        fieldset({ className: 'form-panel lg', disabled: data.loading }, [
+    div({ class: 'flex-row justify-content-stretch align-items-stretch container fade-in-animation' }, [
+      form({ class: 'form', style: flex(1), onsubmit: returnFalse },
+        fieldset({ class: 'form-panel lg', disabled: data.loading }, [
           Images(),
           AddressInput(),
           br(), br(),
@@ -57,7 +57,7 @@ const returnFalse = constant(false);
 const setRequestData = (propertyName: keyof typeof data.request) => (value: any) => data.request[propertyName] = value;
 
 const Images = () => (
-  div({ className: 'request-form-images-container' }, [
+  div({ class: 'request-form-images-container' }, [
     data.request.imageUrls.map(UploadedImage),
     UploadNewImage()
   ])
@@ -65,15 +65,15 @@ const Images = () => (
 
 const ImageContainer = (content: Children) => (
   AspectRatioContainer({
-    className: 'request-form-image-container mb-md bg-neutral-light border-radius fade-animation',
+    class: 'request-form-image-container mb-md bg-neutral-light border-radius fade-animation',
     aspectRatio: { x: 4, y: 3 }
   }, content)
 );
 
 const UploadedImage = (imageUrl: string) => (
   ImageContainer([
-    img({ className: 'absolute stretch', src: imageUrl }),
-    div({ className: 'request-form-remove pointer', onclick: removeImage(imageUrl) }, '✖')
+    img({ class: 'absolute stretch', src: imageUrl }),
+    div({ class: 'request-form-remove pointer', onclick: removeImage(imageUrl) }, '✖')
   ])
 );
 
@@ -95,14 +95,14 @@ const removeImage = (imageUrl: string) => async (e: MouseEvent) => {
 
 const UploadNewImage = () => (
   ImageContainer([
-    div({ className: 'absolute stretch flex-row justify-content-center align-items-center fade-in-animation' }, [
+    div({ class: 'absolute stretch flex-row justify-content-center align-items-center fade-in-animation' }, [
       data.uploading ?
-        div({ className: 'request-form-uploading spin-right-animation' })
+        div({ class: 'request-form-uploading spin-right-animation' })
         :
-        h1({ className: 'request-form-upload-text color-neutral-lighter' }, '+')
+        h1({ class: 'request-form-upload-text color-neutral-lighter' }, '+')
     ]),
     input({
-      className: 'request-form-upload-input absolute stretch pointer',
+      class: 'request-form-upload-input absolute stretch pointer',
       type: 'file', name: 'imageUrls[]', accept: 'image/*', onchange: uploadImages,
       multiple: true,
       title: 'Качете снимка'
@@ -128,7 +128,7 @@ const uploadImages = async (e: Event) => {
   }
 };
 
-const uploadImage = (file: File) => new Promise<void>(async (resolve, reject) => {
+const uploadImage = (file: File) => new Promise(async (resolve, reject) => {
   try {
     const uploadTaskSnapshot = await firebase.storage().ref().child(`tmp/${guid()}`).put(file);
 
@@ -149,7 +149,7 @@ const uploadImage = (file: File) => new Promise<void>(async (resolve, reject) =>
 // Address
 const AddressInput = () => [
   input({
-    className: 'form-input',
+    class: 'form-input',
     type: 'text', name: 'title', placeholder: 'Къде искате да озелените?', autofocus: true, required: true,
     value: data.request.title, oninput: setTitle,
     oncreate: createSearchBox
@@ -240,7 +240,7 @@ const setAddress = () => {
 // Text
 const TextInput = () => (
   textarea({
-    className: 'form-input',
+    class: 'form-input',
     name: 'text', placeholder: 'От какво имате нужда?', rows: 15,
     value: data.request.text, oninput: setText
   })
@@ -249,7 +249,7 @@ const TextInput = () => (
 const setText = withAttr('value', setRequestData('text'));
 
 // Submit
-const SubmitButton = () => button({ className: 'form-button', type: 'submit', onclick: createRequest }, 'Създаване');
+const SubmitButton = () => button({ class: 'form-button', type: 'submit', onclick: createRequest }, 'Създаване');
 
 const createRequest = async () => {
   try {
