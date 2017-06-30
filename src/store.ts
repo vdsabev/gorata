@@ -15,7 +15,6 @@ interface State {
   markers: Record<string, google.maps.Marker>;
   requestPopup: RequestPopupState;
   requests: Request[];
-  requestsFilter: RequestsFilter;
 }
 
 export enum Actions {
@@ -33,7 +32,7 @@ export enum Actions {
 }
 
 export const store = createStore(
-  combineReducers<State>({ currentUser, map, markers, requestPopup, requests, requestsFilter }),
+  combineReducers<State>({ currentUser, map, markers, requestPopup, requests }),
   process.env.NODE_ENV === 'production' ? undefined : applyMiddleware(logger)
 );
 
@@ -221,12 +220,3 @@ const removeRequest = (requestChildSnapshot: DataSnapshot<Request>) => {
 type RequestsFilterAction = Action<Actions> & { filter?: RequestsFilter };
 
 export type RequestsFilter = { key: string, value: any };
-
-export function requestsFilter(state: RequestsFilter = null, action: RequestsFilterAction = {}): RequestsFilter {
-  switch (action.type) {
-  case Actions.GET_REQUESTS:
-    return action.filter;
-  default:
-    return state;
-  }
-}
