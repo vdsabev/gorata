@@ -174,8 +174,11 @@ type RequestsAction = Action<Actions> & { request?: Request, filter?: RequestsFi
 export function requests(state: Request[] = [], action: RequestsAction = {}): Request[] {
   switch (action.type) {
   case Actions.GET_REQUESTS:
-    setTimeout(getRequests(action.filter), 0);
-    return [];
+    setTimeout(() => {
+      removeAllRequests(state);
+      getRequests(action.filter);
+    }, 0);
+    return state;
   case Actions.REQUEST_ADDED:
     return [action.request, ...state];
   case Actions.REQUEST_REMOVED:
@@ -185,7 +188,11 @@ export function requests(state: Request[] = [], action: RequestsAction = {}): Re
   }
 }
 
-const getRequests = (filter: RequestsFilter) => () => {
+const removeAllRequests = (requests: Request[]) => {
+  requests.map((request) => store.dispatch({ type: Actions.REQUEST_REMOVED, request }));
+};
+
+const getRequests = (filter: RequestsFilter) => {
   const requestsRef = filter && filter.value != null ?
     firebase.database().ref('requests').orderByChild(filter.key).equalTo(filter.value)
     :
@@ -206,9 +213,8 @@ const addRequest = (requestChildSnapshot: DataSnapshot<Request>) => {
 };
 
 const removeRequest = (requestChildSnapshot: DataSnapshot<Request>) => {
-  const { map } = store.getState(); // TODO: Handle case where `map` is null
   const request: Partial<Request> = { id: requestChildSnapshot.key };
-  store.dispatch({ type: Actions.REQUEST_REMOVED, request, map });
+  store.dispatch({ type: Actions.REQUEST_REMOVED, request });
 };
 
 // Requests Filter
