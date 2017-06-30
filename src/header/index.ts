@@ -21,7 +21,7 @@ const Header = (currentUser: User) => [
   div({ class: 'flex-row align-items-center', style: flex(1) }, [
     MenuIcon(),
     Logo(),
-    a({ class: 'menu-link pa-md', oncreate: route.link, href: '/' }, 'Всички Заявки'),
+    a({ class: 'menu-link br-md pa-md', oncreate: route.link, href: '/' }, 'Всички Заявки'),
     currentUser && (isLoggedIn(currentUser) ? ModeratorMenuLinks(currentUser) : null)
   ]),
   currentUser && div({ class: 'text-right' },
@@ -31,7 +31,7 @@ const Header = (currentUser: User) => [
 
 const MenuIcon = () => (
   svg(<any>{ // TODO: Type
-    class: 'menu-icon mr-md pa-md hidden-sm hidden-md hidden-lg hidden-xl hidden-xxl',
+    class: 'menu-icon mr-md br-md pa-md pointer hidden-sm hidden-md hidden-lg hidden-xl hidden-xxl',
     viewBox: '0 0 32 32',
     onclick: toggleContent
   }, [
@@ -59,9 +59,9 @@ const Logo = () => (
 
 const ModeratorMenuLinks = (currentUser: User) => (
   canModerate(currentUser) ? [
-    a({ class: 'menu-link pa-md', oncreate: route.link, href: '/requests/new' }, 'Нова Заявка'),
+    a({ class: 'menu-link br-md pa-md', oncreate: route.link, href: '/requests/new' }, 'Нова Заявка'),
     canAdmin(currentUser) ?
-      a({ class: 'menu-link pa-md hidden-xxs hidden-xs', target: '_blank', rel: 'noopener', href: `https://console.firebase.google.com/project/${process.env.FIREBASE_PROJECT_ID}/database/data` }, 'База Данни')
+      a({ class: 'menu-link br-md pa-md hidden-xxs hidden-xs', target: '_blank', rel: 'noopener', href: `https://console.firebase.google.com/project/${process.env.FIREBASE_PROJECT_ID}/database/data` }, 'База Данни')
       :
       null
   ] : null

@@ -5,16 +5,17 @@ import * as firebase from 'firebase/app';
 import { logger } from 'compote/components/logger';
 import { createStore, combineReducers, applyMiddleware } from 'redux';
 
+import { DataSnapshot } from './firebase';
 import { Request } from './request';
 import { User } from './user';
 
 interface State {
-  /** Current user */
   currentUser: User;
   map: google.maps.Map;
   markers: Record<string, google.maps.Marker>;
   requestPopup: RequestPopupState;
   requests: Request[];
+  requestsFilter: RequestsFilter;
 }
 
 export enum Actions {
@@ -22,15 +23,17 @@ export enum Actions {
   USER_LOGGED_IN = 'USER_LOGGED_IN',
   USER_LOGGED_OUT = 'USER_LOGGED_OUT',
 
-  MAP_INITIALIZED = 'MAP_INITIALIZED',
+  MAP_LOADED = 'MAP_LOADED',
 
   REQUEST_ADDED = 'REQUEST_ADDED',
   REQUEST_REMOVED = 'REQUEST_REMOVED',
-  REQUEST_MARKER_CLICKED = 'REQUEST_MARKER_CLICKED'
+  REQUEST_MARKER_CLICKED = 'REQUEST_MARKER_CLICKED',
+
+  GET_REQUESTS = 'GET_REQUESTS'
 }
 
 export const store = createStore(
-  combineReducers<State>({ currentUser, map, markers, requestPopup, requests }),
+  combineReducers<State>({ currentUser, map, markers, requestPopup, requests, requestsFilter }),
   process.env.NODE_ENV === 'production' ? undefined : applyMiddleware(logger)
 );
 
@@ -55,7 +58,7 @@ type MapAction = Action<Actions> & { element?: Element };
 
 export function map(state: google.maps.Map = null, action: MapAction = {}): google.maps.Map {
   switch (action.type) {
-  case Actions.MAP_INITIALIZED:
+  case Actions.MAP_LOADED:
     const bounds = new google.maps.LatLngBounds();
     bounds.extend({ lat: 43.541944, lng: 28.609722 }); // East
     bounds.extend({ lat: 43.80948, lng: 22.357125 }); // West
@@ -72,11 +75,11 @@ export function map(state: google.maps.Map = null, action: MapAction = {}): goog
 }
 
 // Markers
-type MarkerAction = RequestAction & { map?: google.maps.Map };
+type MarkerAction = RequestsAction & { map?: google.maps.Map };
 
 export function markers(state: Record<string, google.maps.Marker> = {}, action: MarkerAction = {}): Record<string, google.maps.Marker> {
   switch (action.type) {
-  case Actions.MAP_INITIALIZED:
+  case Actions.MAP_LOADED:
     Object.keys(state).map((requestId) => state[requestId].setMap(null));
     return {};
   case Actions.REQUEST_ADDED:
@@ -112,8 +115,8 @@ export function markers(state: Record<string, google.maps.Marker> = {}, action: 
   }
 }
 
-// RequestPopup
-type RequestPopupAction = RequestAction & { marker?: google.maps.Marker };
+// Request Popup
+type RequestPopupAction = RequestsAction & { marker?: google.maps.Marker };
 
 interface RequestPopupState {
   request?: Request;
@@ -141,7 +144,7 @@ export function requestPopup(state: RequestPopupState = {}, action: RequestPopup
     popup.open(map, action.marker);
 
     return { request: action.request, popup, removeMapClickListener };
-  case Actions.MAP_INITIALIZED:
+  case Actions.MAP_LOADED:
     closePopup(state.popup, state.removeMapClickListener);
     return {};
   case Actions.REQUEST_REMOVED:
@@ -166,16 +169,57 @@ const closePopup = (popup: google.maps.InfoWindow, removeMapClickListener: googl
 };
 
 // Requests
-type RequestAction = Action<Actions> & { request?: Request };
+type RequestsAction = Action<Actions> & { request?: Request, filter?: RequestsFilter };
 
-export function requests(state: Request[] = [], action: RequestAction = {}): Request[] {
+export function requests(state: Request[] = [], action: RequestsAction = {}): Request[] {
   switch (action.type) {
-  case Actions.MAP_INITIALIZED:
+  case Actions.GET_REQUESTS:
+    setTimeout(getRequests(action.filter), 0);
     return [];
   case Actions.REQUEST_ADDED:
     return [action.request, ...state];
   case Actions.REQUEST_REMOVED:
     return state.filter((request) => request.id !== action.request.id);
+  default:
+    return state;
+  }
+}
+
+const getRequests = (filter: RequestsFilter) => () => {
+  const requestsRef = filter && filter.value != null ?
+    firebase.database().ref('requests').orderByChild(filter.key).equalTo(filter.value)
+    :
+    firebase.database().ref('requests')
+  ;
+
+  requestsRef.off('child_added', addRequest);
+  requestsRef.on('child_added', addRequest);
+
+  requestsRef.off('child_removed', removeRequest);
+  requestsRef.on('child_removed', removeRequest);
+};
+
+const addRequest = (requestChildSnapshot: DataSnapshot<Request>) => {
+  const { map } = store.getState(); // TODO: Handle case where `map` is null
+  const request: Request = { id: requestChildSnapshot.key, ...requestChildSnapshot.val() };
+  store.dispatch({ type: Actions.REQUEST_ADDED, request, map });
+};
+
+const removeRequest = (requestChildSnapshot: DataSnapshot<Request>) => {
+  const { map } = store.getState(); // TODO: Handle case where `map` is null
+  const request: Partial<Request> = { id: requestChildSnapshot.key };
+  store.dispatch({ type: Actions.REQUEST_REMOVED, request, map });
+};
+
+// Requests Filter
+type RequestsFilterAction = Action<Actions> & { filter?: RequestsFilter };
+
+export type RequestsFilter = { key: string, value: any };
+
+export function requestsFilter(state: RequestsFilter = null, action: RequestsFilterAction = {}): RequestsFilter {
+  switch (action.type) {
+  case Actions.GET_REQUESTS:
+    return action.filter;
   default:
     return state;
   }

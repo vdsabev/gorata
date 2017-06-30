@@ -65,7 +65,7 @@ const Images = () => (
 
 const ImageContainer = (content: Children) => (
   AspectRatioContainer({
-    class: 'request-form-image-container mb-md bg-neutral-light border-radius fade-animation',
+    class: 'request-form-image-container mb-md br-md bg-neutral-light fade-animation',
     aspectRatio: { x: 4, y: 3 }
   }, content)
 );
@@ -73,7 +73,7 @@ const ImageContainer = (content: Children) => (
 const UploadedImage = (imageUrl: string) => (
   ImageContainer([
     img({ class: 'absolute stretch', src: imageUrl }),
-    div({ class: 'request-form-remove pointer', onclick: removeImage(imageUrl) }, '✖')
+    div({ class: 'request-form-remove br-50p pointer', onclick: removeImage(imageUrl) }, '✖')
   ])
 );
 
@@ -97,7 +97,7 @@ const UploadNewImage = () => (
   ImageContainer([
     div({ class: 'absolute stretch flex-row justify-content-center align-items-center fade-in-animation' }, [
       data.uploading ?
-        div({ class: 'request-form-uploading spin-right-animation' })
+        div({ class: 'request-form-uploading br-50p spin-right-animation' })
         :
         h1({ class: 'request-form-upload-text color-neutral-lighter' }, '+')
     ]),

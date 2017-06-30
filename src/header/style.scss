@@ -22,8 +22,6 @@
 
 .menu-icon {
   transition: background $animation-duration $animation-easing, fill $animation-duration $animation-easing;
-  border-radius: $border-radius;
-  cursor: pointer;
   width: $header-height - 2 * $spacing;
   height: $header-height - 2 * $spacing;
   fill: $neutral-lighter;
@@ -36,7 +34,6 @@
 
 .menu-link {
   transition: background $animation-duration $animation-easing, color $animation-duration $animation-easing;
-  border-radius: $border-radius;
   color: $neutral-lighter;
   font-size: 1.2em;
 

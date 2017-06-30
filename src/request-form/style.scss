@@ -25,7 +25,6 @@
 
   transition: all $animation-duration $animation-easing;
   border: 2px solid $neutral-lighter;
-  border-radius: 50%;
   background: $neutral;
   width: 24px;
   text-align: center;
@@ -40,7 +39,6 @@
 // https://codepen.io/alanshortis/pen/eJLVXr
 .request-form-uploading {
   border: 0.25rem solid $neutral;
-  border-radius: 50%;
   border-top-color: $neutral-lighter;
   width: 30px;
   height: 30px;

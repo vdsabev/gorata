@@ -10,14 +10,13 @@ import { mount, redraw } from 'mithril';
 
 import { initializeFirebaseApp } from './firebase';
 import { HeaderView } from './header';
-import { initializeMap } from './map';
+import { mapLoaded } from './map';
 import { initializeRouter } from './router';
 import { store } from './store';
 
 initialize();
 
 function initialize() {
-  initializeMap();
   initializeFirebaseApp();
   registerServiceWorker();
   subscribeToStore();

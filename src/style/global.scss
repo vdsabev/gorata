@@ -85,6 +85,11 @@ textarea {
 .width-xl { width: 128px; };
 .width-xxl { width: 160px; };
 
+.width-25p { width: 25%; };
+.width-50p { width: 50%; };
+.width-75p { width: 75%; };
+.width-100p { width: 100%; };
+
 // Layout
 .container {
   margin: 0 auto;
@@ -151,41 +156,45 @@ textarea {
 // http://v4-alpha.getbootstrap.com/components/utilities/#spacing
 // Margin
 // Positive
+@include generate-spacer('.ma', margin, all, $spacing);
+@include generate-spacer('.mv', margin, vertical, $spacing);
+@include generate-spacer('.mh', margin, horizontal, $spacing);
 @include generate-spacer('.mt', margin, top, $spacing);
 @include generate-spacer('.mr', margin, right, $spacing);
 @include generate-spacer('.mb', margin, bottom, $spacing);
 @include generate-spacer('.ml', margin, left, $spacing);
-@include generate-spacer('.mv', margin, vertical, $spacing);
-@include generate-spacer('.mh', margin, horizontal, $spacing);
-@include generate-spacer('.ma', margin, all, $spacing);
 
 // Negative
+@include generate-spacer('.ma-n', margin, all, -$spacing);
+@include generate-spacer('.mv-n', margin, vertical, -$spacing);
+@include generate-spacer('.mh-n', margin, horizontal, -$spacing);
 @include generate-spacer('.mt-n', margin, top, -$spacing);
 @include generate-spacer('.mr-n', margin, right, -$spacing);
 @include generate-spacer('.mb-n', margin, bottom, -$spacing);
 @include generate-spacer('.ml-n', margin, left, -$spacing);
-@include generate-spacer('.mv-n', margin, vertical, -$spacing);
-@include generate-spacer('.mh-n', margin, horizontal, -$spacing);
-@include generate-spacer('.ma-n', margin, all, -$spacing);
 
 .ma-auto {
   margin: auto;
 }
 
 // Padding
+@include generate-spacer('.pa', padding, all, $spacing);
+@include generate-spacer('.pv', padding, vertical, $spacing);
+@include generate-spacer('.ph', padding, horizontal, $spacing);
 @include generate-spacer('.pt', padding, top, $spacing);
 @include generate-spacer('.pr', padding, right, $spacing);
 @include generate-spacer('.pb', padding, bottom, $spacing);
 @include generate-spacer('.pl', padding, left, $spacing);
-@include generate-spacer('.pv', padding, vertical, $spacing);
-@include generate-spacer('.ph', padding, horizontal, $spacing);
-@include generate-spacer('.pa', padding, all, $spacing);
 
 .pa-auto {
   padding: auto;
 }
 
 // Text
+.capitalize {
+  text-transform: capitalize;
+}
+
 .text-left {
   text-align: left;
 }
@@ -203,9 +212,14 @@ textarea {
 }
 
 // Misc
-.border-radius {
-  border-radius: $border-radius;
-}
+.br-none { border-radius: 0; }
+.br-xs { border-radius: $border-radius * 0.33; }
+.br-sm { border-radius: $border-radius * 0.66; }
+.br-md { border-radius: $border-radius; }
+.br-lg { border-radius: $border-radius * 1.33; }
+.br-xl { border-radius: $border-radius * 1.66; }
+.br-xxl { border-radius: $border-radius * 2; }
+.br-50p { border-radius: 50%; }
 
 .pointer {
   cursor: pointer;
