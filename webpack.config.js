@@ -15,7 +15,7 @@ module.exports = (options = {}) => ({
   output: {
     publicPath: '/',
     path: path.resolve('./build'),
-    filename: '[name].js',
+    filename: '[name].[chunkhash].js',
     sourceMapFilename: '[name].js.map'
   },
   resolve: {
@@ -47,7 +47,6 @@ module.exports = (options = {}) => ({
   plugins: [
     new webpack.optimize.ModuleConcatenationPlugin(),
     new webpack.DefinePlugin({
-      'process.VERSION': options.production ? Date.now() : 'Date.now()',
       'process.env': JSON.stringify(env)
     }),
     new webpack.LoaderOptionsPlugin({
