@@ -84,7 +84,7 @@ const removeImage = (imageUrl: string) => async (e: MouseEvent) => {
   data.request.imageUrls.splice(indexOfImageUrl, 1);
 
   try {
-    const removeTaskSnapshot = await firebase.storage().refFromURL(imageUrl).delete();
+    await firebase.storage().refFromURL(imageUrl).delete();
   }
   catch (error) {
     data.request.imageUrls.splice(indexOfImageUrl, 0, imageUrl);

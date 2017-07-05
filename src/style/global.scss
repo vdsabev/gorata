@@ -65,6 +65,7 @@ textarea {
 @include bg-variant('.bg-info', $info);
 @include bg-variant('.bg-warning', $warning);
 @include bg-variant('.bg-danger', $danger);
+@include bg-variant('.bg-facebook', $facebook);
 
 @include text-emphasis-variant('.color-foreground', $foreground);
 @include text-emphasis-variant('.color-neutral', $neutral);
@@ -173,10 +174,6 @@ textarea {
 @include generate-spacer('.mb-n', margin, bottom, -$spacing);
 @include generate-spacer('.ml-n', margin, left, -$spacing);
 
-.ma-auto {
-  margin: auto;
-}
-
 // Padding
 @include generate-spacer('.pa', padding, all, $spacing);
 @include generate-spacer('.pv', padding, vertical, $spacing);
@@ -185,10 +182,6 @@ textarea {
 @include generate-spacer('.pr', padding, right, $spacing);
 @include generate-spacer('.pb', padding, bottom, $spacing);
 @include generate-spacer('.pl', padding, left, $spacing);
-
-.pa-auto {
-  padding: auto;
-}
 
 // Text
 .capitalize {

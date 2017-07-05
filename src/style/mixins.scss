@@ -21,6 +21,12 @@
 }
 
 @mixin generate-spacer($prefix, $property, $side, $value) {
+  @if ($value > 0) {
+    #{$prefix}-auto {
+      @include spacer($property, $side, auto);
+    }
+  }
+
   #{$prefix}-0 {
     @include spacer($property, $side, 0);
   }
