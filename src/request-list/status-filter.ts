@@ -1,5 +1,4 @@
 import { div, h5 } from 'compote/html';
-import * as m from 'mithril';
 
 import { RequestStatus, getStatusText } from '../request';
 import { store, Actions, RequestsFilter } from '../store';
