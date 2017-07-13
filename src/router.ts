@@ -4,7 +4,7 @@ import { UnauthorizedView } from './401-unauthorized';
 import { NotFoundView } from './404-not-found';
 import { LoginView } from './login';
 import { RequestFormView } from './request-form';
-import { RequestListView } from './request-list';
+import { RequestList } from './request-list';
 
 import { store } from './store';
 import { isLoggedIn } from './user';
@@ -14,7 +14,7 @@ export function initializeRouter() {
 
   const content = document.querySelector('#content');
   m.route(content, '/', {
-    '/': RequestListView,
+    '/': { render: RequestList },
     '/login': { render: requireAccess(isLoggedIn, redirect('/'), render(LoginView)) },
     '/requests/new': { render: requireAccess(isLoggedIn, render(RequestFormView), render(UnauthorizedView)) },
     '/:url': NotFoundView
