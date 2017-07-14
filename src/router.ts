@@ -1,9 +1,9 @@
 import * as m from 'mithril';
 
-import { UnauthorizedView } from './401-unauthorized';
-import { NotFoundView } from './404-not-found';
-import { LoginView } from './login';
-import { RequestFormView } from './request-form';
+import { Unauthorized } from './401-unauthorized';
+import { NotFound } from './404-not-found';
+import { LoginForm } from './login';
+import { RequestForm } from './request-form';
 import { RequestList } from './request-list';
 
 import { store } from './store';
@@ -14,10 +14,10 @@ export function initializeRouter() {
 
   const content = document.querySelector('#content');
   m.route(content, '/', {
-    '/': { render: render(RequestList) },
-    '/login': { render: requireAccess(isLoggedIn, redirect('/'), render(LoginView)) },
-    '/requests/new': { render: requireAccess(isLoggedIn, render(RequestFormView), render(UnauthorizedView)) },
-    '/:url': NotFoundView
+    '/': RequestList,
+    '/login': { render: requireAccess(isLoggedIn, redirect('/'), render(LoginForm)) },
+    '/requests/new': { render: requireAccess(isLoggedIn, render(RequestForm), render(Unauthorized)) },
+    '/:url': NotFound
   });
 }
 

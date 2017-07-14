@@ -25,7 +25,7 @@ interface Data {
 
 // TODO: Use form data
 // TODO: Add validation
-export const RequestFormView = {
+export const RequestForm = {
   oninit() {
     data = { request: { imageUrls: [] }, mapEventListeners: [] };
   },

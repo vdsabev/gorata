@@ -9,33 +9,32 @@ import { route } from 'mithril';
 import { store } from '../store';
 import { User, isLoggedIn, canAdmin } from '../user';
 
-export const HeaderView = {
+export const Header = {
   view() {
     const { currentUser } = store.getState();
-    return Header(currentUser);
+
+    // Don't show the logged out state until the user is known to be either logged in or logged out
+    return [
+      div({ class: 'flex-row align-items-center', style: flex(1) }, [
+        MenuIcon(),
+        Logo(),
+        a({ class: 'menu-link br-md pa-md', oncreate: route.link, href: '/' }, 'Заявки'),
+        isLoggedIn(currentUser) ?
+          a({ class: 'menu-link br-md pa-md', oncreate: route.link, href: '/requests/new' }, 'Нова Заявка')
+          :
+          null,
+        canAdmin(currentUser) ?
+          a({ class: 'menu-link br-md pa-md hidden-xxs hidden-xs', target: '_blank', rel: 'noopener', href: `https://console.firebase.google.com/project/${process.env.FIREBASE_PROJECT_ID}/database/data` }, 'База Данни')
+          :
+          null
+      ]),
+      currentUser != null ?
+        div({ class: 'text-right' }, isLoggedIn(currentUser) ? UserMenu(currentUser) : LoginLink())
+        :
+        null
+    ];
   }
 };
-
-// Don't show the logged out state until the user is known to be either logged in or logged out
-const Header = (currentUser: User) => [
-  div({ class: 'flex-row align-items-center', style: flex(1) }, [
-    MenuIcon(),
-    Logo(),
-    a({ class: 'menu-link br-md pa-md', oncreate: route.link, href: '/' }, 'Заявки'),
-    isLoggedIn(currentUser) ?
-      a({ class: 'menu-link br-md pa-md', oncreate: route.link, href: '/requests/new' }, 'Нова Заявка')
-      :
-      null,
-    canAdmin(currentUser) ?
-      a({ class: 'menu-link br-md pa-md hidden-xxs hidden-xs', target: '_blank', rel: 'noopener', href: `https://console.firebase.google.com/project/${process.env.FIREBASE_PROJECT_ID}/database/data` }, 'База Данни')
-      :
-      null
-  ]),
-  currentUser != null ?
-    div({ class: 'text-right' }, isLoggedIn(currentUser) ? UserMenu(currentUser) : LoginLink())
-    :
-    null
-];
 
 const MenuIcon = () => (
   svg(<any>{ // TODO: Type
