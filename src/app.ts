@@ -10,7 +10,7 @@ import { mount, redraw } from 'mithril';
 
 import { initializeFirebaseApp } from './firebase';
 import { Header } from './header';
-import { mapLoaded } from './map';
+import './map';
 import { initializeRouter } from './router';
 import { store } from './store';
 
