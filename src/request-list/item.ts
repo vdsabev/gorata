@@ -3,56 +3,75 @@ import { flex } from 'compote/components/flex';
 import * as firebase from 'firebase/app';
 import { redraw } from 'mithril';
 
-import { Request, RequestStatus, getStatusClass, getStatusText } from '../request';
+import { Component, VNode, render } from '../component';
+import { Request, RequestStatus, requestStatuses, getStatusClass, getStatusText } from '../request';
 import { store, Actions } from '../store';
-import { User, canModerate } from '../user';
+import { canModerate } from '../user';
 
-let requestBeingEdited: Request;
+export class RequestListItem implements Component {
+  static render = render(RequestListItem);
 
-// TODO: Call on init: `requestBeingEdited = null`
-export const RequestListItem = (currentUser: User) => (request: Request) => (
-  div({ class: 'request-list-item pa-md flex-row justify-content-center align-items-center fade-in-animation', key: request.id }, [
-    img({ class: 'width-md mr-sm br-md', src: request.imageUrls && request.imageUrls[0] || 'default.png' }),
-    div({ style: flex(1) }, [
-      h4(request.title),
-      request.text
-    ]),
-    canModerate(currentUser) ?
-      isRequestStatusBeingEdited(request) ?
-        select({ class: 'br-md pa-sm', onchange: setRequestStatus(request), value: request.status }, (<RequestStatus[]>['new', 'approved', 'declined']).map((status) => (
-          option({ value: status }, getStatusText(status))
-        )))
-        :
-        div({ class: `br-md pa-sm pointer ${getStatusClass(request.status)}`, onclick: () => startEditingRequest(request) }, getStatusText(request.status))
-      :
-      div({ class: `br-md pa-sm ${getStatusClass(request.status)}` }, getStatusText(request.status))
-  ])
-);
+  parent: {
+    requestBeingEdited: Request;
+  };
+  request: Request;
 
-const isRequestStatusBeingEdited = (request: Request) => requestBeingEdited != null && requestBeingEdited.id === request.id;
-
-const setRequestStatus = (request: Request) => async (e: Event) => {
-  const previousStatus = request.status;
-  request.status = <RequestStatus>(<HTMLSelectElement>e.currentTarget).value;
-  stopEditingRequest();
-
-  try {
-    await firebase.database().ref(`requests/${request.id}/status`).set(request.status);
+  oninit({ attrs }: VNode<RequestListItem>) {
+    this.parent = attrs.parent;
+    this.request = attrs.request;
   }
-  catch (error) {
-    request.status = previousStatus;
-    startEditingRequest(request);
 
-    window.alert(error.message);
+  view() {
+    const { currentUser } = store.getState();
+    return (
+      div({ class: 'request-list-item pa-md flex-row justify-content-center align-items-center fade-in-animation' }, [
+        img({ class: 'width-md mr-sm br-md', src: this.request.imageUrls && this.request.imageUrls[0] || 'default.png' }),
+        div({ style: flex(1) }, [
+          h4(this.request.title),
+          this.request.text
+        ]),
+        canModerate(currentUser) ?
+          this.isRequestBeingEdited(this.parent.requestBeingEdited, this.request) ?
+            select({
+              class: 'br-md pa-sm',
+              onchange: this.setRequestStatus,
+              value: this.request.status
+            }, requestStatuses.map((status) => (
+              option({ value: status }, getStatusText(status))
+            )))
+            :
+            div({
+              class: `br-md pa-sm pointer ${getStatusClass(this.request.status)}`,
+              onclick: () => this.setRequestBeingEdited(this.request)
+            }, getStatusText(this.request.status))
+          :
+          div({ class: `br-md pa-sm ${getStatusClass(this.request.status)}` }, getStatusText(this.request.status))
+      ])
+    );
   }
-};
 
-const startEditingRequest = (request: Request) => {
-  requestBeingEdited = request;
-  redraw();
-};
+  isRequestBeingEdited(requestBeingEdited: Request, request: Request) {
+    return requestBeingEdited != null && request != null && requestBeingEdited.id === request.id;
+  }
 
-const stopEditingRequest = () => {
-  requestBeingEdited = null;
-  redraw();
-};
+  setRequestStatus = async (e: Event) => {
+    const previousStatus = this.request.status;
+    this.request.status = <RequestStatus>(<HTMLSelectElement>e.currentTarget).value;
+    this.setRequestBeingEdited(null);
+
+    try {
+      await firebase.database().ref(`requests/${this.request.id}/status`).set(this.request.status);
+    }
+    catch (error) {
+      this.request.status = previousStatus;
+      this.setRequestBeingEdited(this.request);
+
+      window.alert(error.message);
+    }
+  }
+
+  setRequestBeingEdited = (request: Request) => {
+    this.parent.requestBeingEdited = request;
+    redraw();
+  }
+}
