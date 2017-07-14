@@ -1,5 +1,3 @@
-import * as firebase from 'firebase/app';
-
 import { store, Actions } from '../store';
 import { loadScript } from '../utils';
 

@@ -4,7 +4,6 @@ import { partial } from './partial';
 
 describe(`partial`, () => {
   const add = (a: number, b = 0, c = 0) => a + b + c;
-  const append = (a: string, b = '', c = '') => a + b + c;
 
   it(`should call the function with 1 partial argument`, () => {
     const add1 = partial(add, 1);

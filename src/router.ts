@@ -14,7 +14,7 @@ export function initializeRouter() {
 
   const content = document.querySelector('#content');
   m.route(content, '/', {
-    '/': { render: RequestList },
+    '/': { render: render(RequestList) },
     '/login': { render: requireAccess(isLoggedIn, redirect('/'), render(LoginView)) },
     '/requests/new': { render: requireAccess(isLoggedIn, render(RequestFormView), render(UnauthorizedView)) },
     '/:url': NotFoundView
@@ -35,4 +35,4 @@ const redirect = (url: string) => (): null => {
   return null;
 };
 
-const render = (view: m.Component<any, any>) => () => m(view);
+const render = (view: m.FactoryComponent<any> | m.Component<any, any>) => () => m(view);

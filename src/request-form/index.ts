@@ -1,7 +1,7 @@
 import '../assets/map_marker_new.svg';
 import './style.scss';
 
-import { div, form, fieldset, img, h1, input, a, small, br, textarea, button, CustomProperties } from 'compote/html';
+import { div, form, fieldset, img, h1, input, a, small, br, textarea, button } from 'compote/html';
 import { AspectRatioContainer } from 'compote/components/aspect-ratio-container';
 import { flex } from 'compote/components/flex';
 import { constant } from 'compote/components/utils';
@@ -11,7 +11,7 @@ import { redraw, route, withAttr, Children } from 'mithril';
 import { mapLoaded } from '../map';
 import { Request } from '../request';
 import { store } from '../store';
-import { loadScript, guid, toArray } from '../utils';
+import { guid, toArray } from '../utils';
 
 let data: Data;
 interface Data {
@@ -258,7 +258,7 @@ const createRequest = async () => {
     if (!data.requestMarker) throw 'Моля, маркирайте мястото върху картата!';
     if (data.request.imageUrls.length === 0) throw 'Моля, качете поне една снимка!';
 
-    const { currentUser, map } = store.getState();
+    const { currentUser } = store.getState();
     const newRequest: Partial<Request> = {
       ...data.request,
       geo: data.requestMarker.getPosition().toJSON(),

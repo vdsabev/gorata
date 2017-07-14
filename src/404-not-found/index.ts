@@ -1,4 +1,4 @@
-import { div, h2, CustomProperties } from 'compote/html';
+import { div, h2 } from 'compote/html';
 
 export const NotFoundView = {
   view: () => (

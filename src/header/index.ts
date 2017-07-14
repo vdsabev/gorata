@@ -1,13 +1,13 @@
 import './style.scss';
 import '../assets/logo.png';
 
-import { div, a, br, img, h1, svg, path } from 'compote/html';
+import { div, a, img, h1, svg, path } from 'compote/html';
 import { flex } from 'compote/components/flex';
 import * as firebase from 'firebase/app';
 import { route } from 'mithril';
 
 import { store } from '../store';
-import { User, isLoggedIn, canModerate, canAdmin } from '../user';
+import { User, isLoggedIn, canAdmin } from '../user';
 
 export const HeaderView = {
   view() {

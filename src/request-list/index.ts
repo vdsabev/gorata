@@ -2,32 +2,47 @@ import '../assets/default.png';
 import './style.scss';
 
 import { div } from 'compote/html';
-import { redraw } from 'mithril';
+import * as m from 'mithril';
+import { FactoryComponent } from 'mithril';
 
-import { Component } from '../component';
 import { Request, requestStatuses } from '../request';
 import { store, RequestsFilter } from '../store';
 
 import { RequestListStatusFilterItem } from './status-filter-item';
 import { RequestListItem } from './item';
 
-export class RequestList implements Component {
+interface State {
   requestsFilter: RequestsFilter;
   requestBeingEdited: Request;
-
-  view() {
-    const { currentUser, requests } = store.getState();
-    return [
-      // Status Filter
-      div({ class: 'flex-row justify-content-space-around align-items-center ma-sm mt-md' },
-        [null, ...requestStatuses].map((status) => RequestListStatusFilterItem.render({ key: status, parent: this, status }))
-      ),
-      // List Items
-      ...requests.map((request) => RequestListItem.render({
-        key: request.id,
-        parent: this,
-        request
-      }))
-    ];
-  }
 }
+
+const state: State = {
+  requestsFilter: null,
+  requestBeingEdited: null
+};
+
+export const RequestList: FactoryComponent<State> = () => {
+  state.requestBeingEdited = null;
+
+  return {
+    view() {
+      const { requests } = store.getState();
+      return [
+        // Status Filter
+        div({ class: 'flex-row justify-content-space-around align-items-center ma-sm mt-md' },
+          [null, ...requestStatuses].map((status) => m(RequestListStatusFilterItem, {
+            key: status,
+            parent: state,
+            status
+          }))
+        ),
+        // List Items
+        requests.map((request) => m(RequestListItem, {
+          key: request.id,
+          parent: state,
+          request
+        }))
+      ];
+    }
+  };
+};

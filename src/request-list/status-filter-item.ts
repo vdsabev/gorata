@@ -1,43 +1,43 @@
 import { h5 } from 'compote/html';
+import { FactoryComponent } from 'mithril';
 
-import { Component, VNode, render } from '../component';
 import { RequestStatus, getStatusText } from '../request';
 import { store, Actions, RequestsFilter } from '../store';
 
-export class RequestListStatusFilterItem implements Component {
-  static render = render(RequestListStatusFilterItem);
-
+interface State {
   parent: {
     requestsFilter: RequestsFilter;
   };
   status: RequestStatus;
+}
 
-  oninit({ attrs }: VNode<RequestListStatusFilterItem>) {
-    this.parent = attrs.parent;
-    this.status = attrs.status;
-  }
+export const RequestListStatusFilterItem: FactoryComponent<State> = ({ attrs }) => {
+  const state: State = {
+    parent: attrs.parent,
+    status: attrs.status
+  };
 
-  view() {
-    return (
+  return {
+    view: () => (
       h5({
           class: `
             request-list-status-filter-item br-md pv-sm ph-md pointer capitalize fade-animation
-            ${this.getFilterItemActiveClass(this.status)}
+            ${getFilterItemActiveClass(state)}
           `,
-          onclick: this.setStatusFilter(this.status)
+          onclick: setStatusFilter(state)
         },
-        getStatusText(this.status, 'many') || 'всички'
+        getStatusText(state.status, 'many') || 'всички'
       )
-    );
-  }
+    )
+  };
+};
 
-  getFilterItemActiveClass = (status: RequestStatus) => {
-    if (this.parent.requestsFilter == null && status == null) return 'active';
-    return this.parent.requestsFilter && this.parent.requestsFilter.key === 'status' && this.parent.requestsFilter.value === status ? 'active' : '';
-  }
+const getFilterItemActiveClass = ({ parent: { requestsFilter }, status }: State) => {
+  if (requestsFilter == null && status == null) return 'active';
+  return requestsFilter && requestsFilter.key === 'status' && requestsFilter.value === status ? 'active' : '';
+};
 
-  setStatusFilter = (status: RequestStatus) => () => {
-    this.parent.requestsFilter = { key: 'status', value: status };
-    store.dispatch({ type: Actions.GET_REQUESTS, filter: this.parent.requestsFilter });
-  }
-}
+const setStatusFilter = ({ parent, status }: State) => () => {
+  parent.requestsFilter = { key: 'status', value: status };
+  store.dispatch({ type: Actions.GET_REQUESTS, filter: parent.requestsFilter });
+};
