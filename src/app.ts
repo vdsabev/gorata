@@ -6,7 +6,8 @@ import './manifest.json';
 import './style.scss';
 import './content/style.scss';
 
-import { mount, redraw } from 'mithril';
+import { setHyperscriptFunction } from 'compote';
+import * as m from 'mithril';
 
 import { initializeFirebaseApp } from './firebase';
 import { Header } from './header';
@@ -14,6 +15,7 @@ import './map';
 import { initializeRouter } from './router';
 import { store } from './store';
 
+setHyperscriptFunction(m);
 initialize();
 
 function initialize() {
@@ -30,10 +32,10 @@ function registerServiceWorker() {
 }
 
 function subscribeToStore() {
-  store.subscribe(redraw);
+  store.subscribe(m.redraw);
 
   const unsubscribe = store.subscribe(() => {
-    mount(document.querySelector('#header'), Header);
+    m.mount(document.querySelector('#header'), Header);
     unsubscribe();
   });
 }
