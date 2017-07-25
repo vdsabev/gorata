@@ -1,4 +1,3 @@
-import { Model } from 'compote/components/model';
 import { User as FirebaseUser } from 'firebase/app';
 
 export interface User {

@@ -217,6 +217,4 @@ const removeRequest = (requestChildSnapshot: DataSnapshot<Request>) => {
 };
 
 // Requests Filter
-type RequestsFilterAction = Action<Actions> & { filter?: RequestsFilter };
-
 export type RequestsFilter = { key: string, value: any };

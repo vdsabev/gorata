@@ -12,6 +12,8 @@ export interface Request {
 
 export type RequestStatus = 'new' | 'approved' | 'declined';
 
+export const requestStatuses: RequestStatus[] = ['new', 'approved', 'declined'];
+
 export const getStatusClass = (status: RequestStatus) => statusClass[status] || '';
 
 const statusClass: Record<RequestStatus, string> = {
