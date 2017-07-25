@@ -1,39 +1,10 @@
+@import '~compote/style/animations';
+
+@import 'mixins';
 @import 'variables';
 
-// Fade
-.fade-in-animation {
-  animation: fadeIn $animation-duration $animation-easing;
-}
+@include create-animation('.fade-in-animation', fadeIn $animation-duration $animation-easing);
+@include create-animation('.fade-out-animation', fadeOut $animation-duration $animation-easing);
 
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-.fade-out-animation {
-  animation: fadeOut $animation-duration $animation-easing;
-}
-
-@keyframes fadeOut {
-  from { opacity: 1; }
-  to { opacity: 0; }
-}
-
-// Spin
-@keyframes spinRight {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-
-.spin-right-animation {
-  animation: spinRight (2 * $animation-duration) linear infinite;
-}
-
-@keyframes spinLeft {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(-360deg); }
-}
-
-.spin-left-animation {
-  animation: spinLeft (2 * $animation-duration) linear infinite;
-}
+@include create-animation('.spin-right-animation', spinRight (2 * $animation-duration) linear infinite);
+@include create-animation('.spin-left-animation', spinLeft (2 * $animation-duration) linear infinite);

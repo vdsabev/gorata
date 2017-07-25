@@ -1,0 +1,30 @@
+@import 'mixins';
+@import 'variables';
+
+@media (max-width: $xxs-max) {
+  @include responsive-invisibility('.hidden-xxs');
+}
+
+@media (min-width: $xs-min) and (max-width: $xs-max) {
+  @include responsive-invisibility('.hidden-xs');
+}
+
+@media (min-width: $sm-min) and (max-width: $sm-max) {
+  @include responsive-invisibility('.hidden-sm');
+}
+
+@media (min-width: $md-min) and (max-width: $md-max) {
+  @include responsive-invisibility('.hidden-md');
+}
+
+@media (min-width: $lg-min) and (max-width: $lg-max) {
+  @include responsive-invisibility('.hidden-lg');
+}
+
+@media (min-width: $xl-min) and (max-width: $xl-max) {
+  @include responsive-invisibility('.hidden-xl');
+}
+
+@media (min-width: $xxl-min) {
+  @include responsive-invisibility('.hidden-xxl');
+}

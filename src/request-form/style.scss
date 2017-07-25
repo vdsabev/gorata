@@ -19,6 +19,8 @@
 }
 
 .request-form-remove {
+  $size: 24px;
+
   position: absolute;
   top: -5px;
   right: -5px;
@@ -26,9 +28,10 @@
   transition: all $animation-duration $animation-easing;
   border: 2px solid $neutral-lighter;
   background: $neutral;
-  width: 24px;
+  width: $size;
+  height: $size;
   text-align: center;
-  line-height: 20px;
+  line-height: $size - 2; // MAGIC
   color: $neutral-lighter;
 
   &:hover {

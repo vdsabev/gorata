@@ -21,7 +21,7 @@ export const RequestListStatusFilterItem: FactoryComponent<State> = ({ attrs }) 
     view: () => (
       h5({
           class: `
-            request-list-status-filter-item br-md pv-sm ph-md pointer capitalize fade-animation
+            request-list-status-filter-item br-md pv-sm ph-md pointer text-capitalize fade-animation
             ${getFilterItemActiveClass(state)}
           `,
           onclick: setStatusFilter(state)

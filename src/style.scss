@@ -1,10 +1,13 @@
-@import '~compote/style/reset';
-
-@import 'style/global';
-@import 'style/animations';
 @import 'style/variables';
 
+@import '~compote/style/reset';
 @import '~compote/style/flex';
 @import '~compote/style/form';
+@import '~compote/style/spacing';
+@import '~compote/style/text';
 
-@import 'style/compote';
+@import 'style/animations';
+@import 'style/colors';
+@import 'style/global';
+@import 'style/positioning';
+@import 'style/responsive';
