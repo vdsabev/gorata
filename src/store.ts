@@ -6,6 +6,7 @@ import { logger } from 'compote/components/logger';
 import { createStore, combineReducers, applyMiddleware } from 'redux';
 
 import { DataSnapshot } from './firebase';
+import { addNavigatorControl } from './navigator';
 import { Request } from './request';
 import { User } from './user';
 
@@ -64,8 +65,17 @@ export function map(state: google.maps.Map = null, action: MapAction = {}): goog
     bounds.extend({ lat: 44.2125, lng: 22.665833 }); // North
     bounds.extend({ lat: 41.234722, lng: 25.288333 }); // South
 
-    const map = new google.maps.Map(action.element, { center: bounds.getCenter() });
+    const map = new google.maps.Map(action.element, {
+      center: bounds.getCenter(),
+      scaleControl: true,
+      panControl: false,
+      zoomControlOptions: {
+        position: google.maps.ControlPosition.RIGHT_TOP,
+        style: google.maps.ZoomControlStyle.SMALL
+      }
+    });
     map.fitBounds(bounds);
+    addNavigatorControl(map);
 
     return map;
   default:

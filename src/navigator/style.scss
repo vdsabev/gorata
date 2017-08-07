@@ -1,0 +1,26 @@
+@import '../style/variables';
+@import '../style/mixins';
+
+$navigator-size: 28px;
+$navigator-dot-size: 8px;
+$navigator-dot-center: ($navigator-size - $navigator-dot-size) / 2;
+
+ .navigator {
+  @include square($navigator-size);
+
+  // https://developers.google.com/maps/documentation/javascript/examples/control-custom
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+
+  .navigator-dot {
+    @include square($navigator-dot-size);
+    position: relative;
+    top: $navigator-dot-center;
+    left: $navigator-dot-center;
+    background: $neutral;
+  }
+
+  &:hover .navigator-dot {
+    background: $info;
+    box-shadow: 0 0 10px 2px $info;
+  }
+}
