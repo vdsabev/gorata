@@ -6,6 +6,7 @@ import { flex } from 'compote/components/flex';
 import * as firebase from 'firebase/app';
 import { route } from 'mithril';
 
+import * as notify from '../notify';
 import { store } from '../store';
 import { User, isLoggedIn, canAdmin } from '../user';
 
@@ -69,6 +70,6 @@ const UserMenu = (currentUser: User) => [
   a({ class: 'color-neutral-lighter', onclick: logout }, 'Изход')
 ];
 
-const logout = () => firebase.auth().signOut().catch(window.alert).then(() => route.set('/'));
+const logout = () => firebase.auth().signOut().catch(notify.error).then(() => route.set('/'));
 
 const LoginLink = () => a({ class: 'color-neutral-lighter', oncreate: route.link, href: '/login' }, 'Вход');

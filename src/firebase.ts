@@ -3,6 +3,7 @@ import 'firebase/auth';
 import 'firebase/database';
 import 'firebase/storage';
 
+import * as notify from './notify';
 import { Actions, store } from './store';
 import { User } from './user';
 
@@ -31,7 +32,7 @@ export function initializeFirebaseApp() {
       store.dispatch({ type: Actions.USER_DETAILS_LOADED, user: userSnapshot.val() });
     }
     catch (error) {
-      window.alert(error);
+      notify.error(error);
     }
   });
 }

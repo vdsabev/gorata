@@ -7,6 +7,7 @@ import * as firebase from 'firebase/app';
 import { redraw, route, withAttr, FactoryComponent } from 'mithril';
 
 import { FacebookLogo } from './facebook-logo';
+import * as notify from '../notify';
 
 interface State {
   email?: string;
@@ -29,7 +30,7 @@ export const LoginForm: FactoryComponent<State> = () => {
       route.set('/');
     }
     catch (error) {
-      window.alert(error);
+      notify.error(error);
       state.loading = false;
       redraw();
     }
@@ -77,6 +78,6 @@ const loginWithFacebook = async () => {
     await firebase.auth().signInWithRedirect(new firebase.auth.FacebookAuthProvider());
   }
   catch (error) {
-    window.alert(error.message);
+    notify.error(error);
   }
 };

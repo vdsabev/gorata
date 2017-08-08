@@ -8,6 +8,7 @@ import { RequestDetails } from './request-details';
 import { RequestForm } from './request-form';
 import { RequestList } from './request-list';
 
+import * as notify from './notify';
 import { store } from './store';
 import { isLoggedIn } from './user';
 
@@ -38,13 +39,6 @@ const load = <T>(view: m.FactoryComponent<any> | m.Component<any, any>, key = 'r
     :
     NotFound
 );
-
-const notify = {
-  error(error: Error): null {
-    window.alert(error.message);
-    return null;
-  }
-};
 
 const requireAccess = (accessFn: Function, whenTruthy: Function, whenFalsy: Function) => () => {
   const { currentUser } = store.getState();

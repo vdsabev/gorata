@@ -2,6 +2,7 @@ import { a, div, img, h4, select, option } from 'compote/html';
 import { flex } from 'compote/components/flex';
 import { FactoryComponent, redraw, route, withAttr } from 'mithril';
 
+import * as notify from '../notify';
 import { Request, RequestStatus, setRequestStatus, requestStatuses, getStatusClass, getStatusText } from '../request';
 import { store } from '../store';
 import { canModerate } from '../user';
@@ -75,7 +76,7 @@ const setStatus = (state: State) => async (status: RequestStatus) => {
     request.status = previousStatus;
     setRequestBeingEdited(state, request);
 
-    window.alert(error.message);
+    notify.error(error);
   }
 };
 

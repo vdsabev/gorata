@@ -3,6 +3,8 @@ import './style.scss';
 import { div } from 'compote/html';
 import { render } from 'mithril';
 
+import * as notify from '../notify';
+
 export const addNavigatorControl = (map: google.maps.Map) => {
   if (window.navigator && window.navigator.geolocation) {
     const navigatorElement = document.createElement('div');
@@ -35,7 +37,7 @@ const getUserLocation = (map: google.maps.Map) => (e: MouseEvent) => {
     (error) => {
       const errorMessage = getLocationError(error);
       if (errorMessage) {
-        window.alert(errorMessage);
+        notify.error(errorMessage);
       }
     }
   );
