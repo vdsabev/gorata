@@ -1,9 +1,8 @@
-import { div, img, h4, select, option } from 'compote/html';
+import { a, div, img, h4, select, option } from 'compote/html';
 import { flex } from 'compote/components/flex';
-import * as firebase from 'firebase/app';
-import { FactoryComponent, redraw, withAttr } from 'mithril';
+import { FactoryComponent, redraw, route, withAttr } from 'mithril';
 
-import { Request, RequestStatus, requestStatuses, getStatusClass, getStatusText } from '../request';
+import { Request, RequestStatus, setRequestStatus, requestStatuses, getStatusClass, getStatusText } from '../request';
 import { store } from '../store';
 import { canModerate } from '../user';
 
@@ -20,7 +19,7 @@ export const RequestListItem: FactoryComponent<State> = ({ attrs }) => {
     request: attrs.request
   };
 
-  const setRequestStatusToValue = withAttr('value', setRequestStatus(state));
+  const setStatusToValue = withAttr('value', setStatus(state));
   const setRequestBeingEditedToStateRequest = () => setRequestBeingEdited(state, state.request);
 
   return {
@@ -28,7 +27,10 @@ export const RequestListItem: FactoryComponent<State> = ({ attrs }) => {
       const { currentUser } = store.getState();
       const { request } = state;
       return (
-        div({ class: 'request-list-item pa-md flex-row justify-content-center align-items-center fade-in-animation' }, [
+        a({
+          class: 'request-list-item pa-md flex-row justify-content-center align-items-center fade-in-animation',
+          oncreate: route.link, href: `/requests/${request.id}`
+        }, [
           img({ class: 'width-md mr-sm br-md', src: request.imageUrls && request.imageUrls[0] || 'default.png' }),
           div({ style: flex(1) }, [
             h4(request.title),
@@ -38,7 +40,7 @@ export const RequestListItem: FactoryComponent<State> = ({ attrs }) => {
             isRequestBeingEdited(state.parent.requestBeingEdited, request) ?
               select({
                 class: 'br-md pa-sm',
-                onchange: setRequestStatusToValue,
+                onchange: setStatusToValue,
                 value: request.status
               }, requestStatuses.map((status) => (
                 option({ value: status }, getStatusText(status))
@@ -60,14 +62,14 @@ const isRequestBeingEdited = (requestBeingEdited: Request, request: Request) => 
   requestBeingEdited != null && request != null && requestBeingEdited.id === request.id
 );
 
-const setRequestStatus = (state: State) => async (status: RequestStatus) => {
+const setStatus = (state: State) => async (status: RequestStatus) => {
   const { request } = state;
   const previousStatus = request.status;
   request.status = status;
   setRequestBeingEdited(state, null);
 
   try {
-    await firebase.database().ref(`requests/${request.id}/status`).set(request.status);
+    await setRequestStatus(request.id, request.status);
   }
   catch (error) {
     request.status = previousStatus;

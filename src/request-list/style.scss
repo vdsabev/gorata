@@ -16,6 +16,13 @@
 }
 
 .request-list-item {
+  transition: color $animation-duration $animation-easing;
+  color: $foreground;
+
+  &:hover {
+    color: $foreground-light;
+  }
+
   & + & {
     border-top: 1px solid $neutral-light;
   }

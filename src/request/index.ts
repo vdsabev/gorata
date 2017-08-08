@@ -1,3 +1,5 @@
+import * as firebase from 'firebase/app';
+
 export interface Request {
   id: string;
 
@@ -11,8 +13,16 @@ export interface Request {
 }
 
 export type RequestStatus = 'new' | 'approved' | 'declined';
-
 export const requestStatuses: RequestStatus[] = ['new', 'approved', 'declined'];
+
+export const getRequest: (id: string) => Promise<Request> = async (id: string) => {
+  const request = await firebase.database().ref(`requests/${id}`).once('value');
+  if (!(request && request.exists())) return null;
+
+  return { id: request.key, ...request.val() };
+};
+
+export const setRequestStatus = (id: string, status: RequestStatus) => firebase.database().ref(`requests/${id}/status`).set(status);
 
 export const getStatusClass = (status: RequestStatus) => statusClass[status] || '';
 
