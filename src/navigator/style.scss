@@ -17,6 +17,8 @@ $navigator-dot-center: ($navigator-size - $navigator-dot-size) / 2;
     top: $navigator-dot-center;
     left: $navigator-dot-center;
     background: $neutral;
+
+    transition: box-shadow $animation-duration $animation-easing;
   }
 
   &:hover .navigator-dot {
