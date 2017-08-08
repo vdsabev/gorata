@@ -4,6 +4,10 @@ const env = require('var');
 
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
+
+// const dependencies = require('./package.json').dependencies;
+// const vendor = Object.keys(dependencies).filter((dependency) => dependency.indexOf('@types/') === -1);
 
 module.exports = (options = {}) => ({
   devtool: options.production ? false : 'inline-source-map',
@@ -29,12 +33,10 @@ module.exports = (options = {}) => ({
       // Styles
       {
         test: /\.s?css$/,
-        use: [
-          { loader: 'style-loader' },
-          { loader: 'css-loader' },
-          { loader: 'postcss-loader' },
-          { loader: 'sass-loader' }
-        ]
+        use: ExtractTextPlugin.extract({
+          fallback: 'style-loader',
+          use: ['css-loader', 'postcss-loader', 'sass-loader']
+        })
       },
 
       // Assets
@@ -45,6 +47,7 @@ module.exports = (options = {}) => ({
     ]
   },
   plugins: [
+    // new webpack.optimize.CommonsChunkPlugin('vendor'),
     new webpack.optimize.ModuleConcatenationPlugin(),
     new webpack.DefinePlugin({
       'process.env': JSON.stringify(env)
@@ -56,6 +59,9 @@ module.exports = (options = {}) => ({
         ]
       }
     }),
+
+    // `contenthash` is specific to this plugin, we would typically use `chunkhash`
+    new ExtractTextPlugin('styles.[contenthash].css'),
     new HtmlWebpackPlugin({ template: './src/index.ejs' })
   ]
 });

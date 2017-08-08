@@ -10,7 +10,7 @@
     "suppressImplicitAnyIndexErrors": false,
 
     "baseUrl": "src",
-    "lib": ["dom", "es2015.promise", "es5"],
+    "lib": ["dom", "es2015.promise", "es2015.collection", "es5"],
     "module": "commonjs",
     "target": "es5"
   },
