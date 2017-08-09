@@ -1,2 +1,2 @@
-export const success = window.alert;
-export const error = window.alert;
+export const success = window.alert.bind(window);
+export const error = window.alert.bind(window);
