@@ -1,5 +1,3 @@
-import '../assets/default.png';
-
 import { a, div, img, h4 } from 'compote/html';
 import { flex } from 'compote/components/flex';
 import * as m from 'mithril';

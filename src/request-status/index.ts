@@ -1,11 +1,9 @@
-import { div } from 'compote/html';
+import { div, Properties } from 'compote/html';
 import { FactoryComponent } from 'mithril';
 
 import { RequestStatus as RequestStatusType, getStatusClass, getStatusText } from '../request';
 
-interface State {
-  class?: string;
-  onclick?: Function;
+interface State extends Properties<HTMLDivElement> {
   status: RequestStatusType;
 }
 

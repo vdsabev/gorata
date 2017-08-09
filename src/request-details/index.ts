@@ -1,11 +1,10 @@
-import '../assets/default.png';
-
-import { div, img, h4, select, option } from 'compote/html';
+import { div, h4, select, option } from 'compote/html';
 import { Timeago } from 'compote/components/timeago';
 import { flex } from 'compote/components/flex';
 import * as m from 'mithril';
 import { FactoryComponent, redraw, withAttr } from 'mithril';
 
+import { Image } from '../image';
 import * as notify from '../notify';
 import { Request, RequestStatus as RequestStatusType, requestStatuses, setRequestStatus, getStatusText } from '../request';
 import { RequestStatus } from '../request-status';
@@ -25,7 +24,6 @@ export const RequestDetails: FactoryComponent<State> = ({ attrs }) => {
   const setStatusToValue = withAttr('value', setStatus(state));
   const startEditingRequestStatus = () => {
     state.isRequestStatusBeingEdited = true;
-    redraw();
   };
 
   return {
@@ -36,9 +34,9 @@ export const RequestDetails: FactoryComponent<State> = ({ attrs }) => {
       return (
         div([
           request.imageUrls && request.imageUrls.length > 0 ?
-            request.imageUrls.map(RequestImage)
+            request.imageUrls.map((imageUrl) => m(Image, { src: imageUrl }))
             :
-            RequestImage('default.png'),
+            m(Image, { src: 'default.png' }),
           div({ class: 'pa-md' }, [
             div({ class: 'flex-row justify-content-center align-items-start' }, [
               h4({ style: flex(1) }, request.title),
@@ -61,8 +59,6 @@ export const RequestDetails: FactoryComponent<State> = ({ attrs }) => {
   };
 };
 
-const RequestImage = (imageUrl: string) => img({ src: imageUrl });
-
 const RequestStatusOption = (status: RequestStatusType) => option({ value: status }, getStatusText(status));
 
 const setStatus = (state: State) => async (status: RequestStatusType) => {
@@ -70,7 +66,6 @@ const setStatus = (state: State) => async (status: RequestStatusType) => {
   const previousStatus = request.status;
   request.status = status;
   state.isRequestStatusBeingEdited = false;
-  redraw();
 
   try {
     await setRequestStatus(request.id, request.status);
