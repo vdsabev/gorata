@@ -1,4 +1,3 @@
-import '../assets/default.png';
 import './style.scss';
 
 import { div } from 'compote/html';
@@ -17,7 +16,7 @@ interface State {
 }
 
 const state: State = {
-  requestsFilter: null,
+  requestsFilter: { key: 'status', value: 'new' },
   requestBeingEdited: null
 };
 
@@ -30,7 +29,7 @@ export const RequestList: FactoryComponent<State> = () => {
       return [
         // Status Filter
         div({ class: 'flex-row justify-content-space-around align-items-center ma-sm mt-md' },
-          [null, ...requestStatuses].map((status) => m(RequestListStatusFilterItem, {
+          [...requestStatuses, null].map((status) => m(RequestListStatusFilterItem, {
             key: status,
             parent: state,
             status

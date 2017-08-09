@@ -1,3 +1,5 @@
+import '../assets/default.png';
+
 import { div, img, h4, select, option } from 'compote/html';
 import { Timeago } from 'compote/components/timeago';
 import { flex } from 'compote/components/flex';
@@ -33,16 +35,17 @@ export const RequestDetails: FactoryComponent<State> = ({ attrs }) => {
 
       return (
         div([
-          img({ src: request.imageUrls && request.imageUrls[0] || 'default.png' }),
+          request.imageUrls && request.imageUrls.length > 0 ?
+            request.imageUrls.map(RequestImage)
+            :
+            RequestImage('default.png'),
           div({ class: 'pa-md' }, [
             div({ class: 'flex-row justify-content-center align-items-start' }, [
               h4({ style: flex(1) }, request.title),
               canModerate(currentUser) ?
                 isRequestStatusBeingEdited ?
                   select({ class: 'br-md pa-sm', onchange: setStatusToValue, value: request.status },
-                    requestStatuses.map((status) =>
-                      option({ value: status }, getStatusText(status))
-                    )
+                    requestStatuses.map(RequestStatusOption)
                   )
                   :
                   m(RequestStatus, { class: 'pointer', onclick: startEditingRequestStatus, status: request.status })
@@ -57,6 +60,10 @@ export const RequestDetails: FactoryComponent<State> = ({ attrs }) => {
     }
   };
 };
+
+const RequestImage = (imageUrl: string) => img({ src: imageUrl });
+
+const RequestStatusOption = (status: RequestStatusType) => option({ value: status }, getStatusText(status));
 
 const setStatus = (state: State) => async (status: RequestStatusType) => {
   const { request } = state;

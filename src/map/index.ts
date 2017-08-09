@@ -8,7 +8,7 @@ export const mapLoaded = new Promise(async (resolve, reject) => {
     const map = document.querySelector('#map');
     map.classList.add('loaded');
     store.dispatch({ type: Actions.MAP_LOADED, element: map });
-    store.dispatch({ type: Actions.GET_REQUESTS, filter: null });
+    store.dispatch({ type: Actions.GET_REQUESTS, filter: { key: 'status', value: 'new' } });
 
     resolve();
   }
