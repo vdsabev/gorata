@@ -143,7 +143,8 @@ export function requestPopup(state: RequestPopupState = {}, action: RequestPopup
         ${action.request.imageUrls ? action.request.imageUrls.map((imageUrl) => `
           <img class="width-xl mr-sm" src="${imageUrl}" />
         `).join('') : ''}
-        <h4>${action.request.title}</h4>${action.request.text}
+        <h4>${action.request.title}</h4>
+        ${action.request.text}
       `
     });
 
