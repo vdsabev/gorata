@@ -65,8 +65,6 @@ export const RequestDetails: FactoryComponent<State> = ({ attrs }) => {
   };
 };
 
-const RequestStatusOption = (status: RequestStatusType) => option({ value: status }, getStatusText(status));
-
 const setStatus = (state: State) => async (status: RequestStatusType) => {
   const { request } = state;
   const previousStatus = request.status;
@@ -84,3 +82,5 @@ const setStatus = (state: State) => async (status: RequestStatusType) => {
     notify.error(error);
   }
 };
+
+const RequestStatusOption = (status: RequestStatusType) => option({ value: status }, getStatusText(status));

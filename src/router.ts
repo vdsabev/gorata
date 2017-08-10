@@ -33,9 +33,9 @@ export function initializeRouter() {
   });
 }
 
-const load = <T>(view: m.FactoryComponent<any> | m.Component<any, any>, key = 'result') => (result: T) => (
+const load = <T>(component: m.FactoryComponent<any> | m.Component<any, any>, key = 'result') => (result: T) => (
   result ?
-    { view: render(RequestDetails, { [key]: result }) }
+    { view: render(component, { [key]: result }) }
     :
     NotFound
 );
@@ -54,4 +54,4 @@ const redirect = (url: string) => (): null => {
   return null;
 };
 
-const render = (view: m.FactoryComponent<any> | m.Component<any, any>, ...args: any[]) => () => m(view, ...args);
+const render = (component: m.FactoryComponent<any> | m.Component<any, any>, ...args: any[]) => () => m(component, ...args);
