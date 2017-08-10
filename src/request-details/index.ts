@@ -2,53 +2,15 @@ import { div, h4, select, option } from 'compote/html';
 import { Timeago } from 'compote/components/timeago';
 import { flex } from 'compote/components/flex';
 import * as m from 'mithril';
-import { /*ClassComponent,*/ Vnode, redraw } from 'mithril';
+import { redraw } from 'mithril';
 
+import { component } from '../component';
 import { Image } from '../image';
 import * as notify from '../notify';
 import { Request, RequestStatus as RequestStatusType, requestStatuses, setRequestStatus, getStatusText } from '../request';
 import { RequestStatus } from '../request-status';
 import { store } from '../store';
 import { canModerate } from '../user';
-
-interface Actions<State> {
-  [key: string]: (state?: State, actions?: Actions<State>, ...args: any[]) => State | Promise<State>;
-}
-
-const component = <S extends {}, A extends Actions<S>>(options: { state: S, actions: A, render: (s: S, a: A) => any }) => (vnode: Vnode<any, S>) => {
-  let state: S = { ...<any>options.state, ...vnode.attrs };
-
-  const actions = <A>{};
-  Object.keys(options.actions).map(createActionProxy);
-
-  return {
-    // TODO: Lifecycle methods
-    view: () => options.render(state, actions)
-  };
-
-  function createActionProxy(key: string) {
-    actions[key] = (...args: any[]) => {
-      const stateOrPromise = options.actions[key](<any>state, actions, ...args);
-
-      // The state object MUST be an object, so ignore falsy values
-      if (!stateOrPromise) return state;
-
-      if ((<Promise<S>>stateOrPromise).then && (<Promise<S>>stateOrPromise).catch) {
-        (<Promise<S>>stateOrPromise).catch(setStateAndRedraw).then(setStateAndRedraw);
-        return stateOrPromise;
-      }
-
-      return state = <S>stateOrPromise;
-    };
-  }
-
-  function setStateAndRedraw(newState: S) {
-    if (newState) {
-      state = newState;
-      redraw();
-    }
-  }
-};
 
 export const RequestDetails = component({
   state: {
@@ -70,13 +32,15 @@ export const RequestDetails = component({
 
       try {
         await setRequestStatus(request.id, newStatus);
-        return null;
       }
       catch (error) {
         notify.error(error);
         startEditingStatus();
-        return setStatus(<any>previousStatus);
+        setStatus(<any>previousStatus);
+        redraw();
       }
+
+      return null;
     }
   },
 
