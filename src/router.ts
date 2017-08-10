@@ -14,6 +14,8 @@ import { isLoggedIn } from './user';
 
 type RouteParams = Record<string, string>;
 
+type Component = Constructor<m.ClassComponent<any>> | m.FactoryComponent<any> | m.Component<any, any>;
+
 export function initializeRouter() {
   m.route.prefix('');
 
@@ -33,7 +35,7 @@ export function initializeRouter() {
   });
 }
 
-const load = <T>(component: m.FactoryComponent<any> | m.Component<any, any>, key = 'result') => (result: T) => (
+const load = (component: Component, key = 'result') => (result: any) => (
   result ?
     { view: render(component, { [key]: result }) }
     :
@@ -54,4 +56,4 @@ const redirect = (url: string) => (): null => {
   return null;
 };
 
-const render = (component: m.FactoryComponent<any> | m.Component<any, any>, ...args: any[]) => () => m(component, ...args);
+const render = (component: Component, ...args: any[]) => () => m(component, ...args);
