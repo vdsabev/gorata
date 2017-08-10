@@ -49,7 +49,7 @@ export const RequestDetails: FactoryComponent<State> = ({ attrs }) => {
                   ]
                   :
                   [
-                    m(RequestStatus, { class: 'br-md pa-sm', status: request.status }),
+                    m(RequestStatus, { status: request.status }),
                     div({ class: 'pointer mr-n-md pa-md unselectable', onclick: startEditingRequestStatus }, '✏️')
                   ]
                 )
