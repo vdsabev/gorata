@@ -1,4 +1,5 @@
 import './assets/default.png';
+import './assets/error.png';
 import './assets/favicon.png';
 import './assets/logo_192x192.png';
 import './assets/logo_512x512.png';

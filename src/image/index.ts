@@ -5,7 +5,7 @@ let options: State = {
   defaultSrc: 'default.png',
   errorSrc: 'error.png',
   style: {
-    filter: 'brightness(50%)',
+    filter: 'brightness(80%)',
     transition: 'filter 0.4s ease-in-out'
   }
 };
@@ -32,14 +32,16 @@ export const Image: FactoryComponent<State> = ({ attrs: { defaultSrc, errorSrc, 
   mockImageElement.onload = () => {
     src = attrs.src;
     imageElement.src = src;
-    style = attrs.style || {};
+    const { filter, ...omitFilter } = options.style;
+    style = { ...omitFilter, ...attrs.style };
     redraw();
   };
 
   mockImageElement.onerror = () => {
     src = errorSrc || options.errorSrc;
     imageElement.src = src;
-    style = attrs.style || {};
+    const { filter, ...omitFilter } = options.style;
+    style = { ...omitFilter, ...attrs.style };
     redraw();
   };
 
