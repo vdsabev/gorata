@@ -6,7 +6,7 @@ let options: State = {
   errorSrc: 'error.png',
   style: {
     filter: 'brightness(80%)',
-    transition: 'filter 0.4s ease-in-out'
+    transition: 'filter 0.33s cubic-bezier(0.33, -0.69, .25, 1)'
   }
 };
 
