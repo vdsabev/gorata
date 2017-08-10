@@ -6,6 +6,7 @@
     // Requests
     "requests": {
       ".read": true,
+      ".indexOn": "status",
 
       "$requestId": {
         // TODO: Allow the user who created the request to edit it
