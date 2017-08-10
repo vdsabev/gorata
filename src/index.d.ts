@@ -11,4 +11,9 @@ interface Action<ActionType> {
   type?: ActionType;
 }
 
+// TODO: Move to compote
+interface Constructor<T> {
+  new(...args: any[]): T;
+}
+
 declare var process: Process;
