@@ -22,9 +22,8 @@ export const RequestDetails: FactoryComponent<State> = ({ attrs }) => {
   };
 
   const setStatusToValue = withAttr('value', setStatus(state));
-  const startEditingRequestStatus = () => {
-    state.isRequestStatusBeingEdited = true;
-  };
+  const startEditingRequestStatus = () => { state.isRequestStatusBeingEdited = true; };
+  const stopEditingRequestStatus = () => { state.isRequestStatusBeingEdited = false; };
 
   return {
     view() {
@@ -41,12 +40,19 @@ export const RequestDetails: FactoryComponent<State> = ({ attrs }) => {
             div({ class: 'flex-row justify-content-center align-items-start' }, [
               h4({ style: flex(1) }, request.title),
               canModerate(currentUser) ?
-                isRequestStatusBeingEdited ?
-                  select({ class: 'br-md pa-sm', onchange: setStatusToValue, value: request.status },
-                    requestStatuses.map(RequestStatusOption)
-                  )
+                div({ class: 'flex-row justify-content-center align-items-center' }, isRequestStatusBeingEdited ?
+                  [
+                    select({ class: 'br-md pa-sm', onchange: setStatusToValue, value: request.status },
+                      requestStatuses.map(RequestStatusOption)
+                    ),
+                    div({ class: 'pointer mr-n-md pa-md unselectable', onclick: stopEditingRequestStatus }, '✖️')
+                  ]
                   :
-                  m(RequestStatus, { class: 'pointer', onclick: startEditingRequestStatus, status: request.status })
+                  [
+                    m(RequestStatus, { class: 'br-md pa-sm', status: request.status }),
+                    div({ class: 'pointer mr-n-md pa-md unselectable', onclick: startEditingRequestStatus }, '✏️')
+                  ]
+                )
                 :
                 m(RequestStatus, { status: request.status })
             ]),

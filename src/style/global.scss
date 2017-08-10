@@ -77,10 +77,6 @@ textarea {
   max-width: 100%;
 }
 
-.va-top { vertical-align: top; }
-.va-middle { vertical-align: middle; }
-.va-bottom { vertical-align: bottom; }
-
 // Overflow
 .overflow-hidden {
   @include overflow(hidden, hidden);
@@ -102,4 +98,8 @@ textarea {
 
 .pointer {
   cursor: pointer;
+}
+
+.unselectable {
+  user-select: none;
 }
