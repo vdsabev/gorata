@@ -19,25 +19,35 @@ const component = <S extends {}, A extends Actions<S>>(options: { state: S, acti
   let state: S = { ...<any>options.state, ...vnode.attrs };
 
   const actions = <A>{};
-  Object.keys(options.actions).map((key) => {
-    actions[key] = (...args: any[]) => {
-      const stateOrPromise = options.actions[key](<any>state, actions, ...args);
-      if (stateOrPromise && (<Promise<S>>stateOrPromise).then && (<Promise<S>>stateOrPromise).catch) {
-        (<Promise<S>>stateOrPromise).catch(redraw).then((promisedState: S) => {
-          state = promisedState;
-          redraw();
-          return state;
-        });
-        return stateOrPromise;
-      }
-      return state = <S>stateOrPromise;
-    };
-  });
+  Object.keys(options.actions).map(createActionProxy);
 
   return {
     // TODO: Lifecycle methods
     view: () => options.render(state, actions)
   };
+
+  function createActionProxy(key: string) {
+    actions[key] = (...args: any[]) => {
+      const stateOrPromise = options.actions[key](<any>state, actions, ...args);
+
+      // The state object MUST be an object, so ignore falsy values
+      if (!stateOrPromise) return state;
+
+      if ((<Promise<S>>stateOrPromise).then && (<Promise<S>>stateOrPromise).catch) {
+        (<Promise<S>>stateOrPromise).catch(setStateAndRedraw).then(setStateAndRedraw);
+        return stateOrPromise;
+      }
+
+      return state = <S>stateOrPromise;
+    };
+  }
+
+  function setStateAndRedraw(newState: S) {
+    if (newState) {
+      state = newState;
+      redraw();
+    }
+  }
 };
 
 export const RequestDetails = component({
@@ -49,17 +59,18 @@ export const RequestDetails = component({
   actions: {
     startEditingStatus: (state) => ({ ...state, isRequestStatusBeingEdited: true }),
     stopEditingStatus: (state) => ({ ...state, isRequestStatusBeingEdited: false }),
-    setStatus: (state, actions, status: RequestStatusType) => ({ ...state, request: { ...state.request, status } }),
-    setStatusAsync: async (state, { startEditingStatus, stopEditingStatus, setStatus }, e: Event) => {
-      const previousStatus = state.request.status;
+    setStatus: ({ request, ...state }, actions, status: RequestStatusType) => ({ ...state, request: { ...request, status } }),
+    // TODO: Types
+    setStatusAsync: async ({ request }, { startEditingStatus, stopEditingStatus, setStatus }, e: Event) => {
+      const previousStatus = request.status;
       const newStatus = <RequestStatusType>(<HTMLSelectElement>e.currentTarget).value;
       stopEditingStatus();
       setStatus(<any>newStatus);
       redraw();
 
       try {
-        await setRequestStatus(state.request.id, newStatus);
-        return setStatus(<any>newStatus);
+        await setRequestStatus(request.id, newStatus);
+        return null;
       }
       catch (error) {
         notify.error(error);
