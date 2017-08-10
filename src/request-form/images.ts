@@ -4,6 +4,7 @@ import * as m from 'mithril';
 import { redraw, Children, FactoryComponent } from 'mithril';
 import * as firebase from 'firebase/app';
 
+import * as notify from '../notify';
 import { guid, toArray } from '../utils';
 
 export const Images = (imageUrls: string[]) => (
@@ -42,7 +43,7 @@ const UploadedImage: FactoryComponent<{ imageUrls: string[], imageUrl: string }>
     catch (error) {
       imageUrls.splice(indexOfImageUrl, 0, imageUrl);
       redraw();
-      window.alert(error.message);
+      notify.error(error);
     }
   }
 };
@@ -83,7 +84,7 @@ const UploadNewImage: FactoryComponent<{ imageUrls: string[] }> = ({ attrs: { im
     catch (error) {
       uploading = false;
       redraw();
-      window.alert(error.message);
+      notify.error(error);
     }
   }
 

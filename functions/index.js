@@ -24,9 +24,11 @@ exports.moveImages = functions.database.ref('/requests/{requestId}/createdBy').o
           const imageUuid = url.parse(imageUrl).pathname.match(/.+tmp%2F([\w-]+)/)[1];
           const imagePath = `tmp/${imageUuid}`;
           const newImagePath = `users/${userId}/${uuidv4()}`;
+
+          // https://stackoverflow.com/questions/42956250/get-download-url-from-file-uploaded-with-cloud-functions-for-firebase
           bucket.file(imagePath).move(newImagePath).catch(reject).then(() => {
             // https://cloud.google.com/storage/docs/collaboration#browser
-            const newImageUrl = `https://storage.cloud.google.com/${env.FIREBASE_STORAGE_BUCKET}/${newImagePath}`;
+            const newImageUrl = `${env.FIREBASE_STORAGE_URL}/${env.FIREBASE_STORAGE_BUCKET}/o/${encodeURIComponent(newImagePath)}?alt=media`;
             event.data.ref.parent.child(`imageUrls/${index}`).set(newImageUrl).catch(reject).then(resolve);
           });
         }))

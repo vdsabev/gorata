@@ -1,3 +1,5 @@
+import './assets/default.png';
+import './assets/error.png';
 import './assets/favicon.png';
 import './assets/logo_192x192.png';
 import './assets/logo_512x512.png';
@@ -16,9 +18,9 @@ import { initializeRouter } from './router';
 import { store } from './store';
 
 setHyperscriptFunction(m);
-initialize();
+initializeApp();
 
-function initialize() {
+function initializeApp() {
   initializeFirebaseApp();
   registerServiceWorker();
   subscribeToStore();

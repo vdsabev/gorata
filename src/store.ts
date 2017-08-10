@@ -141,9 +141,10 @@ export function requestPopup(state: RequestPopupState = {}, action: RequestPopup
     const popup = new google.maps.InfoWindow({
       content: `
         ${action.request.imageUrls ? action.request.imageUrls.map((imageUrl) => `
-          <img class="width-xl mr-sm" src="${imageUrl}" />
+          <img class="width-xl mr-sm va-top" src="${imageUrl}" />
         `).join('') : ''}
-        <h4>${action.request.title}</h4>${action.request.text}
+        <h4>${action.request.title}</h4>
+        ${action.request.text}
       `
     });
 

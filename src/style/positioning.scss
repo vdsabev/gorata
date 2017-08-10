@@ -1,14 +1,8 @@
-.relative {
-  position: relative;
-}
+.relative { position: relative; }
 
-.absolute {
-  position: absolute;
-}
+.absolute { position: absolute; }
 
-.fixed {
-  position: fixed;
-}
+.fixed { position: fixed; }
 
 .stretch {
   top: 0;
@@ -16,3 +10,7 @@
   bottom: 0;
   left: 0;
 }
+
+.va-top { vertical-align: top; }
+.va-middle { vertical-align: middle; }
+.va-bottom { vertical-align: bottom; }

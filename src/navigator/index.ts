@@ -3,11 +3,13 @@ import './style.scss';
 import { div } from 'compote/html';
 import { render } from 'mithril';
 
+import * as notify from '../notify';
+
 export const addNavigatorControl = (map: google.maps.Map) => {
   if (window.navigator && window.navigator.geolocation) {
-    const navigatorElement = document.createElement('div');
-    render(navigatorElement, Navigator(map));
-    map.controls[google.maps.ControlPosition.RIGHT_TOP].push(navigatorElement);
+    const container = document.createElement('div');
+    render(container, Navigator(map));
+    map.controls[google.maps.ControlPosition.RIGHT_TOP].push(container.firstElementChild);
   }
 };
 
@@ -21,7 +23,7 @@ const Navigator = (map: google.maps.Map) => (
   ])
 );
 
-const defaultZoomLevel = 18;
+const userLocationZoomLevel = 18;
 
 const getUserLocation = (map: google.maps.Map) => (e: MouseEvent) => {
   window.navigator.geolocation.getCurrentPosition(
@@ -29,13 +31,13 @@ const getUserLocation = (map: google.maps.Map) => (e: MouseEvent) => {
     (result) => {
       const location = new google.maps.LatLng(result.coords.latitude, result.coords.longitude);
       map.panTo(location);
-      map.set('zoom', defaultZoomLevel);
+      map.set('zoom', userLocationZoomLevel);
     },
     // Error
     (error) => {
       const errorMessage = getLocationError(error);
       if (errorMessage) {
-        window.alert(errorMessage);
+        notify.error(errorMessage);
       }
     }
   );

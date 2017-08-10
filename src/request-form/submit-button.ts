@@ -2,6 +2,7 @@ import { button } from 'compote/html';
 import * as firebase from 'firebase/app';
 import { route, redraw, FactoryComponent } from 'mithril';
 
+import * as notify from '../notify';
 import { Request } from '../request';
 import { store } from '../store';
 
@@ -34,7 +35,7 @@ export const SubmitButton: FactoryComponent<{ state: State }> = ({ attrs: { stat
     catch (error) {
       state.loading = false;
       redraw();
-      window.alert(error.message);
+      notify.error(error);
     }
   }
 };
