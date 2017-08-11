@@ -1,27 +1,33 @@
-import { Vnode } from 'mithril';
+import { Vnode, Lifecycle, Children } from 'mithril';
 
 interface Actions<State> {
-  [key: string]: (state?: State, actions?: Actions<State>, ...args: any[]) => State | Promise<State>;
+  [key: string]: (state?: State, actions?: this, ...args: any[]) => State | Promise<State>;
 }
 
-export const component = <S extends {}, A extends Actions<S>>(options: { state: S, actions: A, render: (s: S, a: A) => any }) => (vnode: Vnode<any, S>) => {
+interface ComponentOptions<S extends {}, A extends Actions<S>> {
+  state?: S;
+  actions?: A;
+  events?: Lifecycle<any, null>;
+  view: (s: S, a: A, v: Vnode<any, null>) => Children;
+}
+
+export const component = <S extends {}, A extends Actions<S>>(options: ComponentOptions<S, A>) => (vnode: Vnode<any, null>) => {
   let state: S = { ...<any>options.state, ...vnode.attrs };
+  const setState = (newState: S) => state = newState;
 
   const actions = <A>{};
   Object.keys(options.actions).map(createActionProxy);
 
   return {
-    // TODO: Attach lifecycle methods, perhaps from `options.events`
-    view: () => options.render(state, actions)
+    ...options.events,
+    view: () => options.view(state, actions, vnode)
   };
 
   function createActionProxy(key: string) {
     actions[key] = (...args: any[]) => {
-      const stateOrPromise = options.actions[key](<any>state, actions, ...args);
+      const stateOrPromise = options.actions[key](state, actions, ...args);
 
-      if (!stateOrPromise) return state;
-
-      if ((<Promise<S>>stateOrPromise).then && (<Promise<S>>stateOrPromise).catch) {
+      if (isPromise(stateOrPromise)) {
         (<Promise<S>>stateOrPromise).catch(setState).then(setState);
         return stateOrPromise;
       }
@@ -29,12 +35,6 @@ export const component = <S extends {}, A extends Actions<S>>(options: { state: 
       return setState(<S>stateOrPromise);
     };
   }
-
-  function setState(newState: S) {
-    // The state object MUST be an object, so ignore falsy values
-    if (newState) {
-      state = newState;
-    }
-    return state;
-  }
 };
+
+const isPromise = (promise: any) => promise && promise.catch && promise.then;

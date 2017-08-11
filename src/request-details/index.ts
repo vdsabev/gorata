@@ -19,34 +19,46 @@ export const RequestDetails = component({
   },
 
   actions: {
-    startEditingStatus: (state) => ({ ...state, isRequestStatusBeingEdited: true }),
-    stopEditingStatus: (state) => ({ ...state, isRequestStatusBeingEdited: false }),
-    setStatus: ({ request, ...state }, actions, status: RequestStatusType) => ({ ...state, request: { ...request, status } }),
-    // TODO: Types
+    startEditingStatus: (state) => ({
+      ...state,
+      isRequestStatusBeingEdited: true
+    }),
+    stopEditingStatus: (state) => ({
+      ...state,
+      isRequestStatusBeingEdited: false
+    }),
+    setStatus: ({ request, ...state }, actions, status: RequestStatusType) => ({
+      ...state,
+      request: { ...request, status }
+    }),
     setStatusAsync: async ({ request }, { startEditingStatus, stopEditingStatus, setStatus }, e: Event) => {
       const previousStatus = request.status;
-      const newStatus = <RequestStatusType>(<HTMLSelectElement>e.currentTarget).value;
-      stopEditingStatus();
-      setStatus(<any>newStatus);
-      redraw();
-
       try {
+        // Optimistically set the status
+        const newStatus = <RequestStatusType>(<HTMLSelectElement>e.currentTarget).value;
+        stopEditingStatus();
+        const newState = setStatus(<any>newStatus);
+        redraw();
+
         await setRequestStatus(request.id, newStatus);
+
+        return newState;
       }
       catch (error) {
-        notify.error(error);
+        // Restore the old status
         startEditingStatus();
-        setStatus(<any>previousStatus);
+        const newState = setStatus(<any>previousStatus);
         redraw();
-      }
 
-      return null;
+        notify.error(error);
+
+        return newState;
+      }
     }
   },
 
-  render({ request, isRequestStatusBeingEdited }, { startEditingStatus, stopEditingStatus, setStatusAsync }) {
+  view({ request, isRequestStatusBeingEdited }, { startEditingStatus, stopEditingStatus, setStatusAsync }) {
     const { currentUser } = store.getState();
-
     return (
       div([
         request.imageUrls && request.imageUrls.length > 0 ?
