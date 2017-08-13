@@ -1,7 +1,7 @@
 import { Vnode, Lifecycle, Children } from 'mithril';
 
-interface Actions<State> {
-  [key: string]: (state?: State, actions?: this, ...args: any[]) => State | Promise<State>;
+interface Actions<S> {
+  [key: string]: (state?: S, actions?: this, ...args: any[]) => S | Promise<S>;
 }
 
 interface ComponentOptions<S extends {}, A extends Actions<S>> {
@@ -28,13 +28,14 @@ export const component = <S extends {}, A extends Actions<S>>(options: Component
       const stateOrPromise = options.actions[key](state, actions, ...args);
 
       if (isPromise(stateOrPromise)) {
-        (<Promise<S>>stateOrPromise).catch(setState).then(setState);
+        stateOrPromise.catch(setState).then(setState);
         return stateOrPromise;
       }
 
-      return setState(<S>stateOrPromise);
+      return setState(stateOrPromise);
     };
   }
 };
 
-const isPromise = (promise: any) => promise && promise.catch && promise.then;
+const isPromise = <T>(promise: T | Promise<T>): promise is Promise<T> =>
+  promise != null && (<Promise<T>>promise).catch != null && (<Promise<T>>promise).then != null;
