@@ -18,7 +18,7 @@ interface State {
 
 export const RequestDetails = component({
   reducers: {
-    request(request: Request = null, action = {}, actions): Request {
+    request(request: Request = null, action = {}, state: State, actions): Request {
       switch (action.type) {
         case 'SAVE_STATUS':
           const previousStatus = request.status;
@@ -49,7 +49,7 @@ export const RequestDetails = component({
     revertStatus: (status: RequestStatusType): any => ({ type: 'REVERT_STATUS', status })
   },
 
-  view({ request, ...state }: State, actions) {
+  view(vnode, { request, ...state }: State, actions) {
     const { currentUser } = store.getState();
     return (
       div([

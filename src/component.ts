@@ -2,23 +2,22 @@ import { Vnode, Lifecycle, Children, redraw } from 'mithril';
 import { createStore } from 'redux';
 
 interface ComponentOptions<Actions> {
-  reducers?: Record<string, (state: any, action: any, actions: Actions) => any>;
+  reducers?: Record<string, (value: any, action: any, state: any, actions: Actions) => any>;
   actions?: Actions;
   events?: Lifecycle<any, null>;
-  view: (state: any, actions: Actions, vnode: Vnode<any, null>) => Children;
+  view: (vnode: Vnode<any, null>, state: any, actions: Actions) => Children;
 }
 
-export const component = <Actions extends {}>(options: ComponentOptions<Actions>) => (vnode: Vnode<any, null>) => {
-  const actions = <Actions>{};
-  const createActionProxy = (key: string) => {
-    (<any>actions)[key] = (...args: any[]) => store.dispatch((<any>options.actions)[key](...args));
-  };
-  Object.keys(options.actions).map(createActionProxy);
+export const component = <Actions extends {}>({ actions, reducers, events, view }: ComponentOptions<Actions>) => (vnode: Vnode<any, null>) => {
+  const actionProxies = <Actions>{};
+  Object.keys(actions).map((key) => {
+    (<any>actionProxies)[key] = (...args: any[]) => store.dispatch((<any>actions)[key](...args));
+  });
 
   const reducerProxy = (state = {}, action: any) => {
     const newState = {};
-    Object.keys(options.reducers).map((key) => {
-      (<any>newState)[key] = options.reducers[key]((<any>state)[key], action, actions);
+    Object.keys(reducers).map((key) => {
+      (<any>newState)[key] = reducers[key]((<any>state)[key], action, state, actionProxies);
     });
 
     return newState;
@@ -27,7 +26,7 @@ export const component = <Actions extends {}>(options: ComponentOptions<Actions>
   store.subscribe(redraw);
 
   return {
-    ...options.events,
-    view: () => options.view(store.getState(), actions, vnode)
+    ...events,
+    view: () => view(vnode, store.getState(), actionProxies)
   };
 };
