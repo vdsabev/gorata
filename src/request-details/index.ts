@@ -2,7 +2,6 @@ import { div, h4, select, option } from 'compote/html';
 import { Timeago } from 'compote/components/timeago';
 import { flex } from 'compote/components/flex';
 import * as m from 'mithril';
-import { redraw } from 'mithril';
 
 import { component } from '../component';
 import { Image } from '../image';
@@ -12,52 +11,45 @@ import { RequestStatus } from '../request-status';
 import { store } from '../store';
 import { canModerate } from '../user';
 
+interface State {
+  request: Request;
+  isRequestStatusBeingEdited: boolean;
+}
+
 export const RequestDetails = component({
-  state: {
-    request: <Request>null,
-    isRequestStatusBeingEdited: false
-  },
-
-  actions: {
-    startEditingStatus: (state) => ({
-      ...state,
-      isRequestStatusBeingEdited: true
-    }),
-    stopEditingStatus: (state) => ({
-      ...state,
-      isRequestStatusBeingEdited: false
-    }),
-    setStatus: ({ request, ...state }, actions, status: RequestStatusType) => ({
-      ...state,
-      request: { ...request, status }
-    }),
-    setStatusAsync: async ({ request }, { startEditingStatus, stopEditingStatus, setStatus }, e: Event) => {
-      const previousStatus = request.status;
-      try {
-        // Optimistically set the status
-        const newStatus = <RequestStatusType>(<HTMLSelectElement>e.currentTarget).value;
-        stopEditingStatus();
-        const newState = setStatus(<any>newStatus);
-        redraw();
-
-        await setRequestStatus(request.id, newStatus);
-
-        return newState;
+  reducers: {
+    request(request: Request = null, action = {}, actions): Request {
+      switch (action.type) {
+        case 'SAVE_STATUS':
+          const previousStatus = request.status;
+          setRequestStatus(request.id, action.status).catch((error) => {
+            actions.revertStatus(previousStatus);
+            notify.error(error);
+          });
+          return { ...request, status: action.status };
+        case 'REVERT_STATUS': return { ...request, status: action.status };
+        default: return request;
       }
-      catch (error) {
-        // Restore the old status
-        startEditingStatus();
-        const newState = setStatus(<any>previousStatus);
-        redraw();
-
-        notify.error(error);
-
-        return newState;
+    },
+    isRequestStatusBeingEdited(isRequestStatusBeingEdited = false, action = {}): boolean {
+      switch (action.type) {
+        case 'START_EDITING_STATUS': return true;
+        case 'STOP_EDITING_STATUS': return false;
+        case 'SAVE_STATUS': return false;
+        case 'REVERT_STATUS': return true;
+        default: return isRequestStatusBeingEdited;
       }
     }
   },
 
-  view({ request, isRequestStatusBeingEdited }, { startEditingStatus, stopEditingStatus, setStatusAsync }) {
+  actions: {
+    startEditingStatus: (): any => ({ type: 'START_EDITING_STATUS' }),
+    stopEditingStatus: (): any => ({ type: 'STOP_EDITING_STATUS' }),
+    saveStatus: (e: Event): any => ({ type: 'SAVE_STATUS', status: <RequestStatusType>(<HTMLSelectElement>e.currentTarget).value }),
+    revertStatus: (status: RequestStatusType): any => ({ type: 'REVERT_STATUS', status })
+  },
+
+  view({ request, ...state }: State, actions) {
     const { currentUser } = store.getState();
     return (
       div([
@@ -69,17 +61,17 @@ export const RequestDetails = component({
           div({ class: 'flex-row justify-content-center align-items-start' }, [
             h4({ style: flex(1) }, request.title),
             canModerate(currentUser) ?
-              div({ class: 'flex-row justify-content-center align-items-center' }, isRequestStatusBeingEdited ?
+              div({ class: 'flex-row justify-content-center align-items-center' }, state.isRequestStatusBeingEdited ?
                 [
-                  select({ class: 'br-md pa-sm', onchange: setStatusAsync, value: request.status },
+                  select({ class: 'br-md pa-sm', onchange: actions.saveStatus, value: request.status },
                     requestStatuses.map(RequestStatusOption)
                   ),
-                  div({ class: 'pointer mr-n-md pa-md unselectable', onclick: stopEditingStatus }, '✖️')
+                  div({ class: 'pointer mr-n-md pa-md unselectable', onclick: actions.stopEditingStatus }, '✖️')
                 ]
                 :
                 [
                   m(RequestStatus, { status: request.status }),
-                  div({ class: 'pointer mr-n-md pa-md unselectable', onclick: startEditingStatus }, '✏️')
+                  div({ class: 'pointer mr-n-md pa-md unselectable', onclick: actions.startEditingStatus }, '✏️')
                 ]
               )
               :

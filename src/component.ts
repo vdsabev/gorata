@@ -1,41 +1,33 @@
-import { Vnode, Lifecycle, Children } from 'mithril';
+import { Vnode, Lifecycle, Children, redraw } from 'mithril';
+import { createStore } from 'redux';
 
-interface Actions<S> {
-  [key: string]: (state?: S, actions?: this, ...args: any[]) => S | Promise<S>;
-}
-
-interface ComponentOptions<S extends {}, A extends Actions<S>> {
-  state?: S;
-  actions?: A;
+interface ComponentOptions<Actions> {
+  reducers?: Record<string, (state: any, action: any, actions: Actions) => any>;
+  actions?: Actions;
   events?: Lifecycle<any, null>;
-  view: (s: S, a: A, v: Vnode<any, null>) => Children;
+  view: (state: any, actions: Actions, vnode: Vnode<any, null>) => Children;
 }
 
-export const component = <S extends {}, A extends Actions<S>>(options: ComponentOptions<S, A>) => (vnode: Vnode<any, null>) => {
-  let state: S = { ...<any>options.state, ...vnode.attrs };
-  const setState = (newState: S) => state = newState;
-
-  const actions = <A>{};
+export const component = <Actions extends {}>(options: ComponentOptions<Actions>) => (vnode: Vnode<any, null>) => {
+  const actions = <Actions>{};
+  const createActionProxy = (key: string) => {
+    (<any>actions)[key] = (...args: any[]) => store.dispatch((<any>options.actions)[key](...args));
+  };
   Object.keys(options.actions).map(createActionProxy);
+
+  const reducerProxy = (state = {}, action: any) => {
+    const newState = {};
+    Object.keys(options.reducers).map((key) => {
+      (<any>newState)[key] = options.reducers[key]((<any>state)[key], action, actions);
+    });
+
+    return newState;
+  };
+  const store = createStore(reducerProxy, vnode.attrs);
+  store.subscribe(redraw);
 
   return {
     ...options.events,
-    view: () => options.view(state, actions, vnode)
+    view: () => options.view(store.getState(), actions, vnode)
   };
-
-  function createActionProxy(key: string) {
-    actions[key] = (...args: any[]) => {
-      const stateOrPromise = options.actions[key](state, actions, ...args);
-
-      if (isPromise(stateOrPromise)) {
-        stateOrPromise.catch(setState).then(setState);
-        return stateOrPromise;
-      }
-
-      return setState(stateOrPromise);
-    };
-  }
 };
-
-const isPromise = <T>(promise: T | Promise<T>): promise is Promise<T> =>
-  promise != null && (<Promise<T>>promise).catch != null && (<Promise<T>>promise).then != null;
