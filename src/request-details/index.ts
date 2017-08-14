@@ -28,8 +28,8 @@ export const RequestDetails = component({
           });
           return { ...request, status: action.status };
         case 'REVERT_STATUS': return { ...request, status: action.status };
-        default: return request;
       }
+      return request;
     },
     isRequestStatusBeingEdited(isRequestStatusBeingEdited = false, action = {}): boolean {
       switch (action.type) {
@@ -37,8 +37,8 @@ export const RequestDetails = component({
         case 'STOP_EDITING_STATUS': return false;
         case 'SAVE_STATUS': return false;
         case 'REVERT_STATUS': return true;
-        default: return isRequestStatusBeingEdited;
       }
+      return isRequestStatusBeingEdited;
     }
   },
 

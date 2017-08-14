@@ -11,7 +11,12 @@ interface ComponentOptions<Actions> {
 export const component = <Actions extends {}>({ actions, reducers, events, view }: ComponentOptions<Actions>) => (vnode: Vnode<any, null>) => {
   const actionProxies = <Actions>{};
   Object.keys(actions).map((key) => {
-    (<any>actionProxies)[key] = (...args: any[]) => store.dispatch((<any>actions)[key](...args));
+    (<any>actionProxies)[key] = (...args: any[]) => {
+      const action = (<any>actions)[key](...args);
+      if (action) {
+        store.dispatch(action);
+      }
+    };
   });
 
   const reducerProxy = (state = {}, action: any) => {
