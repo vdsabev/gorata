@@ -12,9 +12,14 @@ export const component = <Actions extends {}>({ actions, reducers, events, view 
   const actionProxies = <Actions>{};
   Object.keys(actions).map((key) => {
     (<any>actionProxies)[key] = (...args: any[]) => {
-      const action = (<any>actions)[key](...args);
-      if (action) {
-        store.dispatch(action);
+      const actionResult = (<any>actions)[key](...args);
+      if (actionResult) {
+        if (typeof actionResult === 'function') {
+          actionResult(store.getState(), actionProxies);
+        }
+        else {
+          store.dispatch(actionResult);
+        }
       }
     };
   });
