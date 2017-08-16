@@ -16,19 +16,19 @@ interface State {
   isRequestStatusBeingEdited?: boolean;
 }
 
-export const RequestDetails: FactoryComponent<State> = ({ attrs }) => {
+export const RequestDetails: FactoryComponent<HTMLDivElement & State> = ({ attrs }) => {
   const state: State = {
     request: attrs.request
   };
 
   const setStatusToValue = withAttr('value', setStatus(state));
-  const startEditingRequestStatus = () => { state.isRequestStatusBeingEdited = true; };
-  const stopEditingRequestStatus = () => { state.isRequestStatusBeingEdited = false; };
+  const startEditingRequestStatus = () => state.isRequestStatusBeingEdited = true;
+  const stopEditingRequestStatus = () => state.isRequestStatusBeingEdited = false;
 
   return {
     view() {
-      const { currentUser } = store.getState();
       const { request, isRequestStatusBeingEdited } = state;
+      const { currentUser } = store.getState();
 
       return (
         div([

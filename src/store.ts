@@ -11,6 +11,7 @@ import { Request } from './request';
 import { User } from './user';
 
 interface State {
+  components: Component[];
   currentUser: User;
   map: google.maps.Map;
   markers: Record<string, google.maps.Marker>;
@@ -33,9 +34,43 @@ export enum Actions {
 }
 
 export const store = createStore(
-  combineReducers<State>({ currentUser, map, markers, requestPopup, requests }),
+  combineReducers<State>({ components, currentUser, map, markers, requestPopup, requests }),
   process.env.NODE_ENV === 'production' ? undefined : applyMiddleware(logger)
 );
+
+// Components
+export const ComponentActions = {
+  ADD: 'COMPONENT:ADD',
+  REMOVE: 'COMPONENT:REMOVE'
+};
+
+interface Component {
+  componentId: string;
+  reducer: <State, Action extends {}>(state: State, action: Action) => State;
+  state: any;
+}
+
+export function components(state: Component[] = [], action: any = {}): Component[] {
+  if (action.componentId) {
+    switch (action.type) {
+      case ComponentActions.ADD:
+        return [...state, {
+          componentId: action.componentId,
+          reducer: action.reducer,
+          state: action.reducer(action.attrs, action)
+        }];
+      case ComponentActions.REMOVE:
+        return state.filter((component) => component.componentId !== action.componentId);
+    }
+    return state.map((component) => {
+      if (component.componentId === action.componentId) {
+        return { ...component, state: component.reducer(component.state, action) };
+      }
+      return component;
+    });
+  }
+  return state;
+}
 
 // Current User
 type CurrentUserAction = Action<Actions> & { auth?: firebase.User, user?: User };
@@ -102,7 +137,7 @@ export function markers(state: Record<string, google.maps.Marker> = {}, action: 
       title: action.request.title,
       icon: 'map_marker.svg'
     });
-    marker.addListener('click', () => store.dispatch({ type: Actions.REQUEST_MARKER_CLICKED, marker, request: action.request }));
+    marker.addListener('click', () => requestMarkerClicked(marker, action.request));
 
     return { ...state, [action.request.id]: marker };
   case Actions.REQUEST_REMOVED:
@@ -123,6 +158,10 @@ export function markers(state: Record<string, google.maps.Marker> = {}, action: 
     return state;
   }
 }
+
+const requestMarkerClicked = (marker: google.maps.Marker, request: Request) => {
+  store.dispatch({ type: Actions.REQUEST_MARKER_CLICKED, marker, request });
+};
 
 // Request Popup
 type RequestPopupAction = RequestsAction & { marker?: google.maps.Marker };
