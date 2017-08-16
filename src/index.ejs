@@ -29,24 +29,24 @@
     <style>
       body {
         background: <%= primary %>;
+        display: grid;
+        grid-template-rows: <%= headerHeight %>px auto;
+        grid-template-columns: <%= xsMin %>px auto;
+      }
+
+      #header {
+        grid-row: 1;
+        grid-column: 1/3;
       }
 
       #content {
-        position: absolute;
-        top: <%= headerHeight %>px;
-        bottom: 0;
-        left: 0;
-
-        width: <%= xsMin %>px;
-        transition: width <%= animationDuration %> <%= animationEasing %>;
+        grid-row: 2;
+        grid-column: 1;
       }
 
       #map {
-        position: absolute;
-        top: <%= headerHeight %>px;
-        right: 0;
-        bottom: 0;
-        left: <%= xsMin %>px;
+        grid-row: 2;
+        grid-column: 2;
 
         opacity: 0;
         transition: opacity <%= animationDuration %> <%= animationEasing %>;
@@ -57,21 +57,17 @@
       }
 
       @media (max-width: <%= xsMax %>px) {
-        #content {
-          width: 100%;
-        }
-
-        #map {
-          left: 0;
+        #content, #map {
+          grid-column: 1/3;
         }
       }
     </style>
   </head>
 
   <body>
-    <div id="map"></div>
-    <div id="content"></div>
     <header id="header" class="pa-md flex-row justify-content-end align-items-center"></header>
+    <div id="content"></div>
+    <div id="map"></div>
 
     <noscript><h2>JavaScript не е наличен в браузъра Ви. За да използвате това приложение, моля разрешете JavaScript или използвайте браузър, който го поддържа.</h2></noscript>
 

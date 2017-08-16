@@ -4,8 +4,12 @@
 #content { // sass-lint:disable-line no-ids
   @include overflow(hidden, auto);
 
-  transition: left $animation-duration $animation-easing;
   background: $neutral-lighter;
+
+  position: relative;
+  transition: left $animation-duration $animation-easing;
+  left: 0;
+  z-index: 10;
 
   @media (max-width: $xs-max) {
     &.collapsed {

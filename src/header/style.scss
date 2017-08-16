@@ -2,12 +2,7 @@
 @import '../style/mixins';
 
 #header { // sass-lint:disable-line no-ids
-  position: absolute;
-  top: 0;
-  right: 0;
-  left: 0;
   background: $primary;
-  height: $header-height;
   color: $neutral-lighter;
 }
 
