@@ -2,8 +2,9 @@ import { div, h4, select, option } from 'compote/html';
 import { Timeago } from 'compote/components/timeago';
 import { flex } from 'compote/components/flex';
 import * as m from 'mithril';
-import { FactoryComponent, redraw, withAttr } from 'mithril';
+import { redraw } from 'mithril';
 
+import { component } from '../component';
 import { Image } from '../image';
 import * as notify from '../notify';
 import { Request, RequestStatus as RequestStatusType, requestStatuses, setRequestStatus, getStatusText } from '../request';
@@ -11,76 +12,72 @@ import { RequestStatus } from '../request-status';
 import { store } from '../store';
 import { canModerate } from '../user';
 
-interface State {
-  request: Request;
-  isRequestStatusBeingEdited?: boolean;
-}
+export const RequestDetails = component({
+  state: {
+    request: <Request>null,
+    isRequestStatusBeingEdited: false
+  },
 
-export const RequestDetails: FactoryComponent<State> = ({ attrs }) => {
-  const state: State = {
-    request: attrs.request
-  };
+  actions: {
+    startEditingStatus: () => ({ isRequestStatusBeingEdited: true }),
+    stopEditingStatus: () => ({ isRequestStatusBeingEdited: false }),
+    setStatus: (state, actions, status: RequestStatusType) => ({ request: { ...state.request, status } }),
+    setStatusAsync: async ({ request }, actions, e: Event) => {
+      const previousStatus = request.status;
+      try {
+        // Optimistically set the status
+        const newStatus = <RequestStatusType>(<HTMLSelectElement>e.currentTarget).value;
+        actions.stopEditingStatus();
+        actions.setStatus(<any>newStatus);
+        redraw();
 
-  const setStatusToValue = withAttr('value', setStatus(state));
-  const startEditingRequestStatus = () => { state.isRequestStatusBeingEdited = true; };
-  const stopEditingRequestStatus = () => { state.isRequestStatusBeingEdited = false; };
+        await setRequestStatus(request.id, newStatus);
+      }
+      catch (error) {
+        // Restore the old status
+        actions.startEditingStatus();
+        actions.setStatus(<any>previousStatus);
+        redraw();
 
-  return {
-    view() {
-      const { currentUser } = store.getState();
-      const { request, isRequestStatusBeingEdited } = state;
-
-      return (
-        div([
-          request.imageUrls && request.imageUrls.length > 0 ?
-            request.imageUrls.map((imageUrl) => m(Image, { src: imageUrl }))
-            :
-            m(Image, { src: 'default.png' }),
-          div({ class: 'pa-md' }, [
-            div({ class: 'flex-row justify-content-center align-items-start' }, [
-              h4({ style: flex(1) }, request.title),
-              canModerate(currentUser) ?
-                div({ class: 'flex-row justify-content-center align-items-center' }, isRequestStatusBeingEdited ?
-                  [
-                    select({ class: 'br-md pa-sm', onchange: setStatusToValue, value: request.status },
-                      requestStatuses.map(RequestStatusOption)
-                    ),
-                    div({ class: 'pointer mr-n-md pa-md unselectable', onclick: stopEditingRequestStatus }, '✖️')
-                  ]
-                  :
-                  [
-                    m(RequestStatus, { status: request.status }),
-                    div({ class: 'pointer mr-n-md pa-md unselectable', onclick: startEditingRequestStatus }, '✏️')
-                  ]
-                )
-                :
-                m(RequestStatus, { status: request.status })
-            ]),
-            request.text,
-            Timeago(new Date(<number>request.created))
-          ])
-        ])
-      );
+        notify.error(error);
+      }
     }
-  };
-};
+  },
 
-const setStatus = (state: State) => async (status: RequestStatusType) => {
-  const { request } = state;
-  const previousStatus = request.status;
-  request.status = status;
-  state.isRequestStatusBeingEdited = false;
-
-  try {
-    await setRequestStatus(request.id, request.status);
+  view(vnode, { request, isRequestStatusBeingEdited }, actions) {
+    const { currentUser } = store.getState();
+    return (
+      div([
+        request.imageUrls && request.imageUrls.length > 0 ?
+          request.imageUrls.map((imageUrl) => m(Image, { src: imageUrl }))
+          :
+          m(Image, { src: 'default.png' }),
+        div({ class: 'pa-md' }, [
+          div({ class: 'flex-row justify-content-center align-items-start' }, [
+            h4({ style: flex(1) }, request.title),
+            canModerate(currentUser) ?
+              div({ class: 'flex-row justify-content-center align-items-center' }, isRequestStatusBeingEdited ?
+                [
+                  select({ class: 'br-md pa-sm', onchange: actions.setStatusAsync, value: request.status },
+                    requestStatuses.map(RequestStatusOption)
+                  ),
+                  div({ class: 'pointer mr-n-md pa-md unselectable', onclick: actions.stopEditingStatus }, '✖️')
+                ]
+                :
+                [
+                  m(RequestStatus, { status: request.status }),
+                  div({ class: 'pointer mr-n-md pa-md unselectable', onclick: actions.startEditingStatus }, '✏️')
+                ]
+              )
+              :
+              m(RequestStatus, { status: request.status })
+          ]),
+          request.text,
+          Timeago(new Date(<number>request.created))
+        ])
+      ])
+    );
   }
-  catch (error) {
-    request.status = previousStatus;
-    state.isRequestStatusBeingEdited = true;
-    redraw();
-
-    notify.error(error);
-  }
-};
+});
 
 const RequestStatusOption = (status: RequestStatusType) => option({ value: status }, getStatusText(status));
