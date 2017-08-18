@@ -57,7 +57,7 @@ export function components(state: Component[] = [], action: any = {}): Component
         return [...state, {
           componentId: action.componentId,
           reducer: action.reducer,
-          state: action.reducer(action.attrs, action)
+          state: action.reducer(action.state, action)
         }];
       case ComponentActions.REMOVE:
         return state.filter((component) => component.componentId !== action.componentId);

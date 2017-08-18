@@ -38,8 +38,7 @@ export const RequestList: FactoryComponent<State> = () => {
         // List Items
         requests.map((request) => m(RequestListItem, {
           key: request.id,
-          request,
-          href: 1
+          request
         }))
       ];
     }
