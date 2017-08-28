@@ -1,4 +1,4 @@
-import { div, form, fieldset, input, br, button } from 'compote/html';
+import { div, form, fieldset, h2, input, br, button } from 'compote/html';
 import { Keyboard } from 'compote/components/keyboard';
 import { constant, get, set, when, equal } from 'compote/components/utils';
 import { redraw, withAttr, FactoryComponent } from 'mithril';
@@ -35,6 +35,7 @@ export const SettingsForm: FactoryComponent<State> = () => {
         div({ class: 'container fade-in-animation' }, [
           form({ class: 'form', onsubmit: returnFalse },
             fieldset({ class: 'form-panel', disabled: currentUser.profile == null || state.loading === true }, [
+              h2('Настройки'),
               input({
                 class: 'form-input',
                 type: 'text', name: 'name', placeholder: 'Име', autofocus: true, required: true,
