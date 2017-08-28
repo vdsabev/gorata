@@ -3,8 +3,13 @@ const path = require('path');
 const env = require('var');
 
 const webpack = require('webpack');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
+const CleanWebpackPlugin = require('clean-webpack-plugin')
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const NullPlugin = require('webpack-null-plugin');
+const WorkboxPlugin = require('workbox-webpack-plugin');
+
+const BUILD_DIR = './build';
 
 // const dependencies = require('./package.json').dependencies;
 // const vendor = Object.keys(dependencies).filter((dependency) => dependency.indexOf('@types/') === -1);
@@ -14,11 +19,11 @@ module.exports = (options = {}) => ({
   context: process.cwd(),
   entry: {
     app: './src/app.ts',
-    'service-worker': './src/service-worker.ts'
+    // 'service-worker': './src/service-worker.ts'
   },
   output: {
     publicPath: '/',
-    path: path.resolve('./build'),
+    path: path.resolve(BUILD_DIR),
     filename: '[name].[chunkhash].js',
     sourceMapFilename: '[name].js.map'
   },
@@ -47,11 +52,11 @@ module.exports = (options = {}) => ({
     ]
   },
   plugins: [
+    options.production ? new CleanWebpackPlugin([`${BUILD_DIR}/*`]) : new NullPlugin(),
+
     // new webpack.optimize.CommonsChunkPlugin('vendor'),
     new webpack.optimize.ModuleConcatenationPlugin(),
-    new webpack.DefinePlugin({
-      'process.env': JSON.stringify(env)
-    }),
+    new webpack.DefinePlugin({ 'process.env': JSON.stringify(env) }),
     new webpack.LoaderOptionsPlugin({
       options: {
         postcss: () => [
@@ -62,6 +67,11 @@ module.exports = (options = {}) => ({
 
     // `contenthash` is specific to this plugin, we would typically use `chunkhash`
     new ExtractTextPlugin('styles.[contenthash].css'),
-    new HtmlWebpackPlugin({ template: './src/index.ejs' })
+    new HtmlWebpackPlugin({ template: './src/index.ejs' }),
+    new WorkboxPlugin({
+      globDirectory: BUILD_DIR,
+      globPatterns: ['**/*.{html,js,css}'],
+      swDest: path.resolve(BUILD_DIR, 'service-worker.js')
+    })
   ]
 });
