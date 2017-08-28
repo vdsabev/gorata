@@ -32,7 +32,7 @@ export const RequestForm: FactoryComponent<State> = () => {
     view: () => (
       div({ class: 'flex-row justify-content-stretch align-items-stretch container fade-in-animation' }, [
         form({ class: 'form', style: flex(1), onsubmit: returnFalse },
-          fieldset({ class: 'form-panel lg', disabled: state.loading }, [
+          fieldset({ class: 'form-panel lg', disabled: state.loading === true }, [
             Images(state.request.imageUrls),
             m(AddressInput, { state }),
             br(), br(),

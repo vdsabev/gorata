@@ -7,6 +7,7 @@ import { getRequest } from './request';
 import { RequestDetails } from './request-details';
 import { RequestForm } from './request-form';
 import { RequestList } from './request-list';
+import { SettingsForm } from './settings';
 
 import * as notify from './notify';
 import { store } from './store';
@@ -28,6 +29,9 @@ export function initializeRouter() {
     },
     '/requests/:requestId': {
       onmatch: ({ requestId }: RouteParams) => getRequest(requestId).then(load(RequestDetails, 'request')).catch(notify.error)
+    },
+    '/settings': {
+      render: requireAccess(isLoggedIn, render(SettingsForm), redirect('/'))
     },
     '/:url': NotFound
   });

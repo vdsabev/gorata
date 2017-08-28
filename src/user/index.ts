@@ -26,6 +26,8 @@ export const getUserProfile: (id: string) => Promise<UserProfile> = async (id: s
   return { id: profile.key, ...profile.val() };
 };
 
+export const setUserName = (id: string, name: string) => firebase.database().ref(`userProfiles/${id}/name`).set(name);
+
 export const getUserRole: (id: string) => Promise<UserRole> = async (id: string) => {
   const role = await firebase.database().ref(`userRoles/${id}`).once('value');
   return role.val();

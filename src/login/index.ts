@@ -42,7 +42,7 @@ export const LoginForm: FactoryComponent<State> = () => {
     view: () => (
       div({ class: 'container fade-in-animation' }, [
         form({ class: 'form', onsubmit: returnFalse },
-          fieldset({ class: 'form-panel', disabled: state.loading }, [
+          fieldset({ class: 'form-panel', disabled: state.loading === true }, [
             button({
               class: 'facebook-button width-100p br-md mb-xl bg-facebook pa-md color-neutral-light',
               type: 'button',

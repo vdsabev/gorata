@@ -1,7 +1,7 @@
 import './style.scss';
 import '../assets/logo.png';
 
-import { div, a, img, h1, svg, path } from 'compote/html';
+import { div, a, img, h1, svg, path, br } from 'compote/html';
 import { flex } from 'compote/components/flex';
 import { route } from 'mithril';
 
@@ -65,7 +65,8 @@ const Logo = () => (
 );
 
 const UserMenu = (profile: UserProfile) => profile != null ? [
-  div({ class: 'hidden-xxs' }, profile.name),
+  a({ class: 'color-neutral-lighter', oncreate: route.link, href: '/settings' }, profile.name),
+  br(),
   a({ class: 'color-neutral-lighter', onclick: logout }, 'Изход')
 ] : null;
 

@@ -8,7 +8,7 @@ import { createStore, combineReducers, applyMiddleware } from 'redux';
 import { DataSnapshot } from './firebase';
 import { addNavigatorControl } from './navigator';
 import { Request } from './request';
-import { UserProfile, CurrentUser } from './user';
+import { CurrentUser } from './user';
 
 interface State {
   currentUser: CurrentUser;
@@ -39,7 +39,7 @@ export const store = createStore(
 );
 
 // Current User
-type CurrentUserAction = Action<Actions> & Partial<UserProfile> & Partial<CurrentUser>;
+type CurrentUserAction = Action<Actions> & Partial<CurrentUser>;
 
 export function currentUser(state: Partial<CurrentUser> = null, action: CurrentUserAction = {}): Partial<CurrentUser> {
   switch (action.type) {
