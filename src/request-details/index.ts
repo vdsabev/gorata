@@ -1,4 +1,4 @@
-import { div, h4, select, option } from 'compote/html';
+import { div, h4, select, option, Properties } from 'compote/html';
 import { Timeago } from 'compote/components/timeago';
 import { flex } from 'compote/components/flex';
 import * as m from 'mithril';
@@ -9,10 +9,11 @@ import * as notify from '../notify';
 import { Request, RequestStatus as RequestStatusType, requestStatuses, setRequestStatus, getStatusText } from '../request';
 import { RequestStatus } from '../request-status';
 import { store } from '../store';
-import { canModerate } from '../user';
+import { UserProfile, canModerate, getUserProfile } from '../user';
 
-interface State {
+interface State extends Properties<HTMLDivElement> {
   request: Request;
+  createdBy?: UserProfile;
   isRequestStatusBeingEdited?: boolean;
 }
 
@@ -21,6 +22,8 @@ export const RequestDetails: FactoryComponent<State> = ({ attrs }) => {
     request: attrs.request
   };
 
+  loadCreatedBy(state, state.request.createdBy);
+
   const setStatusToValue = withAttr('value', setStatus(state));
   const startEditingRequestStatus = () => { state.isRequestStatusBeingEdited = true; };
   const stopEditingRequestStatus = () => { state.isRequestStatusBeingEdited = false; };
@@ -28,7 +31,7 @@ export const RequestDetails: FactoryComponent<State> = ({ attrs }) => {
   return {
     view() {
       const { currentUser } = store.getState();
-      const { request, isRequestStatusBeingEdited } = state;
+      const { request, createdBy, isRequestStatusBeingEdited } = state;
 
       return (
         div([
@@ -56,13 +59,24 @@ export const RequestDetails: FactoryComponent<State> = ({ attrs }) => {
                 :
                 m(RequestStatus, { status: request.status })
             ]),
-            request.text,
+            div(request.text),
+            createdBy ? div(`Създадена от ${createdBy.name}`) : null,
             Timeago(new Date(<number>request.created))
           ])
         ])
       );
     }
   };
+};
+
+const loadCreatedBy = async (state: State, id: string) => {
+  try {
+    state.createdBy = await getUserProfile(id);
+    redraw();
+  }
+  catch (error) {
+    notify.error(error);
+  }
 };
 
 const setStatus = (state: State) => async (status: RequestStatusType) => {

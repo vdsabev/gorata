@@ -5,7 +5,7 @@ import 'firebase/storage';
 
 import * as notify from './notify';
 import { Actions, store } from './store';
-import { User } from './user';
+import { getUserProfile, getUserRole  } from './user';
 
 export interface DataSnapshot<T> extends firebase.database.DataSnapshot {
   val(): T;
@@ -27,12 +27,27 @@ export function initializeFirebaseApp() {
 
     if (!auth) return;
 
-    try {
-      const userSnapshot: DataSnapshot<User> = await firebase.database().ref(`users/${auth.uid}`).once('value');
-      store.dispatch({ type: Actions.USER_DETAILS_LOADED, user: userSnapshot.val() });
-    }
-    catch (error) {
-      notify.error(error);
-    }
+    loadUserProfile(auth.uid);
+    loadUserRole(auth.uid);
   });
 }
+
+const loadUserProfile = async (id: string) => {
+  try {
+    const profile = await getUserProfile(id);
+    store.dispatch({ type: Actions.USER_PROFILE_LOADED, profile });
+  }
+  catch (error) {
+    notify.error(error);
+  }
+};
+
+const loadUserRole = async (id: string) => {
+  try {
+    const role = await getUserRole(id);
+    store.dispatch({ type: Actions.USER_ROLE_LOADED, role });
+  }
+  catch (error) {
+    notify.error(error);
+  }
+};

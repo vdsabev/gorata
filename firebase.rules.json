@@ -11,7 +11,7 @@
       "$requestId": {
         // TODO: Allow the user who created the request to edit it
         // data.child('createdBy').val() === auth.uid
-        ".write": "auth != null && (!data.exists() || root.child('users/' + auth.uid + '/role').val() === 'moderator' || root.child('users/' + auth.uid + '/role').val() === 'admin')",
+        ".write": "auth != null && (!data.exists() || root.child('userRoles/' + auth.uid).val() === 'moderator' || root.child('userRoles/' + auth.uid).val() === 'admin')",
         ".validate": "newData.hasChildren(['title', 'text', 'geo', 'created', 'createdBy'])",
 
         "imageUrls": {
@@ -35,17 +35,24 @@
       }
     },
 
-    // Users
-    "users": {
+    // User Profiles
+    "userProfiles": {
       "$userId": {
-        ".read": "auth.uid === $userId",
-        // TODO: Move user role to a different object if we want to allow the user to write to their data
+        ".read": true,
+        ".write": "auth.uid === $userId",
+        ".validate": "newData.hasChildren(['name'])",
 
-        "role": {
-          ".validate": "newData.isString()"
-        },
+        "name": { ".validate": "newData.isString()" },
 
         "$other": { ".validate": false }
+      }
+    },
+
+    // User Roles
+    "userRoles": {
+      "$userId": {
+        ".read": "auth.uid === $userId",
+        ".validate": "newData.isString()"
       }
     }
   }

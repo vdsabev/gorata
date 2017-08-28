@@ -1,12 +1,32 @@
-import { User as FirebaseUser } from 'firebase/app';
+import * as firebase from 'firebase/app';
 
-export interface User {
-  role: 'admin' | 'moderator';
-  auth: FirebaseUser;
+export interface CurrentUser {
+  profile: UserProfile;
+  role: UserRole;
+  auth: firebase.User;
 }
 
-export const isLoggedIn = (user: User) => user != null && user.auth != null;
+export interface UserProfile {
+  id: string;
+  name: string;
+}
 
-export const canAdmin = (user: User) => isLoggedIn(user) && user.role === 'admin';
+export type UserRole = 'admin' | 'moderator';
 
-export const canModerate = (user: User) => isLoggedIn(user) && (user.role === 'admin' || user.role === 'moderator');
+export const isLoggedIn = (currentUser: CurrentUser) => currentUser != null && currentUser.auth != null;
+
+export const canAdmin = (currentUser: CurrentUser) => isLoggedIn(currentUser) && currentUser.role === 'admin';
+
+export const canModerate = (currentUser: CurrentUser) => isLoggedIn(currentUser) && (currentUser.role === 'admin' || currentUser.role === 'moderator');
+
+export const getUserProfile: (id: string) => Promise<UserProfile> = async (id: string) => {
+  const profile = await firebase.database().ref(`userProfiles/${id}`).once('value');
+  if (!(profile && profile.exists())) return null;
+
+  return { id: profile.key, ...profile.val() };
+};
+
+export const getUserRole: (id: string) => Promise<UserRole> = async (id: string) => {
+  const role = await firebase.database().ref(`userRoles/${id}`).once('value');
+  return role.val();
+};

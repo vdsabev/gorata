@@ -7,7 +7,7 @@ import { route } from 'mithril';
 
 import { logout } from '../logout';
 import { store } from '../store';
-import { User, isLoggedIn, canAdmin } from '../user';
+import { UserProfile, isLoggedIn, canAdmin } from '../user';
 
 export const Header = {
   view() {
@@ -29,7 +29,7 @@ export const Header = {
           null
       ]),
       currentUser != null ?
-        div({ class: 'text-right' }, isLoggedIn(currentUser) ? UserMenu(currentUser) : LoginLink())
+        div({ class: 'text-right' }, isLoggedIn(currentUser) ? UserMenu(currentUser.profile) : LoginLink())
         :
         null
     ];
@@ -64,10 +64,9 @@ const Logo = () => (
   ])
 );
 
-const UserMenu = (currentUser: User) => [
-  div({ class: 'hidden-xxs' }, currentUser.auth.email),
+const UserMenu = (profile: UserProfile) => profile != null ? [
+  div({ class: 'hidden-xxs' }, profile.name),
   a({ class: 'color-neutral-lighter', onclick: logout }, 'Изход')
-];
-
+] : null;
 
 const LoginLink = () => a({ class: 'color-neutral-lighter', oncreate: route.link, href: '/login' }, 'Вход');

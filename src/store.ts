@@ -8,10 +8,10 @@ import { createStore, combineReducers, applyMiddleware } from 'redux';
 import { DataSnapshot } from './firebase';
 import { addNavigatorControl } from './navigator';
 import { Request } from './request';
-import { User } from './user';
+import { UserProfile, CurrentUser } from './user';
 
 interface State {
-  currentUser: User;
+  currentUser: CurrentUser;
   map: google.maps.Map;
   markers: Record<string, google.maps.Marker>;
   requestPopup: RequestPopupState;
@@ -19,7 +19,8 @@ interface State {
 }
 
 export enum Actions {
-  USER_DETAILS_LOADED = 'USER_DETAILS_LOADED',
+  USER_PROFILE_LOADED = 'USER_PROFILE_LOADED',
+  USER_ROLE_LOADED = 'USER_ROLE_LOADED',
   USER_LOGGED_IN = 'USER_LOGGED_IN',
   USER_LOGGED_OUT = 'USER_LOGGED_OUT',
 
@@ -38,12 +39,14 @@ export const store = createStore(
 );
 
 // Current User
-type CurrentUserAction = Action<Actions> & { auth?: firebase.User, user?: User };
+type CurrentUserAction = Action<Actions> & Partial<UserProfile> & Partial<CurrentUser>;
 
-export function currentUser(state: Partial<User> = null, action: CurrentUserAction = {}): Partial<User> {
+export function currentUser(state: Partial<CurrentUser> = null, action: CurrentUserAction = {}): Partial<CurrentUser> {
   switch (action.type) {
-  case Actions.USER_DETAILS_LOADED:
-    return { ...state, ...action.user };
+  case Actions.USER_PROFILE_LOADED:
+    return { ...state, profile: action.profile };
+  case Actions.USER_ROLE_LOADED:
+    return { ...state, role: action.role };
   case Actions.USER_LOGGED_IN:
     return { auth: action.auth };
   case Actions.USER_LOGGED_OUT:
