@@ -1,7 +1,7 @@
 import './style.scss';
 import '../assets/logo.png';
 
-import { div, a, img, h1, svg, path, br } from 'compote/html';
+import { div, a, img, h1, svg, path } from 'compote/html';
 import { AspectRatioContainer } from 'compote/components/aspect-ratio-container';
 import { flex } from 'compote/components/flex';
 import * as m from 'mithril';
@@ -70,13 +70,14 @@ const Logo = () => (
 const UserMenu = (profile: UserProfile) => profile != null ? (
   div({ class: 'flex-row align-items-center' }, [
     div({ class: 'text-right' }, [
-      a({ class: 'color-neutral-lighter', oncreate: route.link, href: '/settings' }, profile.name),
-      br(),
+      div({ class: 'color-neutral-lighter hidden-xxs hidden-xs' }, profile.name),
       a({ class: 'color-neutral-lighter', onclick: logout }, 'Изход')
     ]),
-    AspectRatioContainer({ class: 'ml-md width-sm height-sm bg-neutral br-md', aspectRatio: { x: 1, y: 1 } },
-      m(Image, { class: 'absolute stretch br-md', src: profile.imageUrl || 'default.png' })
-    )
+    a({ class: 'color-neutral-lighter', oncreate: route.link, href: '/settings' },
+      AspectRatioContainer({ class: 'ml-md width-sm height-sm bg-neutral br-md', aspectRatio: { x: 1, y: 1 } },
+        m(Image, { class: 'absolute stretch br-md', src: profile.imageUrl || 'default.png' })
+      )
+    ),
   ])
 ) : null;
 
