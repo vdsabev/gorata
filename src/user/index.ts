@@ -9,6 +9,7 @@ export interface CurrentUser {
 export interface UserProfile {
   id: string;
   name: string;
+  imageUrl: string;
 }
 
 export type UserRole = 'admin' | 'moderator';

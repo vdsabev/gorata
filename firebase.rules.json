@@ -15,9 +15,7 @@
         ".validate": "newData.hasChildren(['title', 'text', 'geo', 'created', 'createdBy'])",
 
         "imageUrls": {
-          "$imageUrl": {
-            ".validate": "newData.isString()"
-          }
+          "$imageUrl": { ".validate": "newData.isString()" }
         },
         "title": { ".validate": "newData.isString()" },
         "text": { ".validate": "newData.isString()" },
@@ -43,6 +41,7 @@
         ".validate": "newData.hasChildren(['name'])",
 
         "name": { ".validate": "newData.isString()" },
+        "imageUrl": { ".validate": "newData.isString()" },
 
         "$other": { ".validate": false }
       }

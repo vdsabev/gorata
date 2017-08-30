@@ -2,9 +2,12 @@ import './style.scss';
 import '../assets/logo.png';
 
 import { div, a, img, h1, svg, path, br } from 'compote/html';
+import { AspectRatioContainer } from 'compote/components/aspect-ratio-container';
 import { flex } from 'compote/components/flex';
+import * as m from 'mithril';
 import { route } from 'mithril';
 
+import { Image } from '../image';
 import { logout } from '../logout';
 import { store } from '../store';
 import { UserProfile, isLoggedIn, canAdmin } from '../user';
@@ -29,7 +32,7 @@ export const Header = {
           null
       ]),
       currentUser != null ?
-        div({ class: 'text-right' }, isLoggedIn(currentUser) ? UserMenu(currentUser.profile) : LoginLink())
+        isLoggedIn(currentUser) ? UserMenu(currentUser.profile) : LoginLink()
         :
         null
     ];
@@ -64,10 +67,17 @@ const Logo = () => (
   ])
 );
 
-const UserMenu = (profile: UserProfile) => profile != null ? [
-  a({ class: 'color-neutral-lighter', oncreate: route.link, href: '/settings' }, profile.name),
-  br(),
-  a({ class: 'color-neutral-lighter', onclick: logout }, 'Изход')
-] : null;
+const UserMenu = (profile: UserProfile) => profile != null ? (
+  div({ class: 'flex-row align-items-center' }, [
+    div({ class: 'text-right' }, [
+      a({ class: 'color-neutral-lighter', oncreate: route.link, href: '/settings' }, profile.name),
+      br(),
+      a({ class: 'color-neutral-lighter', onclick: logout }, 'Изход')
+    ]),
+    AspectRatioContainer({ class: 'ml-md width-sm height-sm bg-neutral br-md', aspectRatio: { x: 1, y: 1 } },
+      m(Image, { class: 'absolute stretch br-md', src: profile.imageUrl || 'default.png' })
+    )
+  ])
+) : null;
 
 const LoginLink = () => a({ class: 'color-neutral-lighter', oncreate: route.link, href: '/login' }, 'Вход');

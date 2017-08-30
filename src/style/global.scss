@@ -55,7 +55,7 @@ textarea {
   resize: vertical;
 }
 
-// Images
+// Sizing
 .width-xxs { width: 20px; };
 .width-xs { width: 32px; };
 .width-sm { width: 48px; };
@@ -68,6 +68,19 @@ textarea {
 .width-50p { width: 50%; };
 .width-75p { width: 75%; };
 .width-100p { width: 100%; };
+
+.height-xxs { height: 20px; };
+.height-xs { height: 32px; };
+.height-sm { height: 48px; };
+.height-md { height: 64px; };
+.height-lg { height: 96px; };
+.height-xl { height: 128px; };
+.height-xxl { height: 160px; };
+
+.height-25p { height: 25%; };
+.height-50p { height: 50%; };
+.height-75p { height: 75%; };
+.height-100p { height: 100%; };
 
 // Layout
 .container {
