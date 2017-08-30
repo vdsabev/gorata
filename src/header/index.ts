@@ -18,19 +18,18 @@ export const Header = {
 
     // Don't show the logged out state until the user is known to be either logged in or logged out
     return [
-      div({ class: 'flex-row align-items-center', style: flex(1) }, [
-        MenuIcon(),
-        Logo(),
-        a({ class: 'menu-link br-md pa-md', oncreate: route.link, href: '/' }, 'Заявки'),
-        isLoggedIn(currentUser) ?
-          a({ class: 'menu-link br-md pa-md', oncreate: route.link, href: '/requests/new' }, 'Нова Заявка')
-          :
-          null,
-        canAdmin(currentUser) ?
-          a({ class: 'menu-link br-md pa-md hidden-xxs hidden-xs', target: '_blank', rel: 'noopener', href: `https://console.firebase.google.com/project/${process.env.FIREBASE_PROJECT_ID}/database/data` }, 'База Данни')
-          :
-          null
-      ]),
+      MenuIcon(),
+      Logo(),
+      a({ class: 'menu-link br-md pa-md', oncreate: route.link, href: '/' }, 'Заявки'),
+      isLoggedIn(currentUser) ?
+        a({ class: 'menu-link br-md pa-md', oncreate: route.link, href: '/requests/new' }, 'Нова Заявка')
+        :
+        null,
+      canAdmin(currentUser) ?
+        a({ class: 'menu-link br-md pa-md hidden-xxs hidden-xs', target: '_blank', rel: 'noopener', href: `https://console.firebase.google.com/project/${process.env.FIREBASE_PROJECT_ID}/database/data` }, 'База Данни')
+        :
+        null,
+      div({ style: flex(1) }),
       currentUser != null ?
         isLoggedIn(currentUser) ? UserMenu(currentUser.profile) : LoginLink()
         :
@@ -74,10 +73,10 @@ const UserMenu = (profile: UserProfile) => profile != null ? (
       a({ class: 'color-neutral-lighter', onclick: logout }, 'Изход')
     ]),
     a({ class: 'color-neutral-lighter', oncreate: route.link, href: '/settings' },
-      AspectRatioContainer({ class: 'ml-md width-sm height-sm bg-neutral br-md', aspectRatio: { x: 1, y: 1 } },
-        m(Image, { class: 'absolute stretch br-md', src: profile.imageUrl || 'default.png' })
+      AspectRatioContainer({ class: 'ml-md width-sm height-sm br-md', aspectRatio: { x: 1, y: 1 } },
+        m(Image, { class: 'absolute stretch bg-neutral-light br-md', src: profile.imageUrl || 'default.png' })
       )
-    ),
+    )
   ])
 ) : null;
 
