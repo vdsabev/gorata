@@ -10,6 +10,7 @@ import { Request, RequestStatus as RequestStatusType, requestStatuses, setReques
 import { RequestStatus } from '../request-status';
 import { store } from '../store';
 import { UserProfile, canModerate, getUserProfile } from '../user';
+import { UserProfileImage } from '../user-profile-image';
 
 interface State extends Properties<HTMLDivElement> {
   request: Request;
@@ -59,9 +60,8 @@ export const RequestDetails: FactoryComponent<State> = ({ attrs }) => {
                 :
                 m(RequestStatus, { status: request.status })
             ]),
-            div(request.text),
-            createdBy ? div(`Създадена от ${createdBy.name}`) : null,
-            Timeago(new Date(<number>request.created))
+            div({ class: 'mb-md' }, request.text),
+            createdBy ? Created(request, createdBy) : null
           ])
         ])
       );
@@ -98,3 +98,12 @@ const setStatus = (state: State) => async (status: RequestStatusType) => {
 };
 
 const RequestStatusOption = (status: RequestStatusType) => option({ value: status }, getStatusText(status));
+
+const Created = (request: Request, createdBy: UserProfile) => (
+  div({ class: 'flex-row align-items-center' }, [
+    UserProfileImage({ class: 'width-xxs height-xxs mr-sm', style: { display: 'inline-block' }, src: createdBy.imageUrl }),
+    createdBy.name,
+    div({ style: flex(1) }),
+    Timeago(new Date(<number>request.created))
+  ])
+);

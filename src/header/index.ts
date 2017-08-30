@@ -2,15 +2,13 @@ import './style.scss';
 import '../assets/logo.png';
 
 import { div, a, img, h1, svg, path } from 'compote/html';
-import { AspectRatioContainer } from 'compote/components/aspect-ratio-container';
 import { flex } from 'compote/components/flex';
-import * as m from 'mithril';
 import { route } from 'mithril';
 
-import { Image } from '../image';
 import { logout } from '../logout';
 import { store } from '../store';
 import { UserProfile, isLoggedIn, canAdmin } from '../user';
+import { UserProfileImage } from '../user-profile-image';
 
 export const Header = {
   view() {
@@ -73,9 +71,7 @@ const UserMenu = (profile: UserProfile) => profile != null ? (
       a({ class: 'color-neutral-lighter', onclick: logout }, 'Изход')
     ]),
     a({ class: 'color-neutral-lighter', oncreate: route.link, href: '/settings' },
-      AspectRatioContainer({ class: 'ml-md width-sm height-sm br-md', aspectRatio: { x: 1, y: 1 } },
-        m(Image, { class: 'absolute stretch bg-neutral-light br-md', src: profile.imageUrl || 'default.png' })
-      )
+      UserProfileImage({ class: 'width-sm height-sm ml-sm', src: profile.imageUrl })
     )
   ])
 ) : null;
