@@ -56,26 +56,26 @@ textarea {
 }
 
 // Sizing
-.width-xxs { width: 20px; };
-.width-xs { width: 32px; };
-.width-sm { width: 48px; };
-.width-md { width: 64px; };
-.width-lg { width: 96px; };
-.width-xl { width: 128px; };
-.width-xxl { width: 160px; };
+.width-xxs { width: $size-xxs; };
+.width-xs { width: $size-xs; };
+.width-sm { width: $size-sm; };
+.width-md { width: $size-md; };
+.width-lg { width: $size-lg; };
+.width-xl { width: $size-xl; };
+.width-xxl { width: $size-xxl; };
 
 .width-25p { width: 25%; };
 .width-50p { width: 50%; };
 .width-75p { width: 75%; };
 .width-100p { width: 100%; };
 
-.height-xxs { height: 20px; };
-.height-xs { height: 32px; };
-.height-sm { height: 48px; };
-.height-md { height: 64px; };
-.height-lg { height: 96px; };
-.height-xl { height: 128px; };
-.height-xxl { height: 160px; };
+.height-xxs { height: $size-xxs; };
+.height-xs { height: $size-xs; };
+.height-sm { height: $size-sm; };
+.height-md { height: $size-md; };
+.height-lg { height: $size-lg; };
+.height-xl { height: $size-xl; };
+.height-xxl { height: $size-xxl; };
 
 .height-25p { height: 25%; };
 .height-50p { height: 50%; };

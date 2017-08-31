@@ -16,6 +16,10 @@
 }
 
 .request-list-item {
+  display: grid;
+  grid-template-columns: $size-md 1fr auto;
+  grid-gap: $spacing * 0.5;
+
   transition: color $animation-duration $animation-easing;
   color: $foreground;
 

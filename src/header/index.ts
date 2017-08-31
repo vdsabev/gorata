@@ -71,7 +71,7 @@ const UserMenu = (profile: UserProfile) => profile != null ? (
       a({ class: 'color-neutral-lighter', onclick: logout }, 'Изход')
     ]),
     a({ class: 'color-neutral-lighter', oncreate: route.link, href: '/settings' },
-      UserProfileImage({ class: 'width-sm height-sm ml-sm', src: profile.imageUrl })
+      UserProfileImage({ class: 'width-sm height-sm ml-md', src: profile.imageUrl })
     )
   ])
 ) : null;
