@@ -28,7 +28,7 @@ export const RequestList: FactoryComponent<State> = () => {
       const { requests } = store.getState();
       return [
         // Status Filter
-        div({ class: 'flex-row justify-content-space-around align-items-center ma-sm mt-md' },
+        div({ class: 'request-list-status-filter flex-row justify-content-space-around align-items-center ph-sm pv-md sticky top-0 bg-neutral-lighter' },
           [...requestStatuses, null].map((status) => m(RequestListStatusFilterItem, {
             key: status,
             parent: state,

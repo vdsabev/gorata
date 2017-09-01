@@ -1,6 +1,10 @@
 @import '../style/variables';
 @import '../style/mixins';
 
+.request-list-status-filter {
+  border-bottom: 1px solid $neutral-light;
+}
+
 .request-list-status-filter-item {
   transition: background $animation-duration $animation-easing, color $animation-duration $animation-easing;
 

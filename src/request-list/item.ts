@@ -1,4 +1,5 @@
 import { a, div, h4 } from 'compote/html';
+import { Timeago } from 'compote/components/timeago';
 import * as m from 'mithril';
 import { FactoryComponent, route } from 'mithril';
 
@@ -26,7 +27,8 @@ export const RequestListItem: FactoryComponent<State> = ({ attrs }) => {
           m(Image, { class: 'br-md', src: request.imageUrls && request.imageUrls[0] || 'default.png' }),
           div([
             h4(request.title),
-            request.text
+            div({ class: 'mb-xs' }, request.text),
+            Timeago(new Date(<number>request.created))
           ]),
           m(RequestStatus, { status: request.status })
         ])
