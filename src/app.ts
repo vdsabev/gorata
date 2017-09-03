@@ -22,8 +22,15 @@ initializeApp();
 
 function initializeApp() {
   initializeFirebaseApp();
+  registerServiceWorker();
   subscribeToStore();
   initializeRouter();
+}
+
+function registerServiceWorker() {
+  if (navigator.serviceWorker) {
+    navigator.serviceWorker.register('service-worker.js', { scope: './' });
+  }
 }
 
 function subscribeToStore() {
