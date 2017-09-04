@@ -20,7 +20,6 @@ export function initializeRouter() {
 
   const content = document.querySelector('#content');
   m.route(content, '/', {
-    '/index.html': redirect('/'), // Handles 404 when opening app installed from service worker
     '/': RequestList,
     '/login': {
       render: requireAccess(isLoggedIn, redirect('/'), render(LoginForm))
