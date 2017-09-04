@@ -9,10 +9,12 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const NullPlugin = require('webpack-null-plugin');
 const WorkboxPlugin = require('workbox-webpack-plugin');
 
-const BUILD_DIR = './build';
+const envKeys = Object.keys(require('./env.json'));
 
 const dependencies = require('./package.json').dependencies;
 const vendor = Object.keys(dependencies).filter((dependency) => dependency.indexOf('@types/') === -1);
+
+const BUILD_DIR = './build';
 
 module.exports = (options = {}) => ({
   devtool: options.production ? false : 'inline-source-map',
@@ -56,7 +58,7 @@ module.exports = (options = {}) => ({
 
     new webpack.optimize.CommonsChunkPlugin('vendor'),
     new webpack.optimize.ModuleConcatenationPlugin(),
-    new webpack.DefinePlugin({ 'process.env': JSON.stringify(env) }),
+    new webpack.DefinePlugin(define(['NODE_ENV', ...envKeys])),
     new webpack.LoaderOptionsPlugin({
       options: {
         postcss: () => [
@@ -75,3 +77,12 @@ module.exports = (options = {}) => ({
     })
   ]
 });
+
+const define = (keys) => {
+  const result = {};
+  for (key of keys) {
+    result[`process.env.${key}`] = JSON.stringify(env[key])
+  }
+
+  return result;
+};
