@@ -23,8 +23,8 @@ initializeApp();
 function initializeApp() {
   initializeFirebaseApp();
   registerServiceWorker();
-  subscribeToStore();
   initializeRouter();
+  subscribeToStore();
 }
 
 function registerServiceWorker() {
@@ -36,8 +36,9 @@ function registerServiceWorker() {
 function subscribeToStore() {
   store.subscribe(m.redraw);
 
+  const header = document.querySelector('#header');
   const unsubscribe = store.subscribe(() => {
-    m.mount(document.querySelector('#header'), Header);
+    m.mount(header, Header);
     unsubscribe();
   });
 }

@@ -1,6 +1,7 @@
 const autoprefixer = require('autoprefixer');
 const path = require('path');
 const env = require('var');
+const { define } = require('var/webpack');
 
 const webpack = require('webpack');
 const CleanWebpackPlugin = require('clean-webpack-plugin')
@@ -9,15 +10,13 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const NullPlugin = require('webpack-null-plugin');
 const WorkboxPlugin = require('workbox-webpack-plugin');
 
-const envKeys = Object.keys(require('./env.json'));
+const BUILD_DIR = './build';
 
 const dependencies = require('./package.json').dependencies;
 const vendor = Object.keys(dependencies).filter((dependency) => dependency.indexOf('@types/') === -1);
 
-const BUILD_DIR = './build';
-
-module.exports = (options = {}) => ({
-  devtool: options.production ? false : 'inline-source-map',
+module.exports = ({ production } = {}) => ({
+  devtool: production ? false : 'inline-source-map',
   context: process.cwd(),
   entry: {
     app: './src/app.ts',
@@ -54,11 +53,11 @@ module.exports = (options = {}) => ({
     ]
   },
   plugins: [
-    options.production ? new CleanWebpackPlugin([`${BUILD_DIR}/*`]) : new NullPlugin(),
+    production ? new CleanWebpackPlugin([`${BUILD_DIR}/*`]) : new NullPlugin(),
 
     new webpack.optimize.CommonsChunkPlugin('vendor'),
     new webpack.optimize.ModuleConcatenationPlugin(),
-    new webpack.DefinePlugin(define(['NODE_ENV', ...envKeys])),
+    new webpack.DefinePlugin(define(env, (envJsonKeys) => ['NODE_ENV', ...envJsonKeys])),
     new webpack.LoaderOptionsPlugin({
       options: {
         postcss: () => [
@@ -77,12 +76,3 @@ module.exports = (options = {}) => ({
     })
   ]
 });
-
-const define = (keys) => {
-  const result = {};
-  for (key of keys) {
-    result[`process.env.${key}`] = JSON.stringify(env[key])
-  }
-
-  return result;
-};
