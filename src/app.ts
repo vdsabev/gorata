@@ -11,6 +11,7 @@ import './content/style.scss';
 import { setHyperscriptFunction } from 'compote';
 import * as m from 'mithril';
 
+import { initializeAuth } from './auth';
 import { initializeFirebaseApp } from './firebase';
 import { Header } from './header';
 import './map';
@@ -22,6 +23,7 @@ initializeApp();
 
 function initializeApp() {
   initializeFirebaseApp();
+  initializeAuth();
   registerServiceWorker();
   initializeRouter();
   subscribeToStore();

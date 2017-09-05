@@ -3,7 +3,7 @@ import * as m from 'mithril';
 import { Unauthorized } from './401-unauthorized';
 import { NotFound } from './404-not-found';
 import { LoginForm } from './login';
-import { getRequest } from './request';
+import { RequestServices } from './request';
 import { RequestDetails } from './request-details';
 import { RequestForm } from './request-form';
 import { RequestList } from './request-list';
@@ -28,7 +28,7 @@ export function initializeRouter() {
       render: requireAccess(isLoggedIn, render(RequestForm), render(Unauthorized))
     },
     '/requests/:requestId': {
-      onmatch: ({ requestId }: RouteParams) => getRequest(requestId).then(load(RequestDetails, 'request')).catch(notify.error)
+      onmatch: ({ requestId }: RouteParams) => RequestServices.get(requestId).then(load(RequestDetails, 'request')).catch(notify.error)
     },
     '/settings': {
       render: requireAccess(isLoggedIn, render(SettingsForm), redirect('/'))

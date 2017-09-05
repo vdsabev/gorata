@@ -1,9 +1,12 @@
-import * as firebase from 'firebase/app';
+import { User as FirebaseUser } from 'firebase/app';
+
+import * as Services from './services';
+export const UserServices = Services;
 
 export interface CurrentUser {
+  auth: FirebaseUser;
   profile: UserProfile;
   role: UserRole;
-  auth: firebase.User;
 }
 
 export interface UserProfile {
@@ -19,17 +22,3 @@ export const isLoggedIn = (currentUser: CurrentUser) => currentUser != null && c
 export const canAdmin = (currentUser: CurrentUser) => isLoggedIn(currentUser) && currentUser.role === 'admin';
 
 export const canModerate = (currentUser: CurrentUser) => isLoggedIn(currentUser) && (currentUser.role === 'admin' || currentUser.role === 'moderator');
-
-export const getUserProfile: (id: string) => Promise<UserProfile> = async (id: string) => {
-  const profile = await firebase.database().ref(`userProfiles/${id}`).once('value');
-  if (!(profile && profile.exists())) return null;
-
-  return { id: profile.key, ...profile.val() };
-};
-
-export const setUserName = (id: string, name: string) => firebase.database().ref(`userProfiles/${id}/name`).set(name);
-
-export const getUserRole: (id: string) => Promise<UserRole> = async (id: string) => {
-  const role = await firebase.database().ref(`userRoles/${id}`).once('value');
-  return role.val();
-};
