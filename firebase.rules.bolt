@@ -1,7 +1,7 @@
 // Request
 path /requests {
   read() { true }
-  index() { "status" }
+  index() { 'status' }
 }
 
 path /requests/{requestId} is Request;
@@ -10,7 +10,7 @@ type Request {
   create() { isAuthenticated() }
   update() { canModerate() }
 
-  imageUrls: String[] | Null,
+  imageUrls: String[],
 
   title: String,
   text: String,
