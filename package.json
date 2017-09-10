@@ -10,7 +10,8 @@
     "start": "webpack-dev-server --port 3000 --history-api-fallback",
     "test": "jest",
     "jest": "jest --watch",
-    "deploy": "npm test && npm run build && firebase deploy"
+    "deploy": "npm test && npm run build && firebase deploy",
+    "deploy:quick": "npm run build && firebase deploy --only hosting"
   },
   "dependencies": {
     "@types/googlemaps": "3.26.20",
