@@ -5,7 +5,7 @@ import { redraw, withAttr, FactoryComponent } from 'mithril';
 
 import * as notify from '../notify';
 import { Actions, store } from '../store';
-import { UserProfile, setUserName } from '../user';
+import { UserProfile, UserServices } from '../user';
 
 interface State {
   profile: Partial<UserProfile>;
@@ -58,7 +58,7 @@ const createSaveFunction = (state: State) => async () => {
   try {
     state.loading = true;
     const { currentUser } = store.getState();
-    await setUserName(currentUser.profile.id, state.profile.name);
+    await UserServices.setName(currentUser.profile.id, state.profile.name);
     store.dispatch({ type: Actions.USER_PROFILE_LOADED, profile: { ...currentUser.profile, ...state.profile } });
   }
   catch (error) {

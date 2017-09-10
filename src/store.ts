@@ -1,13 +1,11 @@
 import './assets/map_marker.svg';
 
-import * as firebase from 'firebase/app';
-
 import { logger } from 'compote/components/logger';
 import { createStore, combineReducers, applyMiddleware } from 'redux';
 
 import { DataSnapshot } from './firebase';
 import { addNavigatorControl } from './navigator';
-import { Request } from './request';
+import { Request, RequestServices } from './request';
 import { CurrentUser } from './user';
 
 interface State {
@@ -206,11 +204,7 @@ const removeAllRequests = (requests: Request[]) => {
 };
 
 const getRequests = (filter: RequestsFilter) => {
-  const requestsRef = filter && filter.value != null ?
-    firebase.database().ref('requests').orderByChild(filter.key).equalTo(filter.value)
-    :
-    firebase.database().ref('requests')
-  ;
+  const requestsRef = RequestServices.queryRef(filter);
 
   requestsRef.off('child_added', addRequest);
   requestsRef.on('child_added', addRequest);

@@ -1,0 +1,90 @@
+// Request
+path /requests {
+  read() { true }
+  index() { 'status' }
+}
+
+path /requests/{requestId} is Request;
+
+type Request {
+  create() { isAuthenticated() }
+  update() { canModerate() }
+
+  imageUrls: String[],
+
+  title: String,
+  text: String,
+  geo: LatLng,
+  created: InitialTimestamp,
+  createdBy: CurrentUser,
+  status: RequestStatus
+}
+
+// User Profile
+path /userProfiles/{userId} is UserProfile {
+  read() { true }
+  write() { isCurrentUser(userId) }
+}
+
+type UserProfile {
+  name: String,
+  imageUrl: String | Null
+}
+
+// User Role
+path /userRoles/{userId} is UserRole {
+  read() { isCurrentUser(userId) }
+}
+
+type UserRole extends String {
+  validate() { this == '' || this == 'moderator' || this == 'admin' }
+}
+
+// Misc
+// Types
+type LatLng {
+  lat: Lat,
+  lng: Lng
+}
+
+type Lat extends Number {
+  validate() { -90 <= this && this <= 90 }
+}
+
+type Lng extends Number {
+  validate() { -180 <= this && this <= 180 }
+}
+
+type InitialTimestamp extends Number {
+  validate() { this == (prior(this) == null ? now : prior(this)) }
+}
+
+type CurrentTimestamp extends Number {
+  validate() { this == now }
+}
+
+type CurrentUser extends String {
+  validate() { this == auth.uid }
+}
+
+type RequestStatus extends String {
+  create() { this == 'new' }
+  update() { canModerate() && (this == 'new' || this == 'approved' || this == 'declined') }
+}
+
+// Functions
+function isAuthenticated() {
+  auth != null
+}
+
+function canModerate() {
+  hasRole('moderator') || hasRole('admin')
+}
+
+function hasRole(role) {
+  isAuthenticated() && root.userRoles[auth.uid] == role
+}
+
+function isCurrentUser(uid) {
+  isAuthenticated() && auth.uid == uid
+}

@@ -6,10 +6,11 @@ import { FactoryComponent, redraw, withAttr } from 'mithril';
 
 import { Image } from '../image';
 import * as notify from '../notify';
-import { Request, RequestStatus as RequestStatusType, requestStatuses, setRequestStatus, getStatusText } from '../request';
+import { Request, RequestStatus as RequestStatusType, requestStatuses, RequestServices, getStatusText } from '../request';
 import { RequestStatus } from '../request-status';
 import { store } from '../store';
-import { UserProfile, canModerate, getUserProfile } from '../user';
+import { UserProfile, canModerate, UserServices } from '../user';
+import { UserProfileImage } from '../user-profile-image';
 
 interface State extends Properties<HTMLDivElement> {
   request: Request;
@@ -24,7 +25,7 @@ export const RequestDetails: FactoryComponent<State> = ({ attrs }) => {
 
   loadCreatedBy(state, state.request.createdBy);
 
-  const setStatusToValue = withAttr('value', setStatus(state));
+  const setRequestStatusToValue = withAttr('value', setRequestStatus(state));
   const startEditingRequestStatus = () => { state.isRequestStatusBeingEdited = true; };
   const stopEditingRequestStatus = () => { state.isRequestStatusBeingEdited = false; };
 
@@ -45,7 +46,7 @@ export const RequestDetails: FactoryComponent<State> = ({ attrs }) => {
               canModerate(currentUser) ?
                 div({ class: 'flex-row justify-content-center align-items-center' }, isRequestStatusBeingEdited ?
                   [
-                    select({ class: 'br-md pa-sm', onchange: setStatusToValue, value: request.status },
+                    select({ class: 'br-md pa-sm', onchange: setRequestStatusToValue, value: request.status },
                       requestStatuses.map(RequestStatusOption)
                     ),
                     div({ class: 'pointer mr-n-md pa-md unselectable', onclick: stopEditingRequestStatus }, '✖️')
@@ -59,9 +60,8 @@ export const RequestDetails: FactoryComponent<State> = ({ attrs }) => {
                 :
                 m(RequestStatus, { status: request.status })
             ]),
-            div(request.text),
-            createdBy ? div(`Създадена от ${createdBy.name}`) : null,
-            Timeago(new Date(<number>request.created))
+            div({ class: 'mb-md' }, request.text),
+            createdBy ? Created(request, createdBy) : null
           ])
         ])
       );
@@ -71,7 +71,7 @@ export const RequestDetails: FactoryComponent<State> = ({ attrs }) => {
 
 const loadCreatedBy = async (state: State, id: string) => {
   try {
-    state.createdBy = await getUserProfile(id);
+    state.createdBy = await UserServices.getProfile(id);
     redraw();
   }
   catch (error) {
@@ -79,14 +79,14 @@ const loadCreatedBy = async (state: State, id: string) => {
   }
 };
 
-const setStatus = (state: State) => async (status: RequestStatusType) => {
+const setRequestStatus = (state: State) => async (status: RequestStatusType) => {
   const { request } = state;
   const previousStatus = request.status;
   request.status = status;
   state.isRequestStatusBeingEdited = false;
 
   try {
-    await setRequestStatus(request.id, request.status);
+    await RequestServices.setStatus(request.id, request.status);
   }
   catch (error) {
     request.status = previousStatus;
@@ -98,3 +98,12 @@ const setStatus = (state: State) => async (status: RequestStatusType) => {
 };
 
 const RequestStatusOption = (status: RequestStatusType) => option({ value: status }, getStatusText(status));
+
+const Created = (request: Request, createdBy: UserProfile) => (
+  div({ class: 'flex-row align-items-center' }, [
+    UserProfileImage({ class: 'width-xxs height-xxs mr-sm', style: { display: 'inline-block' }, src: createdBy.imageUrl }),
+    createdBy.name,
+    div({ style: flex(1) }),
+    Timeago(new Date(<number>request.created))
+  ])
+);

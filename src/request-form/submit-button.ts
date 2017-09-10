@@ -3,17 +3,13 @@ import * as firebase from 'firebase/app';
 import { route, redraw, FactoryComponent } from 'mithril';
 
 import * as notify from '../notify';
-import { Request } from '../request';
+import { Request, RequestServices } from '../request';
 import { store } from '../store';
 
 import { State } from './index';
 
 export const SubmitButton: FactoryComponent<{ state: State }> = ({ attrs: { state } }) => {
-  return {
-    view: () => button({ class: 'form-button', type: 'submit', onclick: createRequest }, 'Създаване')
-  };
-
-  async function createRequest() {
+  const createRequest = async () => {
     try {
       state.loading = true;
 
@@ -28,7 +24,7 @@ export const SubmitButton: FactoryComponent<{ state: State }> = ({ attrs: { stat
         createdBy: currentUser.auth.uid,
         status: 'new'
       };
-      await firebase.database().ref('requests').push(newRequest);
+      await RequestServices.create(newRequest);
 
       route.set('/');
     }
@@ -37,5 +33,9 @@ export const SubmitButton: FactoryComponent<{ state: State }> = ({ attrs: { stat
       redraw();
       notify.error(error);
     }
-  }
+  };
+
+  return {
+    view: () => button({ class: 'form-button', type: 'submit', onclick: createRequest }, 'Създаване')
+  };
 };

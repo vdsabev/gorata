@@ -11,6 +11,7 @@ import './content/style.scss';
 import { setHyperscriptFunction } from 'compote';
 import * as m from 'mithril';
 
+import { initializeAuth } from './auth';
 import { initializeFirebaseApp } from './firebase';
 import { Header } from './header';
 import './map';
@@ -22,15 +23,24 @@ initializeApp();
 
 function initializeApp() {
   initializeFirebaseApp();
-  subscribeToStore();
+  initializeAuth();
+  registerServiceWorker();
   initializeRouter();
+  subscribeToStore();
+}
+
+function registerServiceWorker() {
+  if (navigator.serviceWorker) {
+    navigator.serviceWorker.register('service-worker.js', { scope: './' });
+  }
 }
 
 function subscribeToStore() {
   store.subscribe(m.redraw);
 
+  const header = document.querySelector('#header');
   const unsubscribe = store.subscribe(() => {
-    m.mount(document.querySelector('#header'), Header);
+    m.mount(header, Header);
     unsubscribe();
   });
 }

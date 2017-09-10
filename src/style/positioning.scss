@@ -4,12 +4,19 @@
 
 .fixed { position: fixed; }
 
+.sticky { position: sticky; }
+
 .stretch {
   top: 0;
   right: 0;
   bottom: 0;
   left: 0;
 }
+
+.top-0 { top: 0; }
+.right-0 { right: 0; }
+.bottom-0 { bottom: 0; }
+.left-0 { left: 0; }
 
 .va-top { vertical-align: top; }
 .va-middle { vertical-align: middle; }

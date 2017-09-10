@@ -22,16 +22,7 @@ const ImageContainer = (content: Children) => (
 );
 
 const UploadedImage: FactoryComponent<{ imageUrls: string[], imageUrl: string }> = ({ attrs: { imageUrls, imageUrl } }) => {
-  return {
-    view: () => (
-      ImageContainer([
-        img({ class: 'absolute stretch', src: imageUrl }),
-        div({ class: 'request-form-remove br-50p pointer', onclick: removeImage }, '✖')
-      ])
-    )
-  };
-
-  async function removeImage(e: MouseEvent) {
+  const removeImage = async (e: MouseEvent) => {
     const indexOfImageUrl = imageUrls.indexOf(imageUrl);
     if (indexOfImageUrl === -1) return;
 
@@ -45,11 +36,56 @@ const UploadedImage: FactoryComponent<{ imageUrls: string[], imageUrl: string }>
       redraw();
       notify.error(error);
     }
-  }
+  };
+
+  return {
+    view: () => (
+      ImageContainer([
+        img({ class: 'absolute stretch', src: imageUrl }),
+        div({ class: 'request-form-remove br-50p pointer', onclick: removeImage }, '✖')
+      ])
+    )
+  };
 };
 
 const UploadNewImage: FactoryComponent<{ imageUrls: string[] }> = ({ attrs: { imageUrls } }) => {
   let uploading: boolean;
+
+  const uploadImages = async (e: Event) => {
+    const files = toArray<File>((<HTMLInputElement>e.currentTarget).files);
+    if (!files.length) return;
+
+    uploading = true;
+
+    try {
+      await Promise.all(files.map(uploadImage));
+      uploading = false;
+      redraw();
+    }
+    catch (error) {
+      uploading = false;
+      redraw();
+      notify.error(error);
+    }
+  };
+
+  const uploadImage = (file: File) => new Promise(async (resolve, reject) => {
+    try {
+      const uploadTaskSnapshot = await firebase.storage().ref().child(`tmp/${guid()}`).put(file);
+
+      // Only redraw after the image is loaded
+      const image = document.createElement('img');
+      image.src = uploadTaskSnapshot.downloadURL;
+      image.onload = () => {
+        imageUrls.push(uploadTaskSnapshot.downloadURL);
+        redraw();
+        resolve();
+      };
+    }
+    catch (error) {
+      reject(error);
+    }
+  });
 
   return {
     view: () => (
@@ -69,42 +105,4 @@ const UploadNewImage: FactoryComponent<{ imageUrls: string[] }> = ({ attrs: { im
       ])
     )
   };
-
-  async function uploadImages(e: Event) {
-    const files = toArray<File>((<HTMLInputElement>e.currentTarget).files);
-    if (!files.length) return;
-
-    uploading = true;
-
-    try {
-      await Promise.all(files.map(uploadImage));
-      uploading = false;
-      redraw();
-    }
-    catch (error) {
-      uploading = false;
-      redraw();
-      notify.error(error);
-    }
-  }
-
-  function uploadImage(file: File) {
-    return new Promise(async (resolve, reject) => {
-      try {
-        const uploadTaskSnapshot = await firebase.storage().ref().child(`tmp/${guid()}`).put(file);
-
-        // Only redraw after the image is loaded
-        const image = document.createElement('img');
-        image.src = uploadTaskSnapshot.downloadURL;
-        image.onload = () => {
-          imageUrls.push(uploadTaskSnapshot.downloadURL);
-          redraw();
-          resolve();
-        };
-      }
-      catch (error) {
-        reject(error);
-      }
-    });
-  }
 };

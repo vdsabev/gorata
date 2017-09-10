@@ -2,19 +2,14 @@
 @import '../style/mixins';
 
 .request-form-images-container {
-  margin: 0 -5px -10px -5px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-gap: 10px;
 }
 
-.request-form-image-container {
-  display: inline-block;
-  margin-right: 5px;
-  margin-left: 5px;
-  width: calc(50% - 10px);
-
-  &:hover {
-    .request-form-upload-text {
-      transform: scale(1.25);
-    }
+.request-form-image-container:hover {
+  .request-form-upload-text {
+    transform: scale(1.25);
   }
 }
 
