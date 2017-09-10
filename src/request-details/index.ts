@@ -101,7 +101,7 @@ const RequestStatusOption = (status: RequestStatusType) => option({ value: statu
 
 const Created = (request: Request, createdBy: UserProfile) => (
   div({ class: 'flex-row align-items-center' }, [
-    UserProfileImage({ class: 'width-xxs height-xxs mr-sm', style: { display: 'inline-block' }, src: createdBy.imageUrl }),
+    UserProfileImage({ class: 'width-xxs height-xxs mr-sm', profile: createdBy }),
     createdBy.name,
     div({ style: flex(1) }),
     Timeago(new Date(<number>request.created))

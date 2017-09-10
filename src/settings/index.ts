@@ -14,7 +14,7 @@ interface State {
 
 // TODO: Use form data
 // TODO: Add validation
-export const SettingsForm: FactoryComponent<State> = () => {
+export const Settings: FactoryComponent<State> = () => {
   const state: State = { profile: {} };
 
   const setName = withAttr('value', set<Partial<UserProfile>>('name')(state.profile));
@@ -34,7 +34,7 @@ export const SettingsForm: FactoryComponent<State> = () => {
       return (
         div({ class: 'container fade-in-animation' }, [
           form({ class: 'form', onsubmit: returnFalse },
-            fieldset({ class: 'form-panel', disabled: currentUser.profile == null || state.loading === true }, [
+            fieldset({ class: 'form-panel', disabled: state.loading === true }, [
               h2('Настройки'),
               input({
                 class: 'form-input',
@@ -58,7 +58,7 @@ const createSaveFunction = (state: State) => async () => {
   try {
     state.loading = true;
     const { currentUser } = store.getState();
-    await UserServices.setName(currentUser.profile.id, state.profile.name);
+    await UserServices.setName(currentUser.auth.uid, state.profile.name);
     store.dispatch({ type: Actions.USER_PROFILE_LOADED, profile: { ...currentUser.profile, ...state.profile } });
   }
   catch (error) {

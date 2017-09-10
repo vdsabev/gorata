@@ -29,7 +29,7 @@ export const Header = {
         null,
       div({ style: flex(1) }),
       currentUser != null ?
-        isLoggedIn(currentUser) ? UserMenu(currentUser) : LoginLink()
+        isLoggedIn(currentUser) ? UserMenu(currentUser) : LoginLinks()
         :
         null
     ];
@@ -64,16 +64,19 @@ const Logo = () => (
   ])
 );
 
-const UserMenu = ({ profile, role }: CurrentUser) => profile != null ? (
+const UserMenu = ({ profile, role }: CurrentUser) => (
   div({ class: 'flex-row align-items-center' }, [
     div({ class: 'text-right' }, [
-      div({ class: 'color-neutral-lighter hidden-xxs hidden-xs', title: role }, profile.name),
+      profile != null ? div({ class: 'color-neutral-lighter hidden-xxs hidden-xs', title: role || '' }, profile.name) : null,
       a({ class: 'color-neutral-lighter', onclick: logout }, 'Изход')
     ]),
-    a({ class: 'color-neutral-lighter', oncreate: route.link, href: '/settings' },
-      UserProfileImage({ class: 'width-sm height-sm ml-md', src: profile.imageUrl })
+    a({ class: 'color-neutral-lighter ml-md', oncreate: route.link, href: '/settings' },
+      UserProfileImage({ class: 'width-sm height-sm', title: 'Настройки', profile })
     )
   ])
-) : null;
+);
 
-const LoginLink = () => a({ class: 'color-neutral-lighter', oncreate: route.link, href: '/login' }, 'Вход');
+const LoginLinks = () => [
+  a({ class: 'color-neutral-lighter mr-md', oncreate: route.link, href: '/register' }, 'Регистрация'),
+  a({ class: 'color-neutral-lighter', oncreate: route.link, href: '/login' }, 'Вход')
+];
