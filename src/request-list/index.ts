@@ -4,7 +4,7 @@ import { div } from 'compote/html';
 import * as m from 'mithril';
 import { FactoryComponent } from 'mithril';
 
-import { Request, requestStatuses } from '../request';
+import { requestStatuses } from '../request';
 import { store, RequestsFilter } from '../store';
 
 import { RequestListStatusFilterItem } from './status-filter-item';
@@ -12,16 +12,13 @@ import { RequestListItem } from './item';
 
 interface State {
   requestsFilter: RequestsFilter;
-  requestBeingEdited: Request;
 }
 
 const state: State = {
-  requestsFilter: { key: 'status', value: 'new' },
-  requestBeingEdited: null
+  requestsFilter: { key: 'status', value: 'new' }
 };
 
 export const RequestList: FactoryComponent<State> = () => {
-  state.requestBeingEdited = null;
 
   return {
     view() {

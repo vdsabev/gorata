@@ -10,13 +10,13 @@ type Request {
   create() { isAuthenticated() }
   update() { canModerate() }
 
-  imageUrls: String[],
+  imageUrls: String[]
 
-  title: String,
-  text: String,
-  geo: LatLng,
-  created: InitialTimestamp,
-  createdBy: CurrentUser,
+  title: String
+  text: String
+  geo: LatLng
+  created: InitialTimestamp
+  createdBy: CurrentUser
   status: RequestStatus
 }
 
@@ -27,7 +27,7 @@ path /userProfiles/{userId} is UserProfile {
 }
 
 type UserProfile {
-  name: String,
+  name: String
   imageUrl: String | Null
 }
 
@@ -43,7 +43,7 @@ type UserRole extends String {
 // Misc
 // Types
 type LatLng {
-  lat: Lat,
+  lat: Lat
   lng: Lng
 }
 

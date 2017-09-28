@@ -26,11 +26,10 @@ export enum Actions {
 
   MAP_LOADED = 'MAP_LOADED',
 
+  GET_REQUESTS = 'GET_REQUESTS',
   REQUEST_ADDED = 'REQUEST_ADDED',
   REQUEST_REMOVED = 'REQUEST_REMOVED',
-  REQUEST_MARKER_CLICKED = 'REQUEST_MARKER_CLICKED',
-
-  GET_REQUESTS = 'GET_REQUESTS'
+  REQUEST_MARKER_CLICKED = 'REQUEST_MARKER_CLICKED'
 }
 
 export const store = createStore(
@@ -55,9 +54,8 @@ export function currentUser(state: Partial<CurrentUser> = null, action: CurrentU
       route.set('/');
     }
     return {};
-  default:
-    return state;
   }
+  return state;
 }
 
 // Map
@@ -85,9 +83,8 @@ export function map(state: google.maps.Map = null, action: MapAction = {}): goog
     addNavigatorControl(map);
 
     return map;
-  default:
-    return state;
   }
+  return state;
 }
 
 // Markers
@@ -126,9 +123,8 @@ export function markers(state: Record<string, google.maps.Marker> = {}, action: 
         result[requestId] = state[requestId];
       });
     return result;
-  default:
-    return state;
   }
+  return state;
 }
 
 // Request Popup
@@ -170,9 +166,8 @@ export function requestPopup(state: RequestPopupState = {}, action: RequestPopup
       return {};
     }
     /* falls through */
-  default:
-    return state;
   }
+  return state;
 }
 
 const closePopup = (popup: google.maps.InfoWindow, removeMapClickListener: google.maps.MapsEventListener) => {
@@ -200,9 +195,8 @@ export function requests(state: Request[] = [], action: RequestsAction = {}): Re
     return [action.request, ...state];
   case Actions.REQUEST_REMOVED:
     return state.filter((request) => request.id !== action.request.id);
-  default:
-    return state;
   }
+  return state;
 }
 
 const removeAllRequests = (requests: Request[]) => {
