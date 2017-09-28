@@ -69,9 +69,9 @@ export const RequestDetails: FactoryComponent<State> = ({ attrs }) => {
   };
 };
 
-const loadCreatedBy = async (state: State, id: string) => {
+const loadCreatedBy = async (state: State, userId: string) => {
   try {
-    state.createdBy = await UserServices.getProfile(id);
+    state.createdBy = await UserServices.getProfile({ userId });
     redraw();
   }
   catch (error) {
@@ -86,7 +86,7 @@ const setRequestStatus = (state: State) => async (status: RequestStatusType) => 
   state.isRequestStatusBeingEdited = false;
 
   try {
-    await RequestServices.setStatus(request.id, request.status);
+    await RequestServices.setStatus({ requestId: request.id }, request.status);
   }
   catch (error) {
     request.status = previousStatus;

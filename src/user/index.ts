@@ -1,7 +1,6 @@
 import { User as FirebaseUser } from 'firebase/app';
 
-import * as Services from './services';
-export const UserServices = Services;
+export { UserServices } from './services';
 
 export interface CurrentUser {
   auth: FirebaseUser;

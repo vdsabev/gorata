@@ -1,5 +1,4 @@
-import * as Services from './services';
-export const RequestServices = Services;
+export { RequestServices } from './services';
 
 export interface Request {
   id: string;

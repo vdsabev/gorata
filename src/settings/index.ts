@@ -58,7 +58,7 @@ const createSaveFunction = (state: State) => async () => {
   try {
     state.loading = true;
     const { currentUser } = store.getState();
-    await UserServices.setName(currentUser.auth.uid, state.profile.name);
+    await UserServices.setName({ userId: currentUser.auth.uid }, state.profile.name);
     store.dispatch({ type: Actions.USER_PROFILE_LOADED, profile: { ...currentUser.profile, ...state.profile } });
   }
   catch (error) {

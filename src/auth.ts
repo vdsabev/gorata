@@ -25,9 +25,9 @@ export function initializeAuth() {
   });
 }
 
-const loadUserProfile = async (id: string) => {
+const loadUserProfile = async (userId: string) => {
   try {
-    const profile = await UserServices.getProfile(id);
+    const profile = await UserServices.getProfile({ userId });
     store.dispatch({ type: Actions.USER_PROFILE_LOADED, profile });
   }
   catch (error) {
@@ -35,9 +35,9 @@ const loadUserProfile = async (id: string) => {
   }
 };
 
-const loadUserRole = async (id: string) => {
+const loadUserRole = async (userId: string) => {
   try {
-    const role = await UserServices.getRole(id);
+    const role = await UserServices.getRole({ userId });
     store.dispatch({ type: Actions.USER_ROLE_LOADED, role });
   }
   catch (error) {

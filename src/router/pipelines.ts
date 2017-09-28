@@ -48,7 +48,7 @@ export const authorize: PipelineStep = {
 
 export const getRequest: PipelineStep = {
   async getState(state, { requestId }): Promise<{ request: Request }> {
-    const request = await RequestServices.get(requestId);
+    const request = await RequestServices.get({ requestId });
     return { request };
   },
   onError: () => NotFound // TODO: Handle other errors

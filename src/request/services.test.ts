@@ -1,6 +1,6 @@
 import 'jest';
 
-import * as RequestServices from './services';
+import { RequestServices } from './services';
 import { initializeFirebaseApp } from '../firebase';
 
 const env = require('var');
@@ -22,7 +22,7 @@ describe(`RequestServices`, () => {
   describe(`get`, () => {
     it(`should return request`, async () => {
       expect.assertions(1);
-      const a = await RequestServices.get('a');
+      const a = await RequestServices.get({ requestId: 'a' });
       expect(a).toHaveProperty('id', 'a');
     });
   });
@@ -31,7 +31,7 @@ describe(`RequestServices`, () => {
     it(`should deny creating without credentials`, async () => {
       expect.assertions(1);
       try {
-        await RequestServices.create(<any>{});
+        await RequestServices.create({}, <any>{});
       }
       catch (error) {
         expect(error.message).toBe(permissionDeniedError);
@@ -43,7 +43,7 @@ describe(`RequestServices`, () => {
     it(`should deny updating without credentials`, async () => {
       expect.assertions(1);
       try {
-        await RequestServices.update('a', <any>{});
+        await RequestServices.update({ requestId: 'a' }, <any>{});
       }
       catch (error) {
         expect(error.message).toBe(permissionDeniedError);
@@ -55,7 +55,7 @@ describe(`RequestServices`, () => {
     it(`should deny updating without credentials`, async () => {
       expect.assertions(1);
       try {
-        await RequestServices.setStatus('a', 'new');
+        await RequestServices.setStatus({ requestId: 'a' }, 'new');
       }
       catch (error) {
         expect(error.message).toBe(permissionDeniedError);

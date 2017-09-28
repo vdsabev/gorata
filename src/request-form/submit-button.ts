@@ -15,6 +15,7 @@ export const SubmitButton: FactoryComponent<{ state: State }> = ({ attrs: { stat
 
       if (!state.requestMarker) throw 'Моля, маркирайте мястото върху картата!';
       if (state.request.imageUrls.length === 0) throw 'Моля, качете поне една снимка!';
+      if (!state.request.text) throw 'Моля, въведете описание на заявката!';
 
       const { currentUser } = store.getState();
       const newRequest: Request = {
@@ -24,7 +25,7 @@ export const SubmitButton: FactoryComponent<{ state: State }> = ({ attrs: { stat
         createdBy: currentUser.auth.uid,
         status: 'new'
       };
-      await RequestServices.create(newRequest);
+      await RequestServices.create({}, newRequest);
 
       route.set('/');
     }
