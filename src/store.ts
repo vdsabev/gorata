@@ -2,13 +2,12 @@ import './assets/map_marker.svg';
 
 import { logger } from 'compote/components/logger';
 import * as firebase from 'firebase/app';
-import { route } from 'mithril';
 import { createStore, combineReducers, applyMiddleware } from 'redux';
 
 import { DataSnapshot } from './firebase';
 import { addNavigatorControl } from './navigator';
 import { Request } from './request';
-import { reloadRoute } from './router';
+import { reloadRoute, route, Routes } from './router';
 import { CurrentUser } from './user';
 
 interface State {
@@ -52,7 +51,7 @@ export function currentUser(state: Partial<CurrentUser> = null, action: CurrentU
     return { auth: action.auth };
   case Actions.USER_LOGGED_OUT:
     if (state != null) {
-      route.set('/');
+      route.set(Routes.HOME);
     }
     return {};
   }

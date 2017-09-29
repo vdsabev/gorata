@@ -1,3 +1,4 @@
+import { Loading } from 'compote/components/loading';
 import * as m from 'mithril';
 
 import { NotFound } from '../404-not-found';
@@ -14,39 +15,65 @@ export type RouteParams = Record<string, string>;
 
 export type Component<A = any, S = any> = m.FactoryComponent<A> | m.Component<A, S>;
 
+export const route = m.route;
+
+export const Routes = {
+  HOME: '/',
+  LOGIN: '/login',
+  REGISTER: '/register',
+
+  REQUEST_LIST: '/requests',
+  REQUEST_CREATE: '/requests/new',
+  REQUEST_DETAILS: (requestId: string) => `/requests/${requestId}`,
+
+  SETTINGS: '/settings',
+  OTHER: (url: string) => `/${url}`
+};
+
 export function initializeRouter() {
-  m.route.prefix('');
+  route.prefix('');
 
   const content = document.querySelector('#content');
   const loading = loadWith(content);
 
-  m.route(content, '/', {
-    '/': RequestList,
-    '/register': {
-      onmatch: pipeline([loading, ifLoggedInRedirectTo('/')], load(Register))
+  route(content, Routes.HOME, {
+    // Home
+    [Routes.HOME]: redirectTo(Routes.REQUEST_LIST),
+    [Routes.LOGIN]: {
+      onmatch: pipeline([loading, ifLoggedInRedirectTo(Routes.HOME)], load(Login))
     },
-    '/login': {
-      onmatch: pipeline([loading, ifLoggedInRedirectTo('/')], load(Login))
+    [Routes.REGISTER]: {
+      onmatch: pipeline([loading, ifLoggedInRedirectTo(Routes.HOME)], load(Register))
     },
-    '/requests/new': {
+
+    // Requests
+    [Routes.REQUEST_LIST]: RequestList,
+    [Routes.REQUEST_CREATE]: {
       onmatch: pipeline([loading, authorize], load(RequestForm))
     },
-    '/requests/:requestId': {
+    [Routes.REQUEST_DETAILS(':requestId')]: {
       onmatch: pipeline([loading, getRequest], load(RequestDetails, 'request'))
     },
-    '/settings': {
+
+    // User
+    [Routes.SETTINGS]: {
       onmatch: pipeline([loading, authorize], load(Settings))
     },
-    '/:url': NotFound
+
+    // Misc
+    [Routes.OTHER(':url')]: NotFound
   });
 }
 
 export const reloadRoute = () => {
-  m.route.set(window.location.href, undefined, { replace: true });
+  route.set(window.location.href, undefined, { replace: true });
+};
+
+const redirectTo = (url: string) => () => {
+  route.set(url);
+  return Loading;
 };
 
 const load = <T>(component: Component, key?: keyof T) => (result?: T) => ({
-  view: render(component, key != null && result != null ? { [key]: result[key] } : null)
+  view: () => m(component, key != null && result != null ? { [key]: result[key] } : null)
 });
-
-const render = (component: Component, ...args: any[]) => () => m(component, ...args);

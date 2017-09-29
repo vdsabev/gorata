@@ -1,14 +1,14 @@
 import { div, Properties } from 'compote/html';
-import { FactoryComponent } from 'mithril';
+import { Component } from 'mithril';
 
 import { RequestStatus as RequestStatusType, getStatusClass, getStatusText } from '../request';
 
-interface State extends Properties<HTMLDivElement> {
+interface Attrs extends Properties<HTMLDivElement> {
   status: RequestStatusType;
 }
 
-export const RequestStatus: FactoryComponent<State> = ({ attrs: { status, ...attrs } }) => ({
-  view: () => (
+export const RequestStatusItem: Component<Attrs, null> = {
+  view: ({ attrs: { status, ...attrs } }) => (
     div({ ...attrs, class: `br-md pa-sm ${attrs.class || ''} ${getStatusClass(status)}` }, getStatusText(status))
   )
-});
+};

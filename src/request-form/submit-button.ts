@@ -1,9 +1,10 @@
 import { button } from 'compote/html';
 import * as firebase from 'firebase/app';
-import { route, redraw, FactoryComponent } from 'mithril';
+import { redraw, FactoryComponent } from 'mithril';
 
 import * as notify from '../notify';
 import { Request, RequestServices } from '../request';
+import { route, Routes } from '../router';
 import { store } from '../store';
 
 import { State } from './index';
@@ -27,7 +28,7 @@ export const SubmitButton: FactoryComponent<{ state: State }> = ({ attrs: { stat
       };
       await RequestServices.create({}, newRequest);
 
-      route.set('/');
+      route.set(Routes.HOME);
     }
     catch (error) {
       state.loading = false;

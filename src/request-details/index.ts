@@ -6,8 +6,8 @@ import { FactoryComponent, redraw, withAttr } from 'mithril';
 
 import { Image } from '../image';
 import * as notify from '../notify';
-import { Request, RequestStatus as RequestStatusType, requestStatuses, RequestServices, getStatusText } from '../request';
-import { RequestStatus } from '../request-status';
+import { Request, RequestStatus, RequestServices, requestStatuses, getStatusText } from '../request';
+import { RequestStatusItem } from '../request-status-item';
 import { store } from '../store';
 import { UserProfile, canModerate, UserServices } from '../user';
 import { UserProfileImage } from '../user-profile-image';
@@ -53,12 +53,12 @@ export const RequestDetails: FactoryComponent<State> = ({ attrs }) => {
                   ]
                   :
                   [
-                    m(RequestStatus, { status: request.status }),
+                    m(RequestStatusItem, { status: request.status }),
                     div({ class: 'pointer mr-n-md pa-md unselectable', onclick: startEditingRequestStatus }, '✏️')
                   ]
                 )
                 :
-                m(RequestStatus, { status: request.status })
+                m(RequestStatusItem, { status: request.status })
             ]),
             div({ class: 'mb-md' }, request.text),
             createdBy ? Created(request, createdBy) : null
@@ -79,7 +79,7 @@ const loadCreatedBy = async (state: State, userId: string) => {
   }
 };
 
-const setRequestStatus = (state: State) => async (status: RequestStatusType) => {
+const setRequestStatus = (state: State) => async (status: RequestStatus) => {
   const { request } = state;
   const previousStatus = request.status;
   request.status = status;
@@ -97,7 +97,7 @@ const setRequestStatus = (state: State) => async (status: RequestStatusType) => 
   }
 };
 
-const RequestStatusOption = (status: RequestStatusType) => option({ value: status }, getStatusText(status));
+const RequestStatusOption = (status: RequestStatus) => option({ value: status }, getStatusText(status));
 
 const Created = (request: Request, createdBy: UserProfile) => (
   div({ class: 'flex-row align-items-center' }, [

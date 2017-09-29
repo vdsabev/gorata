@@ -6,6 +6,7 @@ import { NotFound } from '../404-not-found';
 
 import { initialUserAuth } from '../auth';
 import { Request, RequestServices } from '../request';
+import { route } from '../router';
 import { store } from '../store';
 import { isLoggedIn } from '../user';
 
@@ -32,7 +33,7 @@ export const ifLoggedInRedirectTo = (url: string): PipelineStep => ({
   async getState(): Promise<void> {
     await initialUserAuth;
     const { currentUser } = store.getState();
-    if (isLoggedIn(currentUser)) m.route.set(url);
+    if (isLoggedIn(currentUser)) route.set(url);
   }
 });
 

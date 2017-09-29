@@ -3,9 +3,9 @@ import '../assets/logo.png';
 
 import { div, a, img, h1, svg, path } from 'compote/html';
 import { flex } from 'compote/components/flex';
-import { route } from 'mithril';
 
 import { logout } from '../logout';
+import { route, Routes } from '../router';
 import { store } from '../store';
 import { CurrentUser, isLoggedIn, canAdmin } from '../user';
 import { UserProfileImage } from '../user-profile-image';
@@ -18,9 +18,9 @@ export const Header = {
     return [
       MenuIcon(),
       Logo(),
-      a({ class: 'menu-link br-md pa-md', oncreate: route.link, href: '/' }, 'Заявки'),
+      a({ class: 'menu-link br-md pa-md', oncreate: route.link, href: Routes.HOME }, 'Заявки'),
       isLoggedIn(currentUser) ?
-        a({ class: 'menu-link br-md pa-md', oncreate: route.link, href: '/requests/new' }, 'Нова Заявка')
+        a({ class: 'menu-link br-md pa-md', oncreate: route.link, href: Routes.REQUEST_CREATE }, 'Нова Заявка')
         :
         null,
       canAdmin(currentUser) ?
@@ -70,13 +70,13 @@ const UserMenu = ({ profile, role }: CurrentUser) => (
       profile != null ? div({ class: 'color-neutral-lighter hidden-xxs hidden-xs', title: role || '' }, profile.name) : null,
       a({ class: 'color-neutral-lighter', onclick: logout }, 'Изход')
     ]),
-    a({ class: 'color-neutral-lighter ml-md', oncreate: route.link, href: '/settings' },
+    a({ class: 'color-neutral-lighter ml-md', oncreate: route.link, href: Routes.SETTINGS },
       UserProfileImage({ class: 'width-sm height-sm', title: 'Настройки', profile })
     )
   ])
 );
 
 const LoginLinks = () => [
-  a({ class: 'color-neutral-lighter mr-md', oncreate: route.link, href: '/register' }, 'Регистрация'),
-  a({ class: 'color-neutral-lighter', oncreate: route.link, href: '/login' }, 'Вход')
+  a({ class: 'color-neutral-lighter mr-md', oncreate: route.link, href: Routes.REGISTER }, 'Регистрация'),
+  a({ class: 'color-neutral-lighter', oncreate: route.link, href: Routes.LOGIN }, 'Вход')
 ];

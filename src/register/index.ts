@@ -2,9 +2,10 @@ import { div, form, fieldset, input, br, button } from 'compote/html';
 import { Keyboard } from 'compote/components/keyboard';
 import { constant, get, set, when, equal } from 'compote/components/utils';
 import * as firebase from 'firebase/app';
-import { redraw, route, withAttr, FactoryComponent } from 'mithril';
+import { redraw, withAttr, FactoryComponent } from 'mithril';
 
 import * as notify from '../notify';
+import { route, Routes } from '../router';
 
 interface State {
   email?: string;
@@ -31,7 +32,7 @@ export const Register: FactoryComponent<State> = () => {
     try {
       state.loading = true;
       await firebase.auth().createUserWithEmailAndPassword(state.email, state.password);
-      route.set('/');
+      route.set(Routes.HOME);
     }
     catch (error) {
       notify.error(error);
