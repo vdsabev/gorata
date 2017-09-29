@@ -16,7 +16,7 @@ import { initializeFirebaseApp } from './firebase';
 import { Header } from './header';
 import './map';
 import { initializeRouter } from './router';
-import { store } from './store';
+import { Actions, store } from './store';
 
 setHyperscriptFunction(m);
 initializeApp();
@@ -27,6 +27,7 @@ function initializeApp() {
   registerServiceWorker();
   initializeRouter();
   subscribeToStore();
+  getRequests();
 }
 
 function registerServiceWorker() {
@@ -43,4 +44,11 @@ function subscribeToStore() {
     m.mount(header, Header);
     unsubscribe();
   });
+}
+
+// NOTE: This action is also triggered when opening the request list to avoid having outdated data.
+// Technically, it should result in 2 HTTP requests if the initial page loaded was the request list,
+// but Firebase is smart enough to batch the requests. Be careful with this if we ever change the database mechanism.
+function getRequests() {
+  store.dispatch({ type: Actions.GET_REQUESTS, filter: { key: 'status', value: 'new' } });
 }

@@ -70,7 +70,7 @@ export const reloadRoute = () => {
 };
 
 const redirectTo = (url: string) => () => {
-  route.set(url);
+  route.set(url, undefined, { replace: true });
   return Loading;
 };
 

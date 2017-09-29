@@ -8,7 +8,6 @@
 .request-list-status-filter-item {
   transition: all $animation-duration $animation-easing;
   transition-property: background, color;
-  color: $foreground;
 
   &:hover {
     background: $neutral;
